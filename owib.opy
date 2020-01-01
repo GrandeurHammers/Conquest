@@ -1,3 +1,5 @@
+#!disableUnusedVars
+
 #Global variables
 
 #!declareGlobal zoneLocations
@@ -17,6 +19,12 @@
 @Rule "=====SETUP====="
 @Event global
 return
+
+
+"""@Rule "DEV: Create Coord Hud"
+@Event eachPlayer
+hudHeader(eventPlayer, "X: {0} | Y: {1} | Z: {2}".format(eventPlayer.getPosition().x, eventPlayer.getPosition().y, eventPlayer.getPosition().z), Position.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+"""
 
 
 @Rule "Mode and Variable Setup"
