@@ -11,6 +11,7 @@
 #!declareGlobal zoneBVisuals
 #!declareGlobal zoneCVisuals
 #!declareGlobal zoneLetterMarkers
+#!declareGlobal zoneHudText
 
 
 @Rule "=====SETUP====="
@@ -50,37 +51,33 @@ hudHeader(eventPlayer, "X: {0} | Y: {1} | Z: {2}".format(eventPlayer.getPosition
 @Event global
 hudSubtext(getPlayers(Team.1), "{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.1]), len([obj for obj in zoneControl if obj == Team.2])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 hudSubtext(getPlayers(Team.2), "{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.2]), len([obj for obj in zoneControl if obj == Team.1])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-# hudHeader(getAllPlayers(), "Zone A")
+hudHeader(getAllPlayers(), "Zone A", Position.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+zoneHudText[0] = getLastCreatedText()
+hudHeader(getAllPlayers(), "Zone B", Position.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 
 
 @Rule "Once Zones are defined, create visuals"
 @Event global
 if len(zoneLocations) == 3 and len(zoneSizes) == 3:
-    createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneAProgress))), zoneLocations[0] + 0.8 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneAProgress))), zoneLocations[0] + 0.4 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneAVisuals.append(getLastCreatedText())
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[0], zoneSizes[0], EffectReeval.VISIBILITY)
     zoneAVisuals.append(getLastCreatedEntity())
-    createIcon(getAllPlayers(), zoneLocations[0] + 1.6 * Vector.UP, Icon.FLAG, IconReeval.VISIBILITY, Color.WHITE, false)
-    zoneAVisuals.append(getLastCreatedEntity())
-    createInWorldText(getAllPlayers(), "A", zoneLocations[0] + 2.4 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    createInWorldText(getAllPlayers(), "A", zoneLocations[0] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneLetterMarkers.append(getLastCreatedText())
 
-    createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneBProgress))), zoneLocations[1] + 0.8 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneBProgress))), zoneLocations[1] + 0.4 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneBVisuals.append(getLastCreatedText())
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[1], zoneSizes[1], EffectReeval.VISIBILITY)
     zoneBVisuals.append(getLastCreatedEntity())
-    createIcon(getAllPlayers(), zoneLocations[1] + 1.6 * Vector.UP, Icon.FLAG, IconReeval.VISIBILITY, Color.WHITE, false)
-    zoneBVisuals.append(getLastCreatedEntity())
-    createInWorldText(getAllPlayers(), "B", zoneLocations[1] + 2.4 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    createInWorldText(getAllPlayers(), "B", zoneLocations[1] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneLetterMarkers.append(getLastCreatedText())
 
-    createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneCProgress))), zoneLocations[2] + 0.8 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneCProgress))), zoneLocations[2] + 0.4 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneCVisuals.append(getLastCreatedText())
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[2], zoneSizes[2], EffectReeval.VISIBILITY)
     zoneCVisuals.append(getLastCreatedEntity())
-    createIcon(getAllPlayers(), zoneLocations[2] + 1.6 * Vector.UP, Icon.FLAG, IconReeval.VISIBILITY, Color.WHITE, false)
-    zoneCVisuals.append(getLastCreatedEntity())
-    createInWorldText(getAllPlayers(), "C", zoneLocations[2] + 2.4 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    createInWorldText(getAllPlayers(), "C", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneLetterMarkers.append(getLastCreatedText())
 
 
@@ -140,23 +137,23 @@ if zoneControl[0] != null and any([distance(player.getPosition(), zoneLocations[
 @Event global
 if abs(zoneAProgress) == 100:
     destroyEffect(zoneAVisuals[1])
-    destroyEffect(zoneAVisuals[2])
+    destroyInWorldText(zoneAVisuals[2])
     if zoneAProgress == -100:
         goto lbl_5
     zoneControl[0] = Team.1
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[0], 2 * zoneSizes[0])
     createEffect(getAllPlayers(), Effect.RING, Color.TEAM_1, zoneLocations[0], zoneSizes[0], EffectReeval.VISIBILITY)
     zoneAVisuals[1] = getLastCreatedEntity()
-    createIcon(getAllPlayers(), zoneLocations[0] + 2 * Vector.UP, Icon.FLAG, IconReeval.VISIBILITY, Color.TEAM_1, false)
-    zoneAVisuals[2] = getLastCreatedEntity()
+    createInWorldText(getAllPlayers(), "A", zoneLocations[0] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_1, SpecVisibility.ALWAYS)
+    zoneAVisuals[2] = getLastCreatedText()
     goto lbl_6
     lbl_5:
     zoneControl[0] = Team.2
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[0], 2 * zoneSizes[0])
     createEffect(getAllPlayers(), Effect.RING, Color.TEAM_2, zoneLocations[0], zoneSizes[0], EffectReeval.VISIBILITY)
     zoneAVisuals[1] = getLastCreatedEntity()
-    createIcon(getAllPlayers(), zoneLocations[0] + 2 * Vector.UP, Icon.FLAG, IconReeval.VISIBILITY, Color.TEAM_2, false)
-    zoneAVisuals[2] = getLastCreatedEntity()
+    createInWorldText(getAllPlayers(), "A", zoneLocations[0] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_2, SpecVisibility.ALWAYS)
+    zoneAVisuals[2] = getLastCreatedText()
     lbl_6:
     zoneAProgress = 0
     addToTeamScore(zoneControl[0], 1)
