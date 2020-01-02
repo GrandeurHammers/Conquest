@@ -38,30 +38,40 @@ zoneControl[2] = null
 @Rule "Setup Zones: Lijang Tower"
 @Event global
 if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJIANG_GARDEN or getCurrentMap() == Map.LIJIANG_NIGHT_MARKET or getCurrentMap() == Map.LIJIANG_CONTROL_CENTER_LNY or getCurrentMap() == Map.LIJIANG_GARDEN_LNY or getCurrentMap() == Map.LIJIANG_NIGHT_MARKET_LNY):
-    if getCurrentMap() != Map.LIJIANG_GARDEN and getCurrentMap() != Map.LIJIANG_GARDEN_LNY:
-        goto lbl_0
-    zoneLocations[0] = vect(43, 95, 150)
-    zoneSizes[0] = 5
-    zoneLocations[1] = vect(0, 94, 130)
-    zoneSizes[1] = 7
-    zoneLocations[2] = vect(-43, 95, 150)
-    zoneSizes[2] = 5
-    lbl_0:
-
-
-"""@Rule "DEV: Create Coord Hud"
-@Event eachPlayer
-hudHeader(eventPlayer, "X: {0} | Y: {1} | Z: {2}".format(eventPlayer.getPosition().x, eventPlayer.getPosition().y, eventPlayer.getPosition().z), Position.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-"""
+    switch getCurrentMap():
+        case Map.LIJIANG_CONTROL_CENTER:
+        case Map.LIJIANG_CONTROL_CENTER_LNY:
+            zoneLocations[0] = vect(43, 95, 150)
+            zoneSizes[0] = 5
+            zoneLocations[1] = vect(0, 94, 130)
+            zoneSizes[1] = 7
+            zoneLocations[2] = vect(-43, 95, 150)
+            zoneSizes[2] = 5
+            break
+        case Map.LIJIANG_GARDEN:
+        case Map.LIJIANG_GARDEN_LNY:
+            zoneLocations[0] = vect(43, 95, 150)
+            zoneSizes[0] = 5
+            zoneLocations[1] = vect(0, 94, 130)
+            zoneSizes[1] = 7
+            zoneLocations[2] = vect(-43, 95, 150)
+            zoneSizes[2] = 5
+            break
 
 
 @Rule "Create Info HUD"
 @Event global
-hudSubtext(getPlayers(Team.1), "{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.1]), len([obj for obj in zoneControl if obj == Team.2])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-hudSubtext(getPlayers(Team.2), "{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.2]), len([obj for obj in zoneControl if obj == Team.1])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-hudHeader(getAllPlayers(), "Zone A", Position.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+hudSubtext(getPlayers(Team.1), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.1]), len([obj for obj in zoneControl if obj == Team.2])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+hudSubtext(getPlayers(Team.2), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.2]), len([obj for obj in zoneControl if obj == Team.1])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+# Spectators
+hudText(null, "Zone A", "{}%".format(abs(zoneAProgress)), "Unlocked", Position.LEFT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 zoneHudText[0] = getLastCreatedText()
-hudHeader(getAllPlayers(), "Zone B", Position.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+hudText(null, "Zone B", "{}%".format(abs(zoneBProgress)), "Unlocked", Position.LEFT, 2, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+zoneHudText[1] = getLastCreatedText()
+hudText(null, "Zone C", "{}%".format(abs(zoneCProgress)), "Unlocked", Position.LEFT, 3, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+zoneHudText[2] = getLastCreatedText()
+# Team 1 & 2
+# hudText(getPlayers(Team.1))
 
 
 @Rule "Once Zones are defined, create visuals"
