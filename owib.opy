@@ -14,6 +14,7 @@
 #!declareGlobal zoneCVisuals
 #!declareGlobal zoneLetterMarkers
 #!declareGlobal zoneHudText
+#!declareGlobal huntTimer
 
 
 @Rule "=====SETUP====="
@@ -104,14 +105,30 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 return
 
 
+@Rule "Change Objective Description at start of game"
+@Event global
+if isGameInProgress():
+    setObjectiveDescription(getAllPlayers(), "Capture Zones", HudReeval.VISIBILITY_AND_STRING)
+
+
 @Rule "Award points based on zones captured on kill"
 @Event playerDealtFinalBlow
 addToTeamScore(attacker.getTeam(), max(1, len([obj for obj in zoneControl if obj == attacker.getTeam()])))
 
+@Rule "If a team controls all 3 zones, activate the Hunt"
+@Event global
+if len([obj for obj in zoneControl if obj == Team.1]) == 3 or len([obj for obj in zoneControl if obj == Team.2]) == 3:
+    zoneAProgress = 0
+    zoneBProgress = 0
+    zoneCProgress = 0
+    if any([obj == Team.2 for obj in zoneControl]):
+        goto hunt_1
+    huntTimer = 25
+    chase(huntTimer, 0, rate=1, ChaseReeval.NONE)
 
 @Rule "Zone A Capturing (Uncaptured)"
 @Event global
-if zoneControl[0] == null and ((any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.1)]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)])) or (any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.1)]))):
+if zoneControl[0] == null and huntTimer == 0 and ((any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.1)]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)])) or (any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.1)]))):
     zoneAProgress = 0
     if any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)]):
         goto lbl_1
@@ -123,7 +140,7 @@ if zoneControl[0] == null and ((any([distance(player.getPosition(), zoneLocation
 
 @Rule "Zone A Capturing (Captured)"
 @Event global
-if zoneControl[0] != null and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(getOppositeTeam(zoneControl[0]))]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(zoneControl[0])]):
+if zoneControl[0] != null and huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(getOppositeTeam(zoneControl[0]))]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(zoneControl[0])]):
     if zoneControl[0] == Team.1:
         goto lbl_3
     chase(zoneAProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
@@ -134,7 +151,7 @@ if zoneControl[0] != null and any([distance(player.getPosition(), zoneLocations[
 
 @Rule "Zone A Contested"
 @Event global
-if any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.1)]) and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)]):
+if huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.1)]) and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)]):
     stopChasingVariable(zoneAProgress)
     smallMessage([player for player in getAllPlayers() if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]], "Contested!")
 
