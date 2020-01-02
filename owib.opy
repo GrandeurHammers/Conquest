@@ -192,5 +192,5 @@ if abs(zoneAProgress) == 100:
     lbl_6:
     zoneAProgress = 0
     addToTeamScore(zoneControl[0], 1)
-    bigMessage(getPlayers(zoneControl[0]), "Zone A Captured")
-    bigMessage(getPlayers(getOppositeTeam(zoneControl[0])), "Zone A Lost")
+    smallMessage(getPlayers(zoneControl[0]), "Zone A Captured")
+    smallMessage(getPlayers(getOppositeTeam(zoneControl[0])), "Zone A Lost")
