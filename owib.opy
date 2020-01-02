@@ -48,7 +48,7 @@ if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJI
             zoneSizes[1] = 7
             zoneLocations[2] = vect(-43, 95, 150)
             zoneSizes[2] = 5
-            break
+            return
         case Map.LIJIANG_GARDEN:
         case Map.LIJIANG_GARDEN_LNY:
             zoneLocations[0] = vect(43, 95, 150)
@@ -57,7 +57,16 @@ if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJI
             zoneSizes[1] = 7
             zoneLocations[2] = vect(-43, 95, 150)
             zoneSizes[2] = 5
-            break
+            return
+        case Map.LIJIANG_NIGHT_MARKET:
+        case Map.LIJIANG_NIGHT_MARKET_LNY:
+            zoneLocations[0] = vect(43, 95, 150)
+            zoneSizes[0] = 5
+            zoneLocations[1] = vect(0, 94, 130)
+            zoneSizes[1] = 7
+            zoneLocations[2] = vect(-43, 95, 150)
+            zoneSizes[2] = 5
+            return
 
 
 @Rule "Create Info HUD"
@@ -125,6 +134,7 @@ if len([obj for obj in zoneControl if obj == Team.1]) == 3 or len([obj for obj i
         goto hunt_1
     huntTimer = 25
     chase(huntTimer, 0, rate=1, ChaseReeval.NONE)
+    hunt_1:
 
 @Rule "Zone A Capturing (Uncaptured)"
 @Event global
