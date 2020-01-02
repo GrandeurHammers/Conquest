@@ -80,8 +80,20 @@ hudText(null, "Zone B", "{}%".format(abs(zoneBProgress)), "Unlocked", Position.L
 zoneHudText[1] = getLastCreatedText()
 hudText(null, "Zone C", "{}%".format(abs(zoneCProgress)), "Unlocked", Position.LEFT, 3, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 zoneHudText[2] = getLastCreatedText()
-# Team 1 & 2
-# hudText(getPlayers(Team.1))
+# Team 1
+hudText(getPlayers(Team.1), "Zone A", "{}%".format(abs(zoneAProgress)), "Capture Zone", Position.LEFT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneHudText[3] = getLastCreatedText()
+hudText(getPlayers(Team.1), "Zone B", "{}%".format(abs(zoneBProgress)), "Capture Zone", Position.LEFT, 2, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneHudText[4] = getLastCreatedText()
+hudText(getPlayers(Team.1), "Zone C", "{}%".format(abs(zoneCProgress)), "Capture Zone", Position.LEFT, 3, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneHudText[5] = getLastCreatedText()
+# Team 2
+hudText(getPlayers(Team.2), "Zone A", "{}%".format(abs(zoneAProgress)), "Capture Zone", Position.LEFT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneHudText[6] = getLastCreatedText()
+hudText(getPlayers(Team.2), "Zone B", "{}%".format(abs(zoneBProgress)), "Capture Zone", Position.LEFT, 2, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneHudText[7] = getLastCreatedText()
+hudText(getPlayers(Team.2), "Zone C", "{}%".format(abs(zoneCProgress)), "Capture Zone", Position.LEFT, 3, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneHudText[8] = getLastCreatedText()
 
 
 @Rule "Once Zones are defined, create visuals"
