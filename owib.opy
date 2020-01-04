@@ -4,17 +4,21 @@
 
 #!declareGlobal zoneLocations
 #!declareGlobal zoneSizes
+#!declareGlobal zoneLetterMarkers
+#!declareGlobal zoneControl
+#!declareGlobal huntTimer
+# activeHudIndicies[spec/Team A/Team B][Zone A/Zone B/Zone C]
+#!declareGlobal activeHudIndicies
 # Progress: (0,100] = Team 1, [-100, 0) = Team 2
 #!declareGlobal zoneAProgress
 #!declareGlobal zoneBProgress
 #!declareGlobal zoneCProgress
-#!declareGlobal zoneControl
 #!declareGlobal zoneAVisuals
 #!declareGlobal zoneBVisuals
 #!declareGlobal zoneCVisuals
-#!declareGlobal zoneLetterMarkers
-#!declareGlobal zoneHudText
-#!declareGlobal huntTimer
+#!declareGlobal zoneAHudText
+#!declareGlobal zoneBHudText
+#!declareGlobal zoneCHudText
 
 
 @Rule "=====SETUP====="
