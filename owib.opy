@@ -7,6 +7,7 @@
 #!declareGlobal zoneLetterMarkers
 #!declareGlobal zoneControl
 #!declareGlobal huntTimer
+#!declareGlobal rebuildSpecHud
 # activeHudIndicies[spec/Team A/Team B][Zone A/Zone B/Zone C]
 #!declareGlobal activeHudIndicies
 # Progress: (0,100] = Team 1, [-100, 0) = Team 2
@@ -44,6 +45,7 @@ zoneControl[2] = null
 @Event global
 if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJIANG_GARDEN or getCurrentMap() == Map.LIJIANG_NIGHT_MARKET or getCurrentMap() == Map.LIJIANG_CONTROL_CENTER_LNY or getCurrentMap() == Map.LIJIANG_GARDEN_LNY or getCurrentMap() == Map.LIJIANG_NIGHT_MARKET_LNY):
     switch getCurrentMap():
+        # FIXME: Change Control Center points
         case Map.LIJIANG_CONTROL_CENTER:
         case Map.LIJIANG_CONTROL_CENTER_LNY:
             zoneLocations[0] = vect(43, 95, 150)
@@ -62,6 +64,7 @@ if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJI
             zoneLocations[2] = vect(-43, 95, 150)
             zoneSizes[2] = 5
             return
+        # FIXME: Change Night Market points
         case Map.LIJIANG_NIGHT_MARKET:
         case Map.LIJIANG_NIGHT_MARKET_LNY:
             zoneLocations[0] = vect(43, 95, 150)
@@ -72,8 +75,9 @@ if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJI
             zoneSizes[2] = 5
             return
 
+# TODO: Add more maps
 
-@Rule "Create Info HUD"
+@Rule "Create Info HUD 1"
 @Event global
 hudSubtext(getPlayers(Team.1), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.1]), len([obj for obj in zoneControl if obj == Team.2])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 hudSubtext(getPlayers(Team.2), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.2]), len([obj for obj in zoneControl if obj == Team.1])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
@@ -81,76 +85,111 @@ hudSubtext(getPlayers(Team.2), w"{0} | Zones | {1}".format(len([obj for obj in z
 hudSubtext(getAllPlayers(), w"-------", Position.RIGHT, 1.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 hudSubtext(getAllPlayers(), w"-------", Position.RIGHT, 2.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 # Spectator: Create Original Hud
+activeHudIndicies[0] = 0
+activeHudIndicies[1] = 0
+activeHudIndicies[2] = 0
 hudText(null, "Zone A", "Neutral: 0%", "Unlocked", Position.RIGHT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 zoneAHudText[0] = getLastCreatedText()
-activeHudIndicies[0] = -1
 hudText(null, "Zone B", "Neutral: 0%", "Unlocked", Position.RIGHT, 2, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 zoneBHudText[0] = getLastCreatedText()
-activeHudIndicies[1] = -1
 hudText(null, "Zone C", "Neutral: 0%", "Unlocked", Position.RIGHT, 3, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 zoneCHudText[0] = getLastCreatedText()
-activeHudIndicies[2] = -1
 # Team 1
 hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 0], "Zone A", "Neutral: 0%", "Capture Zone", Position.RIGHT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[1][0] = getLastCreatedText()
+zoneAHudText[1] = getLastCreatedText()
 hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 1], "Zone A", "Ally: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[1][1] = getLastCreatedText()
+zoneAHudText[2] = getLastCreatedText()
 hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 2], "Zone A", "Enemy: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[1][2] = getLastCreatedText()
+zoneAHudText[3] = getLastCreatedText()
 hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 3], "Zone A", "Enemy: 0%", "Defend Zone", Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[1][3] = getLastCreatedText()
+zoneAHudText[4] = getLastCreatedText()
 hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 4], "Zone A", "Enemy: {}%".format(floor(abs(zoneAProgress))), "Defend Zone", Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[1][4] = getLastCreatedText()
-hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 5], "Zone A", "Ally: 0%", "Capture Zone", Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[1][5] = getLastCreatedText()
-hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 6], "Zone A", "Ally: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[1][6] = getLastCreatedText()
+zoneAHudText[5] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 5], "Zone A", "Ally: 0%", "Capture Zone", Position.RIGHT, 1, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneAHudText[6] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[0] == 6], "Zone A", "Ally: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.TEAM_2, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneAHudText[7] = getLastCreatedText()
 # Team 2
 hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 0], "Zone A", "Neutral: 0%", "Capture Zone", Position.RIGHT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[2][0] = getLastCreatedText()
+zoneAHudText[8] = getLastCreatedText()
 hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 1], "Zone A", "Enemy: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[2][1] = getLastCreatedText()
+zoneAHudText[9] = getLastCreatedText()
 hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 2], "Zone A", "Ally: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[2][2] = getLastCreatedText()
-hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 3], "Zone A", "Enemy: 0%", "Capture Zone", Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[2][3] = getLastCreatedText()
-hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 4], "Zone A", "Enemy: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[2][4] = getLastCreatedText()
-hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 5], "Zone A", "Ally: 0%", "Defend Zone", Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[2][5] = getLastCreatedText()
-hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 6], "Zone A", "Ally: {}%".format(floor(abs(zoneAProgress))), "Defend Zone", Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-zoneAHudText[2][6] = getLastCreatedText()
+zoneAHudText[10] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 3], "Zone A", "Ally: 0%", "Capture Zone", Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneAHudText[11] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 4], "Zone A", "Ally: {}%".format(floor(abs(zoneAProgress))), "Capture Zone", Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneAHudText[12] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 5], "Zone A", "Enemy: 0%", "Defend Zone", Position.RIGHT, 1, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneAHudText[13] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[0] == 6], "Zone A", "Enemy: {}%".format(floor(abs(zoneAProgress))), "Defend Zone", Position.RIGHT, 1, Color.TEAM_2, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneAHudText[14] = getLastCreatedText()
 
-
-@Rule "Helper A: Create Spec HUD"
+@Rule "Create Info HUD 2"
 @Event global
-if activeHudIndicies[0] >= 0:
-    destroyHudText(zoneAHudText[0])
-    switch activeHudIndicies[0]:
-        case 0:
-            hudText(null, "Zone A", "Neutral: 0%", "Unlocked", Position.RIGHT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            break
-        case 1:
-            hudText(null, "Zone A", "{0}: {1}%".format(Team.1, floor(abs(zoneAProgress))), "Unlocked", Position.RIGHT, 1, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            break
-        case 2:
-            hudText(null, "Zone A", "{0}: {1}%".format(Team.2, floor(abs(zoneAProgress))), "Unlocked", Position.RIGHT, 1, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            break
-        case 3:
-            hudText(null, "Zone A", "{0}: 0%".format(Team.2), "{}".format(Team.1), Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            break
-        case 4:
-            hudText(null, "Zone A", "{0}: {1}%".format(Team.2, floor(abs(zoneAProgress))), "{}".format(Team.1), Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            break
-        case 5:
-            hudText(null, "Zone A", "{0}: 0%".format(Team.1), "{}".format(Team.2), Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            break
-        case 6:
-            hudText(null, "Zone A", "{0}: {1}%".format(Team.1, floor(abs(zoneAProgress))), "{}".format(Team.2), Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            break
-    zoneAHudText[0] = getLastCreatedText()
+# Team 1
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[1] == 0], "Zone B", "Neutral: 0%", "Capture Zone", Position.RIGHT, 2, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[1] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[1] == 1], "Zone B", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 2, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[2] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[1] == 2], "Zone B", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 2, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[3] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[1] == 3], "Zone B", "Enemy: 0%", "Defend Zone", Position.RIGHT, 2, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[4] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[1] == 4], "Zone B", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Defend Zone", Position.RIGHT, 2, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[5] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[1] == 5], "Zone B", "Ally: 0%", "Capture Zone", Position.RIGHT, 2, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[6] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[1] == 6], "Zone B", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 2, Color.TEAM_2, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[7] = getLastCreatedText()
+# Team 2
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[1] == 0], "Zone B", "Neutral: 0%", "Capture Zone", Position.RIGHT, 2, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[8] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[1] == 1], "Zone B", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 2, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[9] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[1] == 2], "Zone B", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 2, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[10] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[1] == 3], "Zone B", "Ally: 0%", "Capture Zone", Position.RIGHT, 2, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[11] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[1] == 4], "Zone B", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 2, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[12] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[1] == 5], "Zone B", "Enemy: 0%", "Defend Zone", Position.RIGHT, 2, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[13] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[1] == 6], "Zone B", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Defend Zone", Position.RIGHT, 2, Color.TEAM_2, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneBHudText[14] = getLastCreatedText()
 
-
+@Rule "Create Info HUD 3"
+@Event global
+# Team 1
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[2] == 0], "Zone C", "Neutral: 0%", "Capture Zone", Position.RIGHT, 3, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[1] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[2] == 1], "Zone C", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 3, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[2] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[2] == 2], "Zone C", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 3, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[3] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[2] == 3], "Zone C", "Enemy: 0%", "Defend Zone", Position.RIGHT, 3, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[4] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[2] == 4], "Zone C", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Defend Zone", Position.RIGHT, 3, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[5] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[2] == 5], "Zone C", "Ally: 0%", "Capture Zone", Position.RIGHT, 3, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[6] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.1) if activeHudIndicies[2] == 6], "Zone C", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 3, Color.TEAM_2, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[7] = getLastCreatedText()
+# Team 2
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[2] == 0], "Zone C", "Neutral: 0%", "Capture Zone", Position.RIGHT, 3, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[8] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[2] == 1], "Zone C", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 3, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[9] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[2] == 2], "Zone C", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 3, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[10] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[2] == 3], "Zone C", "Ally: 0%", "Capture Zone", Position.RIGHT, 3, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[11] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[2] == 4], "Zone C", "Ally: {}%".format(floor(abs(zoneBProgress))), "Capture Zone", Position.RIGHT, 3, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[12] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[2] == 5], "Zone C", "Enemy: 0%", "Defend Zone", Position.RIGHT, 3, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[13] = getLastCreatedText()
+hudText([p for p in getPlayers(Team.2) if activeHudIndicies[2] == 6], "Zone C", "Enemy: {}%".format(floor(abs(zoneBProgress))), "Defend Zone", Position.RIGHT, 3, Color.TEAM_2, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+zoneCHudText[14] = getLastCreatedText()
 
 @Rule "Once Zones are defined, create visuals"
 @Event global
@@ -203,6 +242,40 @@ if len([obj for obj in zoneControl if obj == Team.1]) == 3 or len([obj for obj i
     huntTimer = 25
     chase(huntTimer, 0, rate=1, ChaseReeval.NONE)
     hunt_1:
+    rebuildSpecHud[0] = true
+    rebuildSpecHud[1] = true
+    rebuildSpecHud[2] = true
+
+
+@Rule "Helper A: Rebuild Spec HUD"
+@Event global
+if rebuildSpecHud[0]:
+    destroyHudText(zoneAHudText[0])
+    switch activeHudIndicies[0]:
+        case 0:
+            hudText(null, "Zone A", "Neutral: 0%", "Unlocked", Position.RIGHT, 1, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 1:
+            hudText(null, "Zone A", "{0}: {1}%".format(Team.1, floor(abs(zoneAProgress))), "Unlocked", Position.RIGHT, 1, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 2:
+            hudText(null, "Zone A", "{0}: {1}%".format(Team.2, floor(abs(zoneAProgress))), "Unlocked", Position.RIGHT, 1, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 3:
+            hudText(null, "Zone A", "{0}: 0%".format(Team.2), "{}".format(Team.1), Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 4:
+            hudText(null, "Zone A", "{0}: {1}%".format(Team.2, floor(abs(zoneAProgress))), "{}".format(Team.1), Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 5:
+            hudText(null, "Zone A", "{0}: 0%".format(Team.1), "{}".format(Team.2), Position.RIGHT, 1, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 6:
+            hudText(null, "Zone A", "{0}: {1}%".format(Team.1, floor(abs(zoneAProgress))), "{}".format(Team.2), Position.RIGHT, 1, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+    zoneAHudText[0] = getLastCreatedText()
+    rebuildSpecHud[0] = false
+
 
 @Rule "Zone A Capturing (Uncaptured)"
 @Event global
@@ -211,10 +284,13 @@ if zoneControl[0] == null and huntTimer == 0 and ((any([distance(player.getPosit
     if any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.2)]):
         goto lbl_1
     chase(zoneAProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    activeHudIndicies[0] = 1
     goto lbl_2
     lbl_1:
     chase(zoneAProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    activeHudIndicies[0] = 2
     lbl_2:
+    rebuildSpecHud[0] = true
 
 @Rule "Zone A Capturing (Captured)"
 @Event global
@@ -222,9 +298,11 @@ if zoneControl[0] != null and huntTimer == 0 and any([distance(player.getPositio
     if zoneControl[0] == Team.1:
         goto lbl_3
     chase(zoneAProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    activeHudIndicies[0] = 6
     goto lbl_4
     lbl_3:
     chase(zoneAProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    activeHudIndicies[0] = 4
     lbl_4:
 
 @Rule "Zone A Contested"
@@ -272,3 +350,19 @@ if abs(zoneAProgress) == 100:
     addToTeamScore(zoneControl[0], 1)
     smallMessage(getPlayers(zoneControl[0]), "Zone A Captured")
     smallMessage(getPlayers(getOppositeTeam(zoneControl[0])), "Zone A Lost")
+
+
+@Rule "Listener for Zone A hitting 0%"
+@Event global
+if zoneAProgress == 0:
+    switch zoneControl[0]:
+        case null:
+            activeHudIndicies[0] = 0
+            break
+        case Team.1:
+            activeHudIndicies[0] = 3
+            break
+        case Team.2:
+            activeHudIndicies[0] = 5
+            break
+    rebuildSpecHud[0] = true
