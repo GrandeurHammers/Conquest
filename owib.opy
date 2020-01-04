@@ -366,3 +366,115 @@ if zoneAProgress == 0:
             activeHudIndicies[0] = 5
             break
     rebuildSpecHud[0] = true
+
+
+@Rule "Helper B: Rebuild Spec HUD"
+@Event global
+if rebuildSpecHud[1]:
+    destroyHudText(zoneBHudText[0])
+    switch activeHudIndicies[1]:
+        case 0:
+            hudText(null, "Zone B", "Neutral: 0%", "Unlocked", Position.RIGHT, 2, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 1:
+            hudText(null, "Zone B", "{0}: {1}%".format(Team.1, floor(abs(zoneBProgress))), "Unlocked", Position.RIGHT, 2, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 2:
+            hudText(null, "Zone B", "{0}: {1}%".format(Team.2, floor(abs(zoneBProgress))), "Unlocked", Position.RIGHT, 2, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 3:
+            hudText(null, "Zone B", "{0}: 0%".format(Team.2), "{}".format(Team.1), Position.RIGHT, 2, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 4:
+            hudText(null, "Zone B", "{0}: {1}%".format(Team.2, floor(abs(zoneBProgress))), "{}".format(Team.1), Position.RIGHT, 2, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 5:
+            hudText(null, "Zone B", "{0}: 0%".format(Team.1), "{}".format(Team.2), Position.RIGHT, 2, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+        case 6:
+            hudText(null, "Zone B", "{0}: {1}%".format(Team.1, floor(abs(zoneBProgress))), "{}".format(Team.2), Position.RIGHT, 2, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+            break
+    zoneBHudText[0] = getLastCreatedText()
+    rebuildSpecHud[1] = false
+
+
+@Rule "Zone B Capturing (Uncaptured)"
+@Event global
+if zoneControl[1] == null and huntTimer == 0 and ((any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.1)]) and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.2)])) or (any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.2)]) and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.1)]))):
+    zoneBProgress = 0
+    if any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.1)]):
+        chase(zoneBProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        activeHudIndicies[1] = 1
+    else:
+        chase(zoneBProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        activeHudIndicies[1] = 2
+    rebuildSpecHud[1] = true
+
+@Rule "Zone B Capturing (Captured)"
+@Event global
+if zoneControl[1] != null and huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(getOppositeTeam(zoneControl[1]))]) and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(zoneControl[1])]):
+    if zoneControl[1] == Team.2:
+        chase(zoneBProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        activeHudIndicies[1] = 6
+    else:
+        chase(zoneBProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        activeHudIndicies[1] = 4
+
+@Rule "Zone B Contested"
+@Event global
+if huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.1)]) and any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.2)]):
+    stopChasingVariable(zoneBProgress)
+    smallMessage([player for player in getAllPlayers() if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]], "Contested!")
+
+@Rule "Zone B Uncapture Slow"
+@Event global
+if not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.ALL)]):
+    wait(3, Wait.ABORT_WHEN_FALSE)
+    chase(zoneBProgress, 0, rate=25, ChaseReeval.NONE)
+
+@Rule "Zone B Instant Uncapture"
+@Event global
+if zoneControl[1] != null and any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(zoneControl[1])]) and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(getOppositeTeam(zoneControl[1]))]):
+    stopChasingVariable(zoneBProgress)
+    zoneBProgress = 0
+
+
+@Rule "Zone B Capture"
+@Event global
+if abs(zoneBProgress) == 100:
+    destroyEffect(zoneBVisuals[1])
+    destroyInWorldText(zoneBVisuals[2])
+    if zoneBProgress == 100:
+        zoneControl[1] = Team.1
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[1], 2 * zoneSizes[1])
+        createEffect(getAllPlayers(), Effect.RING, Color.TEAM_1, zoneLocations[1], zoneSizes[1], EffectReeval.VISIBILITY)
+        zoneBVisuals[1] = getLastCreatedEntity()
+        createInWorldText(getAllPlayers(), "B", zoneLocations[1] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_1, SpecVisibility.ALWAYS)
+        zoneBVisuals[2] = getLastCreatedText()
+    else:
+        zoneControl[1] = Team.2
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[1], 2 * zoneSizes[1])
+        createEffect(getAllPlayers(), Effect.RING, Color.TEAM_2, zoneLocations[1], zoneSizes[1], EffectReeval.VISIBILITY)
+        zoneBVisuals[1] = getLastCreatedEntity()
+        createInWorldText(getAllPlayers(), "B", zoneLocations[1] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_2, SpecVisibility.ALWAYS)
+        zoneBVisuals[2] = getLastCreatedText()
+    zoneBProgress = 0
+    addToTeamScore(zoneControl[1], 1)
+    smallMessage(getPlayers(zoneControl[1]), "Zone B Captured")
+    smallMessage(getPlayers(getOppositeTeam(zoneControl[1])), "Zone B Lost")
+
+
+@Rule "Listener for Zone B hitting 0%"
+@Event global
+if zoneBProgress == 0:
+    switch zoneControl[1]:
+        case null:
+            activeHudIndicies[1] = 0
+            break
+        case Team.1:
+            activeHudIndicies[1] = 3
+            break
+        case Team.2:
+            activeHudIndicies[1] = 5
+            break
+    rebuildSpecHud[1] = true
