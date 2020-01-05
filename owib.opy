@@ -322,13 +322,13 @@ if huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[0]) <= z
 
 @Rule "Zone A Uncapture Slow"
 @Event global
-if not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.ALL)]):
+if huntTimer == 0 and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(Team.ALL)]):
     wait(3, Wait.ABORT_WHEN_FALSE)
     chase(zoneAProgress, 0, rate=25, ChaseReeval.NONE)
 
 @Rule "Zone A Instant Uncapture"
 @Event global
-if zoneControl[0] != null and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(zoneControl[0])]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(getOppositeTeam(zoneControl[0]))]):
+if huntTimer == 0 and zoneControl[0] != null and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(zoneControl[0])]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(getOppositeTeam(zoneControl[0]))]):
     stopChasingVariable(zoneAProgress)
     zoneAProgress = 0
 
@@ -363,7 +363,7 @@ if abs(zoneAProgress) == 100:
 
 @Rule "Listener for Zone A hitting 0%"
 @Event global
-if zoneAProgress == 0:
+if zoneAProgress == 0 and huntTimer == 0:
     switch zoneControl[0]:
         case null:
             if rebuildOverrideFlag[0]:
@@ -445,13 +445,13 @@ if huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[1]) <= z
 
 @Rule "Zone B Uncapture Slow"
 @Event global
-if not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.ALL)]):
+if huntTimer == 0 and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(Team.ALL)]):
     wait(3, Wait.ABORT_WHEN_FALSE)
     chase(zoneBProgress, 0, rate=25, ChaseReeval.NONE)
 
 @Rule "Zone B Instant Uncapture"
 @Event global
-if zoneControl[1] != null and any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(zoneControl[1])]) and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(getOppositeTeam(zoneControl[1]))]):
+if huntTimer == 0 and zoneControl[1] != null and any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(zoneControl[1])]) and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(getOppositeTeam(zoneControl[1]))]):
     stopChasingVariable(zoneBProgress)
     zoneBProgress = 0
 
@@ -483,7 +483,7 @@ if abs(zoneBProgress) == 100:
 
 @Rule "Listener for Zone B hitting 0%"
 @Event global
-if zoneBProgress == 0:
+if zoneBProgress == 0 and huntTimer == 0:
     switch zoneControl[1]:
         case null:
             if rebuildOverrideFlag[1]:
@@ -564,13 +564,13 @@ if huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[2]) <= z
 
 @Rule "Zone C Uncapture Slow"
 @Event global
-if not any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(Team.ALL)]):
+if huntTimer == 0 and not any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(Team.ALL)]):
     wait(3, Wait.ABORT_WHEN_FALSE)
     chase(zoneCProgress, 0, rate=25, ChaseReeval.NONE)
 
 @Rule "Zone C Instant Uncapture"
 @Event global
-if zoneControl[2] != null and any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(zoneControl[2])]) and not any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(getOppositeTeam(zoneControl[2]))]):
+if huntTimer == 0 and zoneControl[2] != null and any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(zoneControl[2])]) and not any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(getOppositeTeam(zoneControl[2]))]):
     stopChasingVariable(zoneCProgress)
     zoneCProgress = 0
 
@@ -578,22 +578,22 @@ if zoneControl[2] != null and any([distance(player.getPosition(), zoneLocations[
 @Rule "Zone C Capture"
 @Event global
 if abs(zoneCProgress) == 100:
-    destroyEffect(zoneBVisuals[1])
-    destroyInWorldText(zoneBVisuals[2])
+    destroyEffect(zoneCVisuals[1])
+    destroyInWorldText(zoneCVisuals[2])
     if zoneCProgress == 100:
         zoneControl[2] = Team.1
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[2], 2 * zoneSizes[2])
         createEffect(getAllPlayers(), Effect.RING, Color.TEAM_1, zoneLocations[2], zoneSizes[2], EffectReeval.VISIBILITY)
-        zoneBVisuals[1] = getLastCreatedEntity()
+        zoneCVisuals[1] = getLastCreatedEntity()
         createInWorldText(getAllPlayers(), "B", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_1, SpecVisibility.ALWAYS)
-        zoneBVisuals[2] = getLastCreatedText()
+        zoneCVisuals[2] = getLastCreatedText()
     else:
         zoneControl[2] = Team.2
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[2], 2 * zoneSizes[2])
         createEffect(getAllPlayers(), Effect.RING, Color.TEAM_2, zoneLocations[2], zoneSizes[2], EffectReeval.VISIBILITY)
-        zoneBVisuals[1] = getLastCreatedEntity()
+        zoneCVisuals[1] = getLastCreatedEntity()
         createInWorldText(getAllPlayers(), "B", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_2, SpecVisibility.ALWAYS)
-        zoneBVisuals[2] = getLastCreatedText()
+        zoneCVisuals[2] = getLastCreatedText()
     zoneCProgress = 0
     addToTeamScore(zoneControl[2], 1)
     smallMessage(getPlayers(zoneControl[2]), "Zone C Captured")
@@ -602,7 +602,7 @@ if abs(zoneCProgress) == 100:
 
 @Rule "Listener for Zone C hitting 0%"
 @Event global
-if zoneCProgress == 0:
+if zoneCProgress == 0 and huntTimer == 0:
     switch zoneControl[2]:
         case null:
             if rebuildOverrideFlag[2]:
