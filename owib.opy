@@ -88,10 +88,12 @@ if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJI
 @Event global
 hudSubtext(getPlayers(Team.1), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.1]), len([obj for obj in zoneControl if obj == Team.2])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 hudSubtext(getPlayers(Team.2), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.2]), len([obj for obj in zoneControl if obj == Team.1])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+# Hunt Timer
+hudHeader([p for p in getAllPlayers() if huntTimer > 0], "The Hunt: {}s".format(ceil(huntTimer)), Position.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)
 # Capture Progress HUDs
-hudHeader([p for p in getPlayersInRadius(zoneLocations[0], zoneSizes[0], Team.ALL, LosCheck.OFF) if zoneAProgress > 0], "Progress: {}%".format(floor(abs(zoneAProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-hudHeader([p for p in getPlayersInRadius(zoneLocations[1], zoneSizes[1], Team.ALL, LosCheck.OFF) if zoneBProgress > 0], "Progress: {}%".format(floor(abs(zoneBProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-hudHeader([p for p in getPlayersInRadius(zoneLocations[2], zoneSizes[2], Team.ALL, LosCheck.OFF) if zoneCProgress > 0], "Progress: {}%".format(floor(abs(zoneCProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+hudHeader([p for p in getPlayersInRadius(zoneLocations[0], zoneSizes[0], Team.ALL, LosCheck.OFF) if abs(zoneAProgress) > 0], "Progress: {}%".format(floor(abs(zoneAProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+hudHeader([p for p in getPlayersInRadius(zoneLocations[1], zoneSizes[1], Team.ALL, LosCheck.OFF) if abs(zoneBProgress) > 0], "Progress: {}%".format(floor(abs(zoneBProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+hudHeader([p for p in getPlayersInRadius(zoneLocations[2], zoneSizes[2], Team.ALL, LosCheck.OFF) if abs(zoneCProgress) > 0], "Progress: {}%".format(floor(abs(zoneCProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
 # Spacers
 hudSubtext(getAllPlayers(), w"-----------", Position.RIGHT, 1.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 hudSubtext(getAllPlayers(), w"-----------", Position.RIGHT, 2.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
@@ -247,6 +249,20 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 return
 
 
+@Rule "Reset Objectives and Team Score at start of game"
+@Event global
+if not isWaitingForPlayers():
+    zoneControl[0] = null
+    zoneControl[1] = null
+    zoneControl[2] = null
+    zoneAProgress = 0
+    zoneBProgress = 0
+    zoneCProgress = 0
+    activeHudIndicies[0] = 0
+    activeHudIndicies[1] = 0
+    activeHudIndicies[2] = 0
+
+
 @Rule "Change Objective Description at start of game"
 @Event global
 if isGameInProgress():
@@ -261,14 +277,13 @@ addToTeamScore(attacker.getTeam(), max(1, len([obj for obj in zoneControl if obj
 @Rule "If a team controls all 3 zones, activate the Hunt"
 @Event global
 if len([obj for obj in zoneControl if obj == Team.1]) == 3 or len([obj for obj in zoneControl if obj == Team.2]) == 3:
-    huntTimer = 25
-    chase(huntTimer, 0, rate=1, ChaseReeval.NONE)
     stopChasingVariable(zoneAProgress)
     stopChasingVariable(zoneBProgress)
     stopChasingVariable(zoneCProgress)
     zoneAProgress = 0
     zoneBProgress = 0
     zoneCProgress = 0
+    setSlowMotion(10)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[0], 200)
     if any([obj == Team.1 for obj in zoneControl]):
         activeHudIndicies[0] = 7
@@ -276,19 +291,28 @@ if len([obj for obj in zoneControl if obj == Team.1]) == 3 or len([obj for obj i
         activeHudIndicies[2] = 7
         bigMessage(getAllPlayers(), "{} IS ON THE HUNT".format(Team.1))
         setObjectiveDescription(getPlayers(Team.1), "The Hunt is On", HudReeval.VISIBILITY_AND_STRING)
+        bigMessage(getPlayers(Team.1), "The Hunt is On")
         setObjectiveDescription(getPlayers(Team.2), "Survive the Hunt", HudReeval.VISIBILITY_AND_STRING)
+        bigMessage(getPlayers(Team.2), "Survive the Hunt")
     else:
         activeHudIndicies[0] = 8
         activeHudIndicies[1] = 8
         activeHudIndicies[2] = 8
         bigMessage(getAllPlayers(), "{} IS ON THE HUNT".format(Team.2))
         setObjectiveDescription(getPlayers(Team.2), "The Hunt is On", HudReeval.VISIBILITY_AND_STRING)
+        bigMessage(getPlayers(Team.2), "The Hunt is On")
         setObjectiveDescription(getPlayers(Team.1), "Survive the Hunt", HudReeval.VISIBILITY_AND_STRING)
+        bigMessage(getPlayers(Team.1), "Survive the Hunt")
+    huntTimer = 25
+    wait(0.5)
+    chase(huntTimer, 0, rate=1, ChaseReeval.NONE)
+    setSlowMotion(100)
 
 
 @Rule "Listen for end of Hunt"
 @Event global
 if huntTimer == 0:
+    stopChasingVariable(huntTimer)
     bigMessage(getAllPlayers(), "The Hunt Has Ended")
     setObjectiveDescription(getAllPlayers(), "Fight and Capture Zones", HudReeval.VISIBILITY_AND_STRING)
     zoneControl[0] = null
@@ -364,14 +388,14 @@ if zoneControl[0] == null and huntTimer == 0 and ((any([distance(player.getPosit
     if zoneAProgress < 0:
         zoneAProgress = 0
         rebuildOverrideFlag[0] = true
-    chase(zoneAProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    chase(zoneAProgress, 100, rate=5 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
     activeHudIndicies[0] = 1
     goto lbl_2
     lbl_1:
     if zoneAProgress > 0:
         zoneAProgress = 0
         rebuildOverrideFlag[0] = true
-    chase(zoneAProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    chase(zoneAProgress, -100, rate=5 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
     activeHudIndicies[0] = 2
     lbl_2:
     rebuildSpecHud[0] = true
@@ -381,11 +405,11 @@ if zoneControl[0] == null and huntTimer == 0 and ((any([distance(player.getPosit
 if zoneControl[0] != null and huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(getOppositeTeam(zoneControl[0]))]) and not any([distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0] for player in getLivingPlayers(zoneControl[0])]):
     if zoneControl[0] == Team.1:
         goto lbl_3
-    chase(zoneAProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    chase(zoneAProgress, 100, rate=5 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
     activeHudIndicies[0] = 6
     goto lbl_4
     lbl_3:
-    chase(zoneAProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
+    chase(zoneAProgress, -100, rate=5 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[0]) <= zoneSizes[0]])), ChaseReeval.DESTINATION_AND_RATE)
     activeHudIndicies[0] = 4
     lbl_4:
 
@@ -411,6 +435,7 @@ if huntTimer == 0 and zoneControl[0] != null and any([distance(player.getPositio
 @Rule "Zone A Capture"
 @Event global
 if abs(zoneAProgress) == 100:
+    stopChasingVariable(zoneAProgress)
     destroyEffect(zoneAVisuals[1])
     destroyInWorldText(zoneAVisuals[2])
     if zoneAProgress == -100:
@@ -497,13 +522,13 @@ if zoneControl[1] == null and huntTimer == 0 and ((any([distance(player.getPosit
         if zoneBProgress < 0:
             zoneBProgress = 0
             rebuildOverrideFlag[1] = true
-        chase(zoneBProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneBProgress, 100, rate=5 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[1] = 1
     else:
         if zoneBProgress > 0:
             zoneBProgress = 0
             rebuildOverrideFlag[1] = true
-        chase(zoneBProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneBProgress, -100, rate=5 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[1] = 2
     rebuildSpecHud[1] = true
 
@@ -511,10 +536,10 @@ if zoneControl[1] == null and huntTimer == 0 and ((any([distance(player.getPosit
 @Event global
 if zoneControl[1] != null and huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(getOppositeTeam(zoneControl[1]))]) and not any([distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1] for player in getLivingPlayers(zoneControl[1])]):
     if zoneControl[1] == Team.2:
-        chase(zoneBProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneBProgress, 100, rate=5 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[1] = 6
     else:
-        chase(zoneBProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneBProgress, -100, rate=5 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[1]) <= zoneSizes[1]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[1] = 4
 
 @Rule "Zone B Contested"
@@ -539,6 +564,7 @@ if huntTimer == 0 and zoneControl[1] != null and any([distance(player.getPositio
 @Rule "Zone B Capture"
 @Event global
 if abs(zoneBProgress) == 100:
+    stopChasingVariable(zoneBProgress)
     destroyEffect(zoneBVisuals[1])
     destroyInWorldText(zoneBVisuals[2])
     if zoneBProgress == 100:
@@ -621,13 +647,13 @@ if zoneControl[2] == null and huntTimer == 0 and ((any([distance(player.getPosit
         if zoneCProgress < 0:
             zoneCProgress = 0
             rebuildOverrideFlag[2] = true
-        chase(zoneCProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneCProgress, 100, rate=5 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[2] = 1
     else:
         if zoneCProgress > 0:
             zoneCProgress = 0
             rebuildOverrideFlag[2] = true
-        chase(zoneCProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneCProgress, -100, rate=5 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[2] = 2
     rebuildSpecHud[2] = true
 
@@ -635,10 +661,10 @@ if zoneControl[2] == null and huntTimer == 0 and ((any([distance(player.getPosit
 @Event global
 if zoneControl[2] != null and huntTimer == 0 and any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(getOppositeTeam(zoneControl[2]))]) and not any([distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2] for player in getLivingPlayers(zoneControl[2])]):
     if zoneControl[2] == Team.2:
-        chase(zoneCProgress, 100, rate=10 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneCProgress, 100, rate=5 * (len([player for player in getLivingPlayers(Team.1) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[2] = 6
     else:
-        chase(zoneCProgress, -100, rate=10 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zoneCProgress, -100, rate=5 * (len([player for player in getLivingPlayers(Team.2) if distance(player.getPosition(), zoneLocations[2]) <= zoneSizes[2]])), ChaseReeval.DESTINATION_AND_RATE)
         activeHudIndicies[2] = 4
 
 @Rule "Zone C Contested"
@@ -663,6 +689,7 @@ if huntTimer == 0 and zoneControl[2] != null and any([distance(player.getPositio
 @Rule "Zone C Capture"
 @Event global
 if abs(zoneCProgress) == 100:
+    stopChasingVariable(zoneCProgress)
     destroyEffect(zoneCVisuals[1])
     destroyInWorldText(zoneCVisuals[2])
     if zoneCProgress == 100:
