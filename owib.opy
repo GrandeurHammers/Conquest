@@ -43,6 +43,9 @@ zoneControl[2] = null
 rebuildOverrideFlag[0] = false
 rebuildOverrideFlag[1] = false
 rebuildOverrideFlag[2] = false
+zoneAVisuals = []
+zoneBVisuals = []
+zoneCVisuals = []
 
 
 @Rule "Setup Zones: Lijang Tower"
@@ -85,9 +88,13 @@ if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJI
 @Event global
 hudSubtext(getPlayers(Team.1), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.1]), len([obj for obj in zoneControl if obj == Team.2])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 hudSubtext(getPlayers(Team.2), w"{0} | Zones | {1}".format(len([obj for obj in zoneControl if obj == Team.2]), len([obj for obj in zoneControl if obj == Team.1])), Position.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+# Capture Progress HUDs
+hudHeader([p for p in getPlayersInRadius(zoneLocations[0], zoneSizes[0], Team.ALL, LosCheck.OFF) if zoneAProgress > 0], "Progress: {}%".format(floor(abs(zoneAProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+hudHeader([p for p in getPlayersInRadius(zoneLocations[1], zoneSizes[1], Team.ALL, LosCheck.OFF) if zoneBProgress > 0], "Progress: {}%".format(floor(abs(zoneBProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+hudHeader([p for p in getPlayersInRadius(zoneLocations[2], zoneSizes[2], Team.ALL, LosCheck.OFF) if zoneCProgress > 0], "Progress: {}%".format(floor(abs(zoneCProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
 # Spacers
-hudSubtext(getAllPlayers(), w"-------", Position.RIGHT, 1.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-hudSubtext(getAllPlayers(), w"-------", Position.RIGHT, 2.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+hudSubtext(getAllPlayers(), w"-----------", Position.RIGHT, 1.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+hudSubtext(getAllPlayers(), w"-----------", Position.RIGHT, 2.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 # Spectator: Create Original Hud
 activeHudIndicies[0] = 0
 activeHudIndicies[1] = 0
@@ -218,21 +225,21 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[0], zoneSizes[0], EffectReeval.VISIBILITY)
     zoneAVisuals.append(getLastCreatedEntity())
     createInWorldText(getAllPlayers(), "A", zoneLocations[0] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
-    zoneLetterMarkers.append(getLastCreatedText())
+    zoneAVisuals.append(getLastCreatedText())
 
     createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneBProgress))), zoneLocations[1] + 0.4 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneBVisuals.append(getLastCreatedText())
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[1], zoneSizes[1], EffectReeval.VISIBILITY)
     zoneBVisuals.append(getLastCreatedEntity())
     createInWorldText(getAllPlayers(), "B", zoneLocations[1] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
-    zoneLetterMarkers.append(getLastCreatedText())
+    zoneBVisuals.append(getLastCreatedText())
 
     createInWorldText(getAllPlayers(), l"{}%".format(floor(abs(zoneCProgress))), zoneLocations[2] + 0.4 * Vector.UP, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
     zoneCVisuals.append(getLastCreatedText())
     createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[2], zoneSizes[2], EffectReeval.VISIBILITY)
     zoneCVisuals.append(getLastCreatedEntity())
     createInWorldText(getAllPlayers(), "C", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
-    zoneLetterMarkers.append(getLastCreatedText())
+    zoneCVisuals.append(getLastCreatedText())
 
 
 @Rule "=====GAMEPLAY====="
@@ -243,6 +250,7 @@ return
 @Rule "Change Objective Description at start of game"
 @Event global
 if isGameInProgress():
+    wait(1, Wait.IGNORE_CONDITION)
     setObjectiveDescription(getAllPlayers(), "Fight and Capture Zones", HudReeval.VISIBILITY_AND_STRING)
 
 
@@ -255,9 +263,13 @@ addToTeamScore(attacker.getTeam(), max(1, len([obj for obj in zoneControl if obj
 if len([obj for obj in zoneControl if obj == Team.1]) == 3 or len([obj for obj in zoneControl if obj == Team.2]) == 3:
     huntTimer = 25
     chase(huntTimer, 0, rate=1, ChaseReeval.NONE)
+    stopChasingVariable(zoneAProgress)
+    stopChasingVariable(zoneBProgress)
+    stopChasingVariable(zoneCProgress)
     zoneAProgress = 0
     zoneBProgress = 0
     zoneCProgress = 0
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[0], 200)
     if any([obj == Team.1 for obj in zoneControl]):
         activeHudIndicies[0] = 7
         activeHudIndicies[1] = 7
@@ -278,6 +290,7 @@ if len([obj for obj in zoneControl if obj == Team.1]) == 3 or len([obj for obj i
 @Event global
 if huntTimer == 0:
     bigMessage(getAllPlayers(), "The Hunt Has Ended")
+    setObjectiveDescription(getAllPlayers(), "Fight and Capture Zones", HudReeval.VISIBILITY_AND_STRING)
     zoneControl[0] = null
     zoneControl[1] = null
     zoneControl[2] = null
@@ -287,6 +300,27 @@ if huntTimer == 0:
     rebuildSpecHud[0] = true
     rebuildSpecHud[1] = true
     rebuildSpecHud[2] = true
+
+    destroyEffect(zoneAVisuals[1])
+    destroyInWorldText(zoneAVisuals[2])
+    createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[0], zoneSizes[0], EffectReeval.VISIBILITY)
+    zoneAVisuals[1] = getLastCreatedEntity()
+    createInWorldText(getAllPlayers(), "A", zoneLocations[0] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    zoneAVisuals[2] = getLastCreatedText()
+
+    destroyEffect(zoneBVisuals[1])
+    destroyInWorldText(zoneBVisuals[2])
+    createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[1], zoneSizes[1], EffectReeval.VISIBILITY)
+    zoneBVisuals[1] = getLastCreatedEntity()
+    createInWorldText(getAllPlayers(), "B", zoneLocations[1] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    zoneBVisuals[2] = getLastCreatedText()
+
+    destroyEffect(zoneCVisuals[1])
+    destroyInWorldText(zoneCVisuals[2])
+    createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[2], zoneSizes[2], EffectReeval.VISIBILITY)
+    zoneCVisuals[1] = getLastCreatedEntity()
+    createInWorldText(getAllPlayers(), "C", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
+    zoneCVisuals[2] = getLastCreatedText()
 
 
 @Rule "Helper A: Rebuild Spec HUD"
@@ -404,7 +438,9 @@ if abs(zoneAProgress) == 100:
 
 @Rule "Listener for Zone A hitting 0%"
 @Event global
-if zoneAProgress == 0 and huntTimer == 0:
+if zoneAProgress == 0:
+    if huntTimer != 0:
+        return
     switch zoneControl[0]:
         case null:
             if rebuildOverrideFlag[0]:
@@ -527,7 +563,9 @@ if abs(zoneBProgress) == 100:
 
 @Rule "Listener for Zone B hitting 0%"
 @Event global
-if zoneBProgress == 0 and huntTimer == 0:
+if zoneBProgress == 0:
+    if huntTimer != 0:
+        return
     switch zoneControl[1]:
         case null:
             if rebuildOverrideFlag[1]:
@@ -632,14 +670,14 @@ if abs(zoneCProgress) == 100:
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[2], 2 * zoneSizes[2])
         createEffect(getAllPlayers(), Effect.RING, Color.TEAM_1, zoneLocations[2], zoneSizes[2], EffectReeval.VISIBILITY)
         zoneCVisuals[1] = getLastCreatedEntity()
-        createInWorldText(getAllPlayers(), "B", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_1, SpecVisibility.ALWAYS)
+        createInWorldText(getAllPlayers(), "C", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_1, SpecVisibility.ALWAYS)
         zoneCVisuals[2] = getLastCreatedText()
     else:
         zoneControl[2] = Team.2
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[2], 2 * zoneSizes[2])
         createEffect(getAllPlayers(), Effect.RING, Color.TEAM_2, zoneLocations[2], zoneSizes[2], EffectReeval.VISIBILITY)
         zoneCVisuals[1] = getLastCreatedEntity()
-        createInWorldText(getAllPlayers(), "B", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_2, SpecVisibility.ALWAYS)
+        createInWorldText(getAllPlayers(), "C", zoneLocations[2] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_2, SpecVisibility.ALWAYS)
         zoneCVisuals[2] = getLastCreatedText()
     zoneCProgress = 0
     addToTeamScore(zoneControl[2], 1)
@@ -649,7 +687,9 @@ if abs(zoneCProgress) == 100:
 
 @Rule "Listener for Zone C hitting 0%"
 @Event global
-if zoneCProgress == 0 and huntTimer == 0:
+if zoneCProgress == 0:
+    if huntTimer != 0:
+        return
     switch zoneControl[2]:
         case null:
             if rebuildOverrideFlag[2]:
