@@ -1,0 +1,35 @@
+@Rule "Setup Zones: Lijang Tower"
+@Event global
+if (getCurrentMap() == Map.LIJIANG_CONTROL_CENTER or getCurrentMap() == Map.LIJIANG_GARDEN or getCurrentMap() == Map.LIJIANG_NIGHT_MARKET or getCurrentMap() == Map.LIJIANG_CONTROL_CENTER_LNY or getCurrentMap() == Map.LIJIANG_GARDEN_LNY or getCurrentMap() == Map.LIJIANG_NIGHT_MARKET_LNY):
+    switch getCurrentMap():
+        # FIXME: Change Control Center points
+        case Map.LIJIANG_CONTROL_CENTER:
+        case Map.LIJIANG_CONTROL_CENTER_LNY:
+            zoneLocations[0] = vect(43, 95, 150)
+            zoneSizes[0] = 5
+            zoneLocations[1] = vect(0, 94, 130)
+            zoneSizes[1] = 7
+            zoneLocations[2] = vect(-43, 95, 150)
+            zoneSizes[2] = 5
+            return
+        case Map.LIJIANG_GARDEN:
+        case Map.LIJIANG_GARDEN_LNY:
+            zoneLocations[0] = vect(43, 95, 150)
+            zoneSizes[0] = 5
+            zoneLocations[1] = vect(0, 94, 130)
+            zoneSizes[1] = 7
+            zoneLocations[2] = vect(-43, 95, 150)
+            zoneSizes[2] = 5
+            return
+        # FIXME: Change Night Market points
+        case Map.LIJIANG_NIGHT_MARKET:
+        case Map.LIJIANG_NIGHT_MARKET_LNY:
+            zoneLocations[0] = vect(43, 95, 150)
+            zoneSizes[0] = 5
+            zoneLocations[1] = vect(0, 94, 130)
+            zoneSizes[1] = 7
+            zoneLocations[2] = vect(-43, 95, 150)
+            zoneSizes[2] = 5
+            return
+
+# TODO: Add more maps
