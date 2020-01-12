@@ -10,21 +10,21 @@ var teams = [
         "name": "Team 2",
         "variable": "isTeam2"
     }
-]
-var indToLetter = ['A', 'B', 'C']
+];
+var indToLetter = ['A', 'B', 'C'];
 for (var point = 0; point < 3; point++) {
     teams.forEach(function (team) {
         result += 
 `@Rule "Point ${indToLetter[point]}: Set ${team.variable} True"
 @Event global
 if any([p.isAlive() for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], ${team.constant}, LosCheck.OFF)]):
-    isTeam1[${point}] = true
+    ${team.variable}[${point}] = true
 
 
 @Rule "Point ${indToLetter[point]}: Set ${team.variable} False"
 @Event global
 if not(any([p.isAlive() for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], ${team.constant}, LosCheck.OFF)])):
-    isTeam1[${point}] = false
+    ${team.variable}[${point}] = false
 `;
     })
 }
