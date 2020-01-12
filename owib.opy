@@ -14,6 +14,10 @@
 #!declareGlobal isTeam2
 # How much time is left in the Hunt?
 #!declareGlobal huntTimer
+# Whether the Hunt can be activated
+#!declareGlobal activateHunt
+# How long the Hunt lasts for
+#!declareGlobal huntDuration
 # Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2)
 #!declareGlobal zoneAHudText
 #!declareGlobal zoneBHudText
@@ -32,8 +36,19 @@
 #!define generateInitPointVisuals() __script__('generateInitialPointVisuals.js')
 #!define generateChaserRules(point) __script__('generateChaserRules.js')
 #!define generateVisualUpdates(point) __script__('generateVisualUpdates.js')
-#!define generateInitialHUD() __script__('generateInitialHUD.js')
+#!define initialize() __script__('initialize.js')
 
+@Rule "=====CUSTOMIZATION====="
+@Event global
+return
+
+@Rule "activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True"
+@Event global
+activateHunt = true
+
+@Rule "huntDuration: How long The Hunt lasts for in seconds. Default: 25"
+@Event global
+huntDuration = 25
 
 @Rule "=====SETUP====="
 @Event global
@@ -42,10 +57,7 @@ return
 @Rule "Initialization"
 @Event global
 # TODO: Initialize variables
-# Capture Progress HUDs
-hudHeader([p for p in getPlayersInRadius(zoneLocations[0], zoneSizes[0], Team.ALL, LosCheck.OFF) if abs(zoneAProgress) > 0], "Progress: {}%".format(floor(abs(zoneAProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-hudHeader([p for p in getPlayersInRadius(zoneLocations[1], zoneSizes[1], Team.ALL, LosCheck.OFF) if abs(zoneBProgress) > 0], "Progress: {}%".format(floor(abs(zoneBProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-hudHeader([p for p in getPlayersInRadius(zoneLocations[2], zoneSizes[2], Team.ALL, LosCheck.OFF) if abs(zoneCProgress) > 0], "Progress: {}%".format(floor(abs(zoneCProgress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+initialize()
 
 import "maps.opy"
 
@@ -65,3 +77,9 @@ return
 generatePointFlags()
 
 import "normalPointControl.opy"
+
+@Rule "=====THE HUNT======"
+@Event global
+return
+
+import "theHunt.opy"
