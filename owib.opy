@@ -62,6 +62,11 @@ return
 @Event global
 hudHeader(getAllPlayers(), "Server Load: {0}/{1}/{2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), Position.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
+@Rule "DEBUG: Skip assemble heroes"
+@Event global
+if isAssemblingHeroes():
+    setMatchTime(3)
+
 @Rule "Initialization"
 @Event global
 initialize()
