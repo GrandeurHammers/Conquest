@@ -115,13 +115,6 @@ result += `
             zone${pointToLetter[point]}HudText[0] = getLastCreatedText()
             zone${pointToLetter[point]}HudText[1] = getLastCreatedText()
             zone${pointToLetter[point]}HudText[2] = getLastCreatedText()
-            wait(0.016, Wait.ABORT_WHEN_FALSE)
-            destroyEffect(zone${pointToLetter[point]}Visuals[0])
-            destroyInWorldText(zone${pointToLetter[point]}Visuals[1])
-            createEffect(getAllPlayers(), Effect.RING, Color.WHITE, zoneLocations[${point}], zoneSizes[${point}], EffectReeval.VISIBILITY)
-            zone${pointToLetter[point]}Visuals[0] = getLastCreatedEntity()
-            createInWorldText(getAllPlayers(), "${pointToLetter[point]}", zoneLocations[${point}] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.WHITE, SpecVisibility.ALWAYS)
-            zone${pointToLetter[point]}Visuals[1] = getLastCreatedText()
             break
         case Team.1:`;
 // Generate hudText for when Team 1 gains control
@@ -133,14 +126,6 @@ zeroBlankFillers.team1control.forEach(function (key, i) {
 });
 
 result += `
-            playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[${point}], zoneSizes[${point}] * 2)
-            wait(0.016, Wait.ABORT_WHEN_FALSE)
-            destroyEffect(zone${pointToLetter[point]}Visuals[0])
-            destroyInWorldText(zone${pointToLetter[point]}Visuals[1])
-            createEffect(getAllPlayers(), Effect.RING, Color.TEAM_1, zoneLocations[${point}], zoneSizes[${point}], EffectReeval.VISIBILITY)
-            zone${pointToLetter[point]}Visuals[0] = getLastCreatedEntity()
-            createInWorldText(getAllPlayers(), "${pointToLetter[point]}", zoneLocations[${point}] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_1, SpecVisibility.ALWAYS)
-            zone${pointToLetter[point]}Visuals[1] = getLastCreatedText()
             break
         case Team.2:`;
 // Generate hudText for when Team 2 gains control
@@ -150,14 +135,6 @@ zeroBlankFillers.team2control.forEach(function (key, i) {
             zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
 });
 result += `
-            playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)
-            wait(0.016, Wait.ABORT_WHEN_FALSE)
-            destroyEffect(zone${pointToLetter[point]}Visuals[0])
-            destroyInWorldText(zone${pointToLetter[point]}Visuals[1])
-            createEffect(getAllPlayers(), Effect.RING, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}], EffectReeval.VISIBILITY)
-            zone${pointToLetter[point]}Visuals[0] = getLastCreatedEntity()
-            createInWorldText(getAllPlayers(), "${pointToLetter[point]}", zoneLocations[${point}] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_2, SpecVisibility.ALWAYS)
-            zone${pointToLetter[point]}Visuals[1] = getLastCreatedText()
             break`;
 
 // Handle when a zoneProgress becomes non-zero
