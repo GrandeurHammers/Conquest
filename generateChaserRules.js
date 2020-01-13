@@ -19,7 +19,7 @@ abs(zone${indToLetter[point]}Progress) > 0 and not isTeam1[${point}] and not isT
 @Event global
 if huntTimer == 0 and isTeam1[${point}] and isTeam2[${point}]:
     stopChasingVariable(zone${indToLetter[point]}Progress)
-    smallMessage([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.ALL, LosCheck.OFF) if p.isAlive()], "Contesting!")
+    smallMessage([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.ALL, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())], "Contesting!")
 
 @Rule "Point ${indToLetter[point]}: Capturing"
 @Event global
@@ -29,11 +29,11 @@ if huntTimer == 0 and \
     if isTeam1[${point}]:
         if zone${indToLetter[point]}Progress < 0:
             zone${indToLetter[point]}Progress = 0
-        chase(zone${indToLetter[point]}Progress, 100, rate=5*len([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.1, LosCheck.OFF) if p.isAlive()]), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zone${indToLetter[point]}Progress, 100, rate=5*len([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.1, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())]), ChaseReeval.DESTINATION_AND_RATE)
     else:
         if zone${indToLetter[point]}Progress > 0:
             zone${indToLetter[point]}Progress = 0
-        chase(zone${indToLetter[point]}Progress, -100, rate=5*len([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.2, LosCheck.OFF) if p.isAlive()]), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zone${indToLetter[point]}Progress, -100, rate=5*len([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.2, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())]), ChaseReeval.DESTINATION_AND_RATE)
 
 @Rule "Point ${indToLetter[point]}: Listen for Capture"
 @Event global
