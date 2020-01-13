@@ -1,11 +1,12 @@
 var indToLetter = ['A', 'B', 'C'];
 var zoneProgress = `zone${indToLetter[point]}Progress`;
 var result = `
-@Rule "Point ${indToLetter[point]}: Instant Reset"
+@Rule "Point ${indToLetter[point]}: Fast Reset"
 @Event global
 if huntTimer == 0 and \
 ((zoneControl[${point}] == Team.1 and numTeam1[${point}] > 0 and numTeam2[${point}] == 0) or \
 (zoneControl[${point}] == Team.2 and numTeam2[${point}] > 0 and numTeam1[${point}] == 0)):
+    wait(1, Wait.ABORT_WHEN_FALSE)
     zone${indToLetter[point]}Progress =  0
     
 @Rule "Point ${indToLetter[point]}: Gradual Reset"
