@@ -3,9 +3,7 @@ const pointToLetter = ['A', 'B', 'C'];
 // Initialize zone control + flags
 for (var i = 0;  i < 3; i++) {
     result += `
-    zoneControl[${i}] = null
-    isTeam1[${i}] = false
-    isTeam2[${i}] = false`
+    zoneControl[${i}] = null`;
 }
 
 // Generate Zone Progress Headers

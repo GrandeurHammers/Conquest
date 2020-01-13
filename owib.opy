@@ -8,10 +8,10 @@
 #!declareGlobal zoneSizes
 # Who controls the zone?
 #!declareGlobal zoneControl
-# Is Team 1 on the zone?
-#!declareGlobal isTeam1
-# Is Team 2 on the zone?
-#!declareGlobal isTeam2
+# How many members of Team 1 are on the zone?
+#!declareGlobal numTeam1
+# How many members of Team 2 are on the zone?
+#!declareGlobal numTeam2
 # How much time is left in the Hunt?
 #!declareGlobal huntTimer
 # Whether the Hunt can be activated
