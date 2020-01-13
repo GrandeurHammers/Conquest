@@ -44,5 +44,6 @@ if abs(${zoneProgress}) == 100:
     else:
         zoneControl[${point}] = Team.2
     ${zoneProgress} = 0
+    addToTeamScore(zoneControl[${point}], 1)
 `;
 result;

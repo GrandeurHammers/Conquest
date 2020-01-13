@@ -1,3 +1,4 @@
+// TODO: Refactor
 var pointToLetter = ['A', 'B', 'C'];
 var visibleTo = ["null", "getPlayers(Team.1)", "getPlayers(Team.2)"];
 var specVisibility = ["ALWAYS", "NEVER", "NEVER"];

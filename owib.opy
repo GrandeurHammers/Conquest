@@ -18,6 +18,7 @@
 #!declareGlobal activateHunt
 # How long the Hunt lasts for
 #!declareGlobal huntDuration
+
 # Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2)
 #!declareGlobal zoneAHudText
 #!declareGlobal zoneBHudText
@@ -37,6 +38,9 @@
 #!define generateChaserRules(point) __script__('generateChaserRules.js')
 #!define generateVisualUpdates(point) __script__('generateVisualUpdates.js')
 #!define initialize() __script__('initialize.js')
+#!define stopAllProgress() __script__('stopAllProgress.js')
+#!define generateLockedText() __script__('generateLockedText.js')
+#!define triggerPointReset() __script__('triggerPointReset.js')
 
 @Rule "=====CUSTOMIZATION====="
 @Event global
@@ -56,7 +60,6 @@ return
 
 @Rule "Initialization"
 @Event global
-# TODO: Initialize variables
 initialize()
 
 import "maps.opy"
@@ -69,6 +72,11 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 @Rule "=====GAMEPLAY====="
 @Event global
 return
+
+@Rule "Upon earning a kill, award additional points for zones controlled"
+@Event playerDealtFinalBlow
+if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
+    addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
 
 @Rule "# Keep track of point flags"
 @Event global
