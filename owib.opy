@@ -73,6 +73,14 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 @Event global
 return
 
+@Rule "Reset on Game Start (Waiting for Players)"
+@Event global
+if isGameInProgress():
+    stopAllProgress()
+    triggerPointReset()
+    setTeamScore(Team.1, 0)
+    setTeamScore(Team.2, 0)
+
 @Rule "Upon earning a kill, award additional points for zones controlled"
 @Event playerDealtFinalBlow
 if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
