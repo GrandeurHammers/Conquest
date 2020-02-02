@@ -44,7 +44,9 @@
 #!define initialize() __script__('initialize.js')
 #!define stopAllProgress() __script__('stopAllProgress.js')
 #!define generateLockedText() __script__('generateLockedText.js')
-#!define triggerPointReset() __script__('triggerPointReset.js')
+#!define triggerPointReset(destroyText) __script__('triggerPointReset.js')
+
+#!define normalObjDesc "Fight and Capture Zones"
 
 @Rule "=====CUSTOMIZATION====="
 @Event global
@@ -95,9 +97,11 @@ if eventPlayer == hostPlayer and eventPlayer.isHoldingButton(Button.INTERACT):
 @Event global
 if isGameInProgress():
     stopAllProgress()
-    triggerPointReset()
+    triggerPointReset(false)
     setTeamScore(Team.1, 0)
     setTeamScore(Team.2, 0)
+    wait(1, Wait.IGNORE_CONDITION)
+    setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
 
 @Rule "Upon earning a kill, award additional points for zones controlled"
 @Event playerDealtFinalBlow
