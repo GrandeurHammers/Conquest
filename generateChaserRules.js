@@ -49,11 +49,6 @@ if abs(${zoneProgress}) == 100:
         wait(0.016, Wait.IGNORE_CONDITION)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[${point}], zoneSizes[${point}] * 2)
         wait(0.016, Wait.IGNORE_CONDITION)
-        createEffect(getAllPlayers(), Effect.RING, Color.TEAM_1, zoneLocations[${point}], zoneSizes[${point}], EffectReeval.VISIBILITY)
-        zone${indToLetter[point]}Visuals[0] = getLastCreatedEntity()
-        wait(0.016, Wait.IGNORE_CONDITION)
-        createInWorldText(getAllPlayers(), "${indToLetter[point]}", zoneLocations[${point}] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_1, SpecVisibility.ALWAYS)
-        zone${indToLetter[point]}Visuals[1] = getLastCreatedText()
     else:
         ${zoneProgress} = 0
         zoneControl[${point}] = Team.2
@@ -61,10 +56,5 @@ if abs(${zoneProgress}) == 100:
         wait(0.016, Wait.IGNORE_CONDITION)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)
         wait(0.016, Wait.IGNORE_CONDITION)
-        createEffect(getAllPlayers(), Effect.RING, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}], EffectReeval.VISIBILITY)
-        zone${indToLetter[point]}Visuals[0] = getLastCreatedEntity()
-        wait(0.016, Wait.IGNORE_CONDITION)
-        createInWorldText(getAllPlayers(), "${indToLetter[point]}", zoneLocations[${point}] + 2 * Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.TEAM_2, SpecVisibility.ALWAYS)
-        zone${indToLetter[point]}Visuals[1] = getLastCreatedText()
 `;
 result;
