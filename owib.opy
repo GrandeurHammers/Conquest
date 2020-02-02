@@ -9,9 +9,13 @@
 # Who controls the zone?
 #!declareGlobal zoneControl
 # How many members of Team 1 are on the zone?
-#!declareGlobal numTeam1
+#!declareGlobal numTeam1A
+#!declareGlobal numTeam1B
+#!declareGlobal numTeam1C
 # How many members of Team 2 are on the zone?
-#!declareGlobal numTeam2
+#!declareGlobal numTeam2A
+#!declareGlobal numTeam2B
+#!declareGlobal numTeam2C
 # How much time is left in the Hunt?
 #!declareGlobal huntTimer
 # Whether the Hunt can be activated
@@ -82,6 +86,11 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 @Event global
 return
 
+@Rule "DEBUG: Summon bot on opposite team on interact"
+@Event eachPlayer
+if eventPlayer == hostPlayer and eventPlayer.isHoldingButton(Button.INTERACT):
+    createDummy(Hero.ANA, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+
 @Rule "Reset on Game Start (Waiting for Players)"
 @Event global
 if isGameInProgress():
@@ -103,7 +112,7 @@ generatePointFlags()
 
 import "normalPointControl.opy"
 
-@Rule "=====THE HUNT======"
+@Rule "=====THE HUNT====="
 @Event global
 return
 

@@ -1,15 +1,12 @@
 var result = "";
+var numPoints = 3;
 const pointToLetter = ['A', 'B', 'C'];
-// Initialize zone control + flags
-for (var i = 0;  i < 3; i++) {
+for (var i = 0;  i < numPoints; i++) {
+    // Initialize zone control + flags
+    // Generate Zone Progress Headers
     result += `
-    zoneControl[${i}] = null`;
-}
-
-// Generate Zone Progress Headers
-for (var i = 0; i < 3; i++) {
-    result += `
-    hudHeader([p for p in getPlayersInRadius(zoneLocations[${i}], zoneSizes[${i}], Team.ALL, LosCheck.OFF) if abs(zone${pointToLetter[i]}Progress) > 0 and huntTimer == 0], "Progress: {}%".format(floor(abs(zone${pointToLetter[i]}Progress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`
+    zoneControl[${i}] = null
+    hudHeader([p for p in getPlayersInRadius(zoneLocations[${i}], zoneSizes[${i}], Team.ALL, LosCheck.OFF) if abs(zone${pointToLetter[i]}Progress) > 0 and huntTimer == 0], "Progress: {}%".format(floor(abs(zone${pointToLetter[i]}Progress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 }
 
 // Generate Zone Separators

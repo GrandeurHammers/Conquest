@@ -1,190 +1,111 @@
-// TODO: Refactor
 var pointToLetter = ['A', 'B', 'C'];
-var visibleTo = ["null", "getPlayers(Team.1)", "getPlayers(Team.2)"];
-var specVisibility = ["ALWAYS", "NEVER", "NEVER"];
 var zoneProgress = `zone${pointToLetter[point]}Progress`;
-var zeroBlankFillers = {
-    "team1control": [
-        { // spec
-            "subheader": `"{}: 0%".format(Team.2)`,
-            "subtext": `"{}".format(Team.1)`
-        },
-        { // team 1
-            "subheader": `"Enemy: 0%"`,
-            "subtext": `"Defend Zone"`
-        },
-        { // team 2
-            "subheader": `"Ally: 0%"`,
-            "subtext": `"Capture Zone"`
-        }
-    ],
-    "team2control": [
-        { // spec
-            "subheader": `"{}: 0%".format(Team.1)`,
-            "subtext": `"{}".format(Team.2)`
-        },
-        { // team 1
-            "subheader": `"Ally: 0%"`,
-            "subtext": `"Capture Zone"`
-        },
-        { // team 2
-            "subheader": `"Enemy: 0%"`,
-            "subtext": `"Defend Zone"`
-        }
-    ]
-};
-var notZeroBlankFillers = {
-    "null_team1": [
-        { // spec
-            "subheader": `"{0}: {1}%".format(Team.1, floor(abs(${zoneProgress})))`,
-            "subtext": `"Unlocked"`
-        },
-        { // team 1
-            "subheader": `"Ally: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Capture Zone"`
-        },
-        { // team 2
-            "subheader": `"Enemy: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Capture Zone"`
-        }
-    ],
-    "null_team2": [
-        { // spec
-            "subheader": `"{0}: {1}%".format(Team.1, floor(abs(${zoneProgress})))`,
-            "subtext": `"Unlocked"`
-        },
-        { // team 1
-            "subheader": `"Enemy: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Capture Zone"`
-        },
-        { // team 2
-            "subheader": `"Ally: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Capture Zone"`
-        }
-    ],
-    "team1capping": [
-        { // spec
-            "subheader": `"{0}: {1}%".format(Team.1, floor(abs(${zoneProgress})))`,
-            "subtext": `"Unlocked"`
-        },
-        { // team 1
-            "subheader": `"Ally: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Capture Zone"`
-        },
-        { // team 2
-            "subheader": `"Enemy: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Defend Zone"`
-        }
-    ],
-    "team2capping": [
-        { // spec
-            "subheader": `"{0}: {1}%".format(Team.2, floor(abs(${zoneProgress})))`,
-            "subtext": `"Unlocked"`
-        },
-        { // team 1
-            "subheader": `"Enemy: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Defend Zone"`
-        },
-        { // team 2
-            "subheader": `"Ally: {}%".format(floor(abs(${zoneProgress})))`,
-            "subtext": `"Capture Zone"`
-        }
-    ]
-};
-
-// Begin with listening for when zoneProgress hits 0 which happens when:
-//   a) A point is reset to being uncaptured,
-//   b) A point is captured by a team, or
-//   c) A point is reset after being partially captured
-var result = `
-@Rule "Point ${pointToLetter[point]} Visuals: Listen for Progress Zero"
+var result = "";
+var subtextKeys = [
+    {
+        "key": "subtext_spec",
+        "specVis": "ALWAYS",
+        "players": "null"
+    },
+    {
+        "key": "subtext_Team1",
+        "specVis": "NEVER",
+        "players": "getPlayers(Team.1)"
+    },
+    {
+        "key": "subtext_Team2",
+        "specVis": "NEVER",
+        "players": "getPlayers(Team.2)"
+    }
+];
+var controls = [
+    {
+        "zoneControl": "null",
+        "headerColor": "WHITE",
+        "subtext_all": `"Unlocked"`,
+        "subtitles": [
+            {
+                "progressCond": "== 0",
+                "subtitleColor": "WHITE",
+                "subtitle": `"Neutral"`
+            },
+            {
+                "progressCond": "> 0",
+                "subtitleColor": "TEAM_1",
+                "subtitle": `"Progress: {}%"`
+            },
+            {
+                "progressCond": "< 0",
+                "subtitleColor": "TEAM_2",
+                "subtitle": `"Progress: {}%"`
+            }
+        ]
+    },
+    {
+        "zoneControl": "Team.1",
+        "headerColor": "TEAM_1",
+        "subtext_spec": "\"{} Control\".format(Team.1)",
+        "subtext_Team1": "\"Defend Zone\"",
+        "subtext_Team2": "\"Attack Zone\"",
+        "subtitles": [
+            {
+                "progressCond": "== 0",
+                "subtitleColor": "WHITE",
+                "subtitle": `""`
+            },
+            {
+                "progressCond": "< 0",
+                "subtitleColor": "TEAM_2",
+                "subtitle": `"Progress: {}%"`
+            }
+        ]
+    },
+    {
+        "zoneControl": "Team.2",
+        "headerColor": "TEAM_2",
+        "subtext_spec": "\"{} Control\".format(Team.2)",
+        "subtext_Team1": "\"Attack Zone\"",
+        "subtext_Team2": "\"Defend Zone\"",
+        "subtitles": [
+            {
+                "progressCond": "== 0",
+                "subtitleColor": "WHITE",
+                "subtitle": `""`
+            },
+            {
+                "progressCond": "> 0",
+                "subtitleColor": "TEAM_1",
+                "subtitle": `"Progress: {}%"`
+            }
+        ]
+    }
+];
+controls.forEach(function (control) {
+    control.subtitles.forEach(function (subtitle, index) {
+        result += `
+@Rule "Zone ${pointToLetter[point]} HUD: ${control.zoneControl} ${index}"
 @Event global
-if ${zoneProgress} == 0:`;
-// Destroy current HUD text for this point
-for (var i = 0; i < 3; i++) {
-    result += `
-    destroyHudText(zone${pointToLetter[point]}HudText[${i}])`;
-}
-// Special "everyone sees the same thing" case for a zero progress, no capture point
-result += `
-    switch zoneControl[${point}]:
-        case null:
-            if not(len(zoneLocations) == 3 and len(zoneSizes) == 3):
-                return
-            hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", "Neutral: 0%", "Unlocked", Position.RIGHT, ${point + 1}, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-            zone${pointToLetter[point]}HudText[0] = getLastCreatedText()
-            zone${pointToLetter[point]}HudText[1] = getLastCreatedText()
-            zone${pointToLetter[point]}HudText[2] = getLastCreatedText()
-            break
-        case Team.1:`;
-// Generate hudText for when Team 1 gains control
-zeroBlankFillers.team1control.forEach(function (key, i) {
-    result += `
-            hudText(${visibleTo[i]}, "Zone ${pointToLetter[point]}", ${key.subheader}, ${key.subtext}, Position.RIGHT, ${point + 1}, Color.TEAM_1, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${specVisibility[i]})
-            zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()
-            `;
+if zoneControl[${point}] == ${control.zoneControl} and ${zoneProgress} ${subtitle.progressCond}:
+    if zone${pointToLetter[point]}HudText != []:`;
+        for (var i = 0; i < subtextKeys.length; i++) {
+            result += `
+        destroyHudText(zone${pointToLetter[point]}HudText[${i}])`;
+        }
+        if ("subtext_all" in control) {
+            result += `
+    hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", ${subtitle.subtitle}.format(floor(abs(${zoneProgress}))), ${control.subtext_all}, Position.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
+            for (var i = 0; i < subtextKeys.length; i++) {
+                result += `
+    zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
+            }
+        } else  {
+            subtextKeys.forEach(function (subtextKey, index2) {
+                result += `
+    hudText(${subtextKey.players}, "Zone ${pointToLetter[point]}", ${subtitle.subtitle}.format(floor(abs(${zoneProgress}))), ${control[subtextKey.key]}, Position.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${subtextKey.specVis})
+    zone${pointToLetter[point]}HudText[${index2}] = getLastCreatedText()
+    wait(0.033, Wait.IGNORE_CONDITION)`;
+            });
+        }
+    });
 });
-
-result += `
-            break
-        case Team.2:`;
-// Generate hudText for when Team 2 gains control
-zeroBlankFillers.team2control.forEach(function (key, i) {
-    result += `
-            hudText(${visibleTo[i]}, "Zone ${pointToLetter[point]}", ${key.subheader}, ${key.subtext}, Position.RIGHT, ${point + 1}, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${specVisibility[i]})
-            zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
-});
-result += `
-            break`;
-
-// Handle when a zoneProgress becomes non-zero
-result += `
-@Rule "Point ${pointToLetter[point]} Visuals: Listen for Not Zero"
-@Event global
-if abs(${zoneProgress}) > 0:`;
-// Destroy current HUD text for this zone
-for (var i = 0; i < 3; i++) {
-    result += `
-    destroyHudText(zone${pointToLetter[point]}HudText[${i}])`;
-}
-
-result += `
-    switch zoneControl[${point}]:
-        case null:
-            if ${zoneProgress} > 0:`;
-
-// When Team 1 is capping an uncaptured zone
-notZeroBlankFillers.null_team1.forEach(function (key, i) {
-    result += `
-                hudText(${visibleTo[i]}, "Zone ${pointToLetter[point]}", ${key.subheader}, ${key.subtext}, Position.RIGHT, ${point + 1}, Color.WHITE, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${specVisibility[i]})
-                zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
-});
-result += `
-            else:`;
-// When Team 2 is capping an uncaptured zone
-notZeroBlankFillers.null_team2.forEach(function (key, i) {
-    result += `
-                hudText(${visibleTo[i]}, "Zone ${pointToLetter[point]}", ${key.subheader}, ${key.subtext}, Position.RIGHT, ${point + 1}, Color.WHITE, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${specVisibility[i]})
-                zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
-});
-result += `
-            break
-        case Team.1:`;
-// When Team 2 is capping a zone Team 1 controls
-notZeroBlankFillers.team2capping.forEach(function (key, i) {
-    result += `
-            hudText(${visibleTo[i]}, "Zone ${pointToLetter[point]}", ${key.subheader}, ${key.subtext}, Position.RIGHT, ${point + 1}, Color.TEAM_1, Color.TEAM_2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${specVisibility[i]})
-            zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
-})
-result += `
-            break
-        case Team.2:`;
-// When Team 1 is capping a zone Team 2 controls
-notZeroBlankFillers.team1capping.forEach(function (key, i) {
-    result += `
-            hudText(${visibleTo[i]}, "Zone ${pointToLetter[point]}", ${key.subheader}, ${key.subtext}, Position.RIGHT, ${point + 1}, Color.TEAM_2, Color.TEAM_1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${specVisibility[i]})
-            zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
-});
-result += `
-            break`;
 result;
