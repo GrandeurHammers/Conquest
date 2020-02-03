@@ -50,6 +50,7 @@
 
 @Rule "=====CUSTOMIZATION====="
 @Event global
+@Disabled
 return
 
 @Rule "activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True"
@@ -62,16 +63,17 @@ huntDuration = 25
 
 @Rule "=====SETUP====="
 @Event global
+@Disabled
 return
 
-@Rule "DEBUG: Show CPU"
-@Event global
-hudHeader(getAllPlayers(), "Server Load: {0}/{1}/{2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), Position.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+# @Rule "DEBUG: Show CPU"
+# @Event global
+# hudHeader(getAllPlayers(), "Server Load: {0}/{1}/{2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), Position.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
-@Rule "DEBUG: Skip assemble heroes"
-@Event global
-if isAssemblingHeroes():
-    setMatchTime(3)
+# @Rule "DEBUG: Skip assemble heroes"
+# @Event global
+# if isAssemblingHeroes():
+#     setMatchTime(3)
 
 @Rule "Initialization"
 @Event global
@@ -86,6 +88,7 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 
 @Rule "=====GAMEPLAY====="
 @Event global
+@Disabled
 return
 
 # @Rule "DEBUG: Summon bot on opposite team on interact"
@@ -124,6 +127,7 @@ import "normalPointControl.opy"
 
 @Rule "=====THE HUNT====="
 @Event global
+@Disabled
 return
 
 import "theHunt.opy"
