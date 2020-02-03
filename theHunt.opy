@@ -21,4 +21,6 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
 @Event global
 if huntTimer <= 0.016 and huntTimer > 0:
     setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
+    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
+    bigMessage(getAllPlayers(), "The Hunt has Ended")
     triggerPointReset(true)
