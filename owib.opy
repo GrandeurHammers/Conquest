@@ -88,10 +88,16 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 @Event global
 return
 
-@Rule "DEBUG: Summon bot on opposite team on interact"
-@Event eachPlayer
-if eventPlayer == hostPlayer and eventPlayer.isHoldingButton(Button.INTERACT):
-    createDummy(Hero.ANA, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+# @Rule "DEBUG: Summon bot on opposite team on interact"
+# @Event eachPlayer
+# if eventPlayer == hostPlayer and eventPlayer.isHoldingButton(Button.INTERACT):
+#     createDummy(Hero.ANA, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+
+@Rule "Disable Self Respawn for 5 seconds"
+@Event playerDied
+victim.disallowButton(Button.JUMP)
+wait(5, Wait.IGNORE_CONDITION)
+victim.allowButton(Button.JUMP)
 
 @Rule "Reset on Game Start (Waiting for Players)"
 @Event global
