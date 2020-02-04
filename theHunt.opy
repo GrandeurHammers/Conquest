@@ -17,9 +17,17 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
     setSlowMotion(100)
     chase(huntTimer, 0, rate=1, ChaseReeval.DESTINATION_AND_RATE)
 
+@Rule "Loop Hunt Timer to Zero"
+@Event global
+if huntTimerControl == -1 and huntTimer > 0:
+    while RULE_CONDITION:
+        wait(1, Wait.ABORT_WHEN_FALSE)
+        huntTimer = huntTimer - 1
+
 @Rule "At end of Hunt, reset points"
 @Event global
-if huntTimer <= 0.016 and huntTimer > 0:
+if huntTimer == 0 and huntTimerControl == -1:
+    huntTimerControl == 0
     setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     bigMessage(getAllPlayers(), "The Hunt has Ended")

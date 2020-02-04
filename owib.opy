@@ -37,6 +37,7 @@
 #!declareGlobal zoneCProgress
 # Loop Controls (-1 = Reset, 0 = None)
 #!declareGlobal zoneLoopControl
+#!declareGlobal huntTimerControl
 
 # Helper pregen macros (thanks Zez)
 #!define generatePointFlags() __script__('generateSetPointFlags.js')
