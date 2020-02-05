@@ -20,14 +20,15 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
 @Rule "Loop Hunt Timer to Zero"
 @Event global
 if huntTimerControl == -1 and huntTimer > 0:
-    while RULE_CONDITION:
+    do:
         wait(1, Wait.ABORT_WHEN_FALSE)
         huntTimer = huntTimer - 1
+    while RULE_CONDITION
 
 @Rule "At end of Hunt, reset points"
 @Event global
 if huntTimer == 0 and huntTimerControl == -1:
-    huntTimerControl == 0
+    huntTimerControl = 0
     setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     bigMessage(getAllPlayers(), "The Hunt has Ended")

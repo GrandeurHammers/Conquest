@@ -14,14 +14,15 @@ if huntTimer == 0 and \
 if huntTimer == 0 and \
 abs(${zoneProgress}) > 0 and numTeam1${pointToLetter[point]} == 0 and numTeam2${pointToLetter[point]} == 0:
     wait(3, Wait.ABORT_WHEN_FALSE)
-    zoneLoopContro[${point}] = -1
+    zoneLoopControl[${point}] = -1
 
 @Rule "Point ${pointToLetter[point]}: Gradual Reset Loop"
 @Event global
 if zoneLoopControl[${point}] == -1:
-    while RULE_CONDITION:
+    do:
         ${zoneProgress} = ${zoneProgress} - ${zoneProgress}/abs(${zoneProgress})
         wait(1/25, Wait.ABORT_WHEN_FALSE)
+    while RULE_CONDITION
 
 @Rule "Point ${pointToLetter[point]}: Contesting"
 @Event global
@@ -36,7 +37,7 @@ numTeam2${pointToLetter[point]} > 0:
 if huntTimer == 0 and \
 ((zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or \
 (zoneControl[${point}] != Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0)):
-    while RULE_CONDITION:
+    do:
         if numTeam1${pointToLetter[point]} > 0:
             if ${zoneProgress} < 0:
                 ${zoneProgress} = 0
@@ -46,6 +47,7 @@ if huntTimer == 0 and \
                 ${zoneProgress} = 0
             ${zoneProgress} = ${zoneProgress} - numTeam2${pointToLetter[point]}
         wait(0.2, Wait.ABORT_WHEN_FALSE)
+    while RULE_CONDITION
 
 @Rule "Point ${pointToLetter[point]}: Listen for Capture"
 @Event global
