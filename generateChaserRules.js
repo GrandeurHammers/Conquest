@@ -18,11 +18,16 @@ abs(${zoneProgress}) > 0 and numTeam1${pointToLetter[point]} == 0 and numTeam2${
 
 @Rule "Point ${pointToLetter[point]}: Gradual Reset Loop"
 @Event global
-if zoneLoopControl[${point}] == -1:
+if zoneLoopControl[${point}] == -1 and abs(${zoneProgress}) > 0:
     do:
         ${zoneProgress} = ${zoneProgress} - ${zoneProgress}/abs(${zoneProgress})
         wait(1/25, Wait.ABORT_WHEN_FALSE)
     while RULE_CONDITION
+
+@Rule "Point ${pointToLetter[point]}: Disable Reset Loop"
+@Event global
+if numTeam1${pointToLetter[point]} > 0 or numTeam2${pointToLetter[point]} > 0:
+    zoneLoopControl[${point}] = 0
 
 @Rule "Point ${pointToLetter[point]}: Contesting"
 @Event global
@@ -51,8 +56,8 @@ if huntTimer == 0 and \
 
 @Rule "Point ${pointToLetter[point]}: Listen for Capture"
 @Event global
-if abs(${zoneProgress}) == 100:
-    if ${zoneProgress} == 100:
+if abs(${zoneProgress}) >= 100:
+    if ${zoneProgress} >= 100:
         ${zoneProgress} = 0
         zoneControl[${point}] = Team.1
         addToTeamScore(Team.1, 1)

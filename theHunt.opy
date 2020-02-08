@@ -15,7 +15,7 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     wait(0.5, Wait.IGNORE_CONDITION)
     setSlowMotion(100)
-    chase(huntTimer, 0, rate=1, ChaseReeval.DESTINATION_AND_RATE)
+    huntTimerControl = -1
 
 @Rule "Loop Hunt Timer to Zero"
 @Event global
