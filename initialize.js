@@ -16,5 +16,5 @@ for (var i = 1.5; i < 3; i++) {
 }
 
 result += `
-hudHeader([p for p in getAllPlayers() if huntActive], "The Hunt: {}".format(ceil(huntTimer)), Position.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
+hudHeader([p for p in getAllPlayers() if huntActive], "The Hunt: {}".format(ceil(huntTimer)), Position.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
 result;
