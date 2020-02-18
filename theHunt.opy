@@ -3,6 +3,7 @@
 @Rule "If a Team controls all 3 points, activate the Hunt"
 @Event global
 if activateHunt and (all([control == Team.1 for control in zoneControl]) or all([control == Team.2 for control in zoneControl])):
+    huntActive = true
     huntTimer = huntDuration
     stopAllProgress()
     generateLockedText()
@@ -19,9 +20,10 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
 
 @Rule "At end of Hunt, reset points"
 @Event global
-if huntTimer <= 0.016 and huntTimer > 0:
+if huntActive and huntTimer == 0:
     stopChasingVariable(huntTimer)
     setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     bigMessage(getAllPlayers(), "The Hunt has Ended")
     triggerPointReset(true)
+    huntActive = false

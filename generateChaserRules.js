@@ -3,7 +3,7 @@ var zoneProgress = `zone${pointToLetter[point]}Progress`;
 var result = `
 @Rule "Point ${pointToLetter[point]}: Fast Reset"
 @Event global
-if huntTimer == 0 and \
+if not huntActive and \
 ((zoneControl[${point}] == Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or \
 (zoneControl[${point}] == Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0)):
     wait(1, Wait.ABORT_WHEN_FALSE)
@@ -11,7 +11,7 @@ if huntTimer == 0 and \
     
 @Rule "Point ${pointToLetter[point]}: Gradual Reset Trigger"
 @Event global
-if huntTimer == 0 and \
+if not huntActive and \
 abs(${zoneProgress}) > 0 and numTeam1${pointToLetter[point]} == 0 and numTeam2${pointToLetter[point]} == 0:
     wait(3, Wait.ABORT_WHEN_FALSE)
     zoneLoopControl[${point}] = -1
@@ -31,7 +31,7 @@ if numTeam1${pointToLetter[point]} > 0 or numTeam2${pointToLetter[point]} > 0:
 
 @Rule "Point ${pointToLetter[point]}: Contesting"
 @Event global
-if huntTimer == 0 and \
+if not huntActive and \
 numTeam1${pointToLetter[point]} > 0 and \
 numTeam2${pointToLetter[point]} > 0:
     zoneLoopControl[${point}] = 0
@@ -39,7 +39,7 @@ numTeam2${pointToLetter[point]} > 0:
 
 @Rule "Point ${pointToLetter[point]}: Capturing"
 @Event global
-if huntTimer == 0 and \
+if not huntActive and \
 ((zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or \
 (zoneControl[${point}] != Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0)):
     do:

@@ -85,7 +85,7 @@ controls.forEach(function (control) {
         result += `
 @Rule "Zone ${pointToLetter[point]} HUD: ${control.zoneControl} ${index}"
 @Event global
-if huntTimer == 0 and zoneControl[${point}] == ${control.zoneControl} and ${zoneProgress} ${subtitle.progressCond}:
+if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zoneProgress} ${subtitle.progressCond}:
     wait(0.05, Wait.ABORT_WHEN_FALSE)
     if zone${pointToLetter[point]}HudText != []:`;
         for (var i = 0; i < subtextKeys.length; i++) {

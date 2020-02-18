@@ -6,7 +6,7 @@ for (var i = 0;  i < numPoints; i++) {
     // Generate Zone Progress Headers
     result += `
     zoneControl[${i}] = null
-    hudHeader([p for p in getPlayersInRadius(zoneLocations[${i}], zoneSizes[${i}], Team.ALL, LosCheck.OFF) if abs(zone${pointToLetter[i]}Progress) > 0 and huntTimer == 0], "Progress: {}%".format(floor(abs(zone${pointToLetter[i]}Progress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    hudHeader([p for p in getPlayersInRadius(zoneLocations[${i}], zoneSizes[${i}], Team.ALL, LosCheck.OFF) if abs(zone${pointToLetter[i]}Progress) > 0 and not huntActive], "Progress: {}%".format(floor(abs(zone${pointToLetter[i]}Progress))), Position.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 }
 
 // Generate Zone Separators
@@ -16,5 +16,5 @@ for (var i = 1.5; i < 3; i++) {
 }
 
 result += `
-hudHeader([p for p in getAllPlayers() if huntTimer > 0], "The Hunt: {}".format(ceil(huntTimer)), Position.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
+hudHeader([p for p in getAllPlayers() if huntActive], "The Hunt: {}".format(ceil(huntTimer)), Position.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
 result;
