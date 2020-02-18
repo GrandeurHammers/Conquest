@@ -16,6 +16,8 @@
 #!declareGlobal numTeam2A
 #!declareGlobal numTeam2B
 #!declareGlobal numTeam2C
+# Is the Hunt active?
+#!declareGlobal huntActive
 # How much time is left in the Hunt?
 #!declareGlobal huntTimer
 # Whether the Hunt can be activated
@@ -80,6 +82,7 @@ return
 @Rule "Initialization"
 @Event global
 initialize()
+huntActive = false
 
 import "maps.opy"
 
