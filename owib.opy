@@ -79,7 +79,7 @@ hudHeader(getAllPlayers(), "Server Load: {0}/{1}/{2}".format(getServerLoad(), ge
 @Event global
 @Disabled
 if isAssemblingHeroes():
-    setMatchTime(3)
+    setMatchTime(10)
 
 @Rule "Initialization"
 @Event global
