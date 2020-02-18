@@ -86,7 +86,6 @@ controls.forEach(function (control) {
 @Rule "Zone ${pointToLetter[point]} HUD: ${control.zoneControl} ${index}"
 @Event global
 if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zoneProgress} ${subtitle.progressCond}:
-    wait(0.05, Wait.ABORT_WHEN_FALSE)
     if zone${pointToLetter[point]}HudText != []:`;
         for (var i = 0; i < subtextKeys.length; i++) {
             result += `
@@ -103,8 +102,7 @@ if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zone
             subtextKeys.forEach(function (subtextKey, index2) {
                 result += `
     hudText(${subtextKey.players}, "Zone ${pointToLetter[point]}", ${subtitle.subtitle}.format(floor(abs(${zoneProgress}))), ${control[subtextKey.key]}, Position.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${subtextKey.specVis})
-    zone${pointToLetter[point]}HudText[${index2}] = getLastCreatedText()
-    wait(0.33, Wait.ABORT_WHEN_FALSE)`;
+    zone${pointToLetter[point]}HudText[${index2}] = getLastCreatedText()`;
             });
         }
     });
