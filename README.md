@@ -1,7 +1,7 @@
 # Overwatch: Iron Banner
 This gamemode is an Overwatch Workshop port of Destiny's Iron Banner gamemode. The gamemode is currently in development.
 
-Project Link: [EloHell Workshop Page](https://workshop.elohell.gg)
+Project Link: [EloHell Workshop Page](https://workshop.elohell.gg/eVXlsY0jGbWZfbg/Iron+Banner/)
 
 Gameplay
 --------
@@ -14,6 +14,6 @@ The `lobby.owcs` contains custom game settings that can be copied and pasted int
 - Open the Settings of the custom game
 - Click the orange paste icon
 
-Alternatively, the latest Workshop code can be found [at this link](https://workshop.elohell.gg)
+Alternatively, the latest Workshop code can be found [at this link](https://workshop.elohell.gg/eVXlsY0jGbWZfbg/Iron+Banner/)
 
 *Note: `lobby.owcs` is the latest compiled version of the `master` branch.*
