@@ -70,14 +70,16 @@ huntDuration = 25
 @Disabled
 return
 
-# @Rule "DEBUG: Show CPU"
-# @Event global
-# hudHeader(getAllPlayers(), "Server Load: {0}/{1}/{2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), Position.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+@Rule "DEBUG: Show CPU"
+@Event global
+@Disabled
+hudHeader(getAllPlayers(), "Server Load: {0}/{1}/{2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), Position.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
-# @Rule "DEBUG: Skip assemble heroes"
-# @Event global
-# if isAssemblingHeroes():
-#     setMatchTime(3)
+@Rule "DEBUG: Shorten assemble heroes"
+@Event global
+@Disabled
+if isAssemblingHeroes():
+    setMatchTime(3)
 
 @Rule "Initialization"
 @Event global
@@ -95,11 +97,6 @@ if len(zoneLocations) == 3 and len(zoneSizes) == 3:
 @Event global
 @Disabled
 return
-
-# @Rule "DEBUG: Summon bot on opposite team on interact"
-# @Event eachPlayer
-# if eventPlayer == hostPlayer and eventPlayer.isHoldingButton(Button.INTERACT):
-#     createDummy(Hero.ANA, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
 
 @Rule "Disable Self Respawn for 5 seconds"
 @Event playerDied
