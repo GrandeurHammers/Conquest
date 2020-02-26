@@ -2,11 +2,12 @@ settings
 {
 	main
 	{
-		Description: "======= IRON BANNER v1.0 ======= By @Cactus_Puppy                                   A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
+		Description: "======= IRON BANNER v1.0 ======= By @Cactus_Puppy                                                A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
 	}
 
 	lobby
 	{
+		Allow Players Who Are In Queue: Yes
 		Max Spectators: 12
 	}
 
@@ -163,9 +164,9 @@ rule("Initialization")
 			Global Variable(zoneSizes), 2), All Teams, Off), And(Compare(Absolute Value(Global Variable(zoneCProgress)), >, 0), Not(
 			Global Variable(huntActive)))), Custom String("Progress: {0}%", Round To Integer(Absolute Value(Global Variable(
 			zoneCProgress)), Down), Null, Null), Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－", Null, Null, Null), Right, 1.500, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－", Null, Null, Null), Right, 1.500, White, White,
 			White, Visible To and String, Visible Always);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－", Null, Null, Null), Right, 2.500, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－", Null, Null, Null), Right, 2.500, White, White,
 			White, Visible To and String, Visible Always);
 		Create HUD Text(Filtered Array(All Players(All Teams), Global Variable(huntActive)), Custom String("The Hunt: {0}",
 			Round To Integer(Global Variable(huntTimer), Up), Null, Null), Null, Null, Top, 1, Yellow, White, White, Visible To and String,
