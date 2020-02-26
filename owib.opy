@@ -51,6 +51,7 @@
 #!define stopAllProgress() __script__('stopAllProgress.js')
 #!define generateLockedText() __script__('generateLockedText.js')
 #!define triggerPointReset(destroyText) __script__('triggerPointReset.js')
+#!define toggleSkulls(create) __script__('toggleSkullIcons.js')
 
 #!define normalObjDesc "Fight and Capture Zones"
 
