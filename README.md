@@ -17,3 +17,9 @@ The `lobby.owcs` contains custom game settings that can be copied and pasted int
 Alternatively, the latest Workshop code can be found [at this link](https://workshop.elohell.gg/eVXlsY0jGbWZfbg/Iron+Banner/)
 
 *Note: `lobby.owcs` is the latest compiled version of the `master` branch.*
+
+Supported Maps
+-----
+- Lijang Tower: Garden
+
+More maps coming soon!

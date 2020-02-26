@@ -24,6 +24,8 @@
 #!declareGlobal activateHunt
 # How long the Hunt lasts for
 #!declareGlobal huntDuration
+# Whether Hunt Markers are enabled
+#!declareGlobal huntMarkers
 
 # Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2)
 #!declareGlobal zoneAHudText
@@ -37,8 +39,8 @@
 #!declareGlobal zoneAProgress
 #!declareGlobal zoneBProgress
 #!declareGlobal zoneCProgress
-# Loop Controls (-1 = Reset, 0 = None)
-#!declareGlobal zoneLoopControl
+# Skull Markers (The Hunt)
+#!declareGlobal skullIcons
 
 # Helper pregen macros (thanks Zez)
 #!define generatePointFlags() __script__('generateSetPointFlags.js')
@@ -64,6 +66,10 @@ activateHunt = true
 @Rule "huntDuration: How long The Hunt lasts for in seconds. Default: 25"
 @Event global
 huntDuration = 25
+
+@Rule "huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True"
+@Event global
+huntMarkers = true
 
 @Rule "=====SETUP====="
 @Event global
