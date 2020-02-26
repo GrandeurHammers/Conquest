@@ -13,6 +13,8 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
     bigMessage(getPlayers(zoneControl[0]), "Hunt Them Down")
     setObjectiveDescription(getPlayers(getOppositeTeam(zoneControl[0])), "Survive The Hunt", HudReeval.VISIBILITY_AND_STRING)
     bigMessage(getPlayers(getOppositeTeam(zoneControl[0])), "Survive The Hunt")
+    if huntMarkers:
+        toggleSkulls(true)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     wait(0.5, Wait.IGNORE_CONDITION)
     setSlowMotion(100)
@@ -22,6 +24,8 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
 @Event global
 if huntActive and huntTimer == 0:
     stopChasingVariable(huntTimer)
+    if huntMarkers:
+        toggleSkulls(false)
     setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     bigMessage(getAllPlayers(), "The Hunt has Ended")

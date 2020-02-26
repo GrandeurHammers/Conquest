@@ -20,22 +20,22 @@ const teamData = [
 function teamGenerator(team) {
     for (var i = 0; i < numSlots; i++) {
         result += `
-        createIcon(getAllPlayers(), getPlayersInSlot(${i}, ${teamData[team]['team']}, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.${teamData[team]['color']}, false)
-        skullIcons[${i}] = getLastCreatedEntity()`;
+            createIcon(getAllPlayers(), getPlayersInSlot(${i}, ${teamData[team]['team']}), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.${teamData[team]['color']}, false)
+            skullIcons[${i}] = getLastCreatedEntity()`;
     }
 }
 
 if (create) {
     result += `
-    if zoneControl[0] == Team.1:`;
+        if zoneControl[0] == Team.1:`;
     teamGenerator(1);
     result += `
-    else:`;
+        else:`;
     teamGenerator(2);
 } else {
     for (var i = 0; i < numSlots; i++) {
         result += `
-    destroyIcon(skullIcons[${i}])`;
+        destroyIcon(skullIcons[${i}])`;
     }
 }
 
