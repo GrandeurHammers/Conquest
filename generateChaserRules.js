@@ -7,34 +7,19 @@ if not huntActive and \
 ((zoneControl[${point}] == Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or \
 (zoneControl[${point}] == Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0)):
     wait(1, Wait.ABORT_WHEN_FALSE)
-    ${zoneProgress} =  0
+    zone${pointToLetter[point]}Progress =  0
     
-@Rule "Point ${pointToLetter[point]}: Gradual Reset Trigger"
+@Rule "Point ${pointToLetter[point]}: Gradual Reset"
 @Event global
-if not huntActive and \
-abs(${zoneProgress}) > 0 and numTeam1${pointToLetter[point]} == 0 and numTeam2${pointToLetter[point]} == 0:
+if huntTimer == 0 and \
+abs(zone${pointToLetter[point]}Progress) > 0 and numTeam1${pointToLetter[point]} == 0 and numTeam2${pointToLetter[point]} == 0:
     wait(3, Wait.ABORT_WHEN_FALSE)
-    zoneLoopControl[${point}] = -1
-
-@Rule "Point ${pointToLetter[point]}: Gradual Reset Loop"
-@Event global
-if zoneLoopControl[${point}] == -1 and abs(${zoneProgress}) > 0:
-    do:
-        ${zoneProgress} = ${zoneProgress} - ${zoneProgress}/abs(${zoneProgress})
-        wait(1/25, Wait.ABORT_WHEN_FALSE)
-    while RULE_CONDITION
-
-@Rule "Point ${pointToLetter[point]}: Disable Reset Loop"
-@Event global
-if numTeam1${pointToLetter[point]} > 0 or numTeam2${pointToLetter[point]} > 0:
-    zoneLoopControl[${point}] = 0
+    chase(zone${pointToLetter[point]}Progress, 0, rate=25, ChaseReeval.NONE)
 
 @Rule "Point ${pointToLetter[point]}: Contesting"
 @Event global
-if not huntActive and \
-numTeam1${pointToLetter[point]} > 0 and \
-numTeam2${pointToLetter[point]} > 0:
-    zoneLoopControl[${point}] = 0
+if huntTimer == 0 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} > 0:
+    stopChasingVariable(zone${pointToLetter[point]}Progress)
     smallMessage([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.ALL, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())], "Contesting!")
 
 @Rule "Point ${pointToLetter[point]}: Capturing"
@@ -42,22 +27,20 @@ numTeam2${pointToLetter[point]} > 0:
 if not huntActive and \
 ((zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or \
 (zoneControl[${point}] != Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0)):
-    do:
-        if numTeam1${pointToLetter[point]} > 0:
-            if ${zoneProgress} < 0:
-                ${zoneProgress} = 0
-            ${zoneProgress} = ${zoneProgress} + numTeam1${pointToLetter[point]}
-        else:
-            if ${zoneProgress} > 0:
-                ${zoneProgress} = 0
-            ${zoneProgress} = ${zoneProgress} - numTeam2${pointToLetter[point]}
-        wait(0.2, Wait.ABORT_WHEN_FALSE)
-    while RULE_CONDITION
+    if numTeam1${pointToLetter[point]} > 0:
+        if zone${pointToLetter[point]}Progress < 0:
+            zone${pointToLetter[point]}Progress = 0
+        chase(zone${pointToLetter[point]}Progress, 100, rate=5*numTeam1${pointToLetter[point]}, ChaseReeval.DESTINATION_AND_RATE)
+    else:
+        if zone${pointToLetter[point]}Progress > 0:
+            zone${pointToLetter[point]}Progress = 0
+        chase(zone${pointToLetter[point]}Progress, -100, rate=5*numTeam2${pointToLetter[point]}, ChaseReeval.DESTINATION_AND_RATE)
 
 @Rule "Point ${pointToLetter[point]}: Listen for Capture"
 @Event global
-if abs(${zoneProgress}) >= 100:
-    if ${zoneProgress} >= 100:
+if abs(${zoneProgress}) == 100:
+    stopChasingVariable(${zoneProgress})
+    if ${zoneProgress} == 100:
         ${zoneProgress} = 0
         zoneControl[${point}] = Team.1
         addToTeamScore(Team.1, 1)
@@ -65,6 +48,7 @@ if abs(${zoneProgress}) >= 100:
         smallMessage(getPlayers(Team.2), "Zone ${pointToLetter[point]} Lost")
         wait(0.016, Wait.IGNORE_CONDITION)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[${point}], zoneSizes[${point}] * 2)
+        wait(0.016, Wait.IGNORE_CONDITION)
     else:
         ${zoneProgress} = 0
         zoneControl[${point}] = Team.2
@@ -73,5 +57,6 @@ if abs(${zoneProgress}) >= 100:
         smallMessage(getPlayers(Team.2), "Zone ${pointToLetter[point]} Captured")
         wait(0.016, Wait.IGNORE_CONDITION)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)
+        wait(0.016, Wait.IGNORE_CONDITION)
 `;
 result;
