@@ -92,6 +92,7 @@ if isAssemblingHeroes():
 @Event global
 initialize()
 huntActive = false
+disableInspector()
 
 import "maps.opy"
 
