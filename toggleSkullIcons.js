@@ -28,10 +28,10 @@ function teamGenerator(team) {
 if (create) {
     result += `
         if zoneControl[0] == Team.1:`;
-    teamGenerator(1);
+    teamGenerator(2);
     result += `
         else:`;
-    teamGenerator(2);
+    teamGenerator(1);
 } else {
     for (var i = 0; i < numSlots; i++) {
         result += `
