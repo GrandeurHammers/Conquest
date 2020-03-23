@@ -46,17 +46,13 @@ if abs(${zoneProgress}) == 100:
         addToTeamScore(Team.1, 1)
         smallMessage(getPlayers(Team.1), "Zone ${pointToLetter[point]} Captured")
         smallMessage(getPlayers(Team.2), "Zone ${pointToLetter[point]} Lost")
-        wait(0.016, Wait.IGNORE_CONDITION)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_1, zoneLocations[${point}], zoneSizes[${point}] * 2)
-        wait(0.016, Wait.IGNORE_CONDITION)
     else:
         ${zoneProgress} = 0
         zoneControl[${point}] = Team.2
         addToTeamScore(Team.2, 1)
         smallMessage(getPlayers(Team.1), "Zone ${pointToLetter[point]} Lost")
         smallMessage(getPlayers(Team.2), "Zone ${pointToLetter[point]} Captured")
-        wait(0.016, Wait.IGNORE_CONDITION)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)
-        wait(0.016, Wait.IGNORE_CONDITION)
 `;
 result;
