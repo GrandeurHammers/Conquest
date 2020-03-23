@@ -20,7 +20,7 @@ const teamData = [
 function teamGenerator(team) {
     for (var i = 0; i < numSlots; i++) {
         result += `
-            createIcon(getAllPlayers(), getPlayersInSlot(${i}, ${teamData[team]['team']}), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.${teamData[team]['color']}, false)
+            createIcon([p for p in getAllPlayers() if entityExists(getPlayersInSlot(${i}, ${teamData[team]['team']})) and getPlayersInSlot(${i}, ${teamData[team]['team']}).isAlive()], getPlayersInSlot(${i}, ${teamData[team]['team']}), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.${teamData[team]['color']}, false)
             skullIcons[${i}] = getLastCreatedEntity()`;
     }
 }
