@@ -44,7 +44,7 @@ var controls = [
     {
         "zoneControl": "Team.1",
         "headerColor": "TEAM_1",
-        "subtext_spec": "\"{} Control\".format(Team.1)",
+        "subtext_spec": "\"{}\".format(Team.1)",
         "subtext_Team1": "\"Defend Zone\"",
         "subtext_Team2": "\"Attack Zone\"",
         "subtitles": [
@@ -63,7 +63,7 @@ var controls = [
     {
         "zoneControl": "Team.2",
         "headerColor": "TEAM_2",
-        "subtext_spec": "\"{} Control\".format(Team.2)",
+        "subtext_spec": "\"{}\".format(Team.2)",
         "subtext_Team1": "\"Attack Zone\"",
         "subtext_Team2": "\"Defend Zone\"",
         "subtitles": [
