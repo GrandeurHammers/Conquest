@@ -93,7 +93,7 @@ if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zone
         }
         if ("subtext_all" in control) {
             result += `
-    hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", ${subtitle.subtitle}.format(floor(abs(${zoneProgress}))), ${control.subtext_all}, Position.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
+    hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", ${subtitle.subtitle}.format(floor(abs(${zoneProgress}))), ${control.subtext_all}, HudPosition.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
             for (var i = 0; i < subtextKeys.length; i++) {
                 result += `
     zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
@@ -101,7 +101,7 @@ if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zone
         } else  {
             subtextKeys.forEach(function (subtextKey, index2) {
                 result += `
-    hudText(${subtextKey.players}, "Zone ${pointToLetter[point]}", ${subtitle.subtitle}.format(floor(abs(${zoneProgress}))), ${control[subtextKey.key]}, Position.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${subtextKey.specVis})
+    hudText(${subtextKey.players}, "Zone ${pointToLetter[point]}", ${subtitle.subtitle}.format(floor(abs(${zoneProgress}))), ${control[subtextKey.key]}, HudPosition.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${subtextKey.specVis})
     zone${pointToLetter[point]}HudText[${index2}] = getLastCreatedText()`;
             });
         }
