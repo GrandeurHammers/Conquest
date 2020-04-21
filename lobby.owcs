@@ -2,7 +2,7 @@ settings
 {
 	main
 	{
-		Description: "======= IRON BANNER v1.0 ======= By @Cactus_Puppy                                                A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
+		Description: "======= IRON BANNER v1.1 ======= By @Cactus_Puppy                                                A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
 	}
 
 	lobby
@@ -17,8 +17,12 @@ settings
 		{
 			enabled maps
 			{
+				Lijiang Control Center
+				Lijiang Control Center Lunar New Year
 				Lijiang Garden
 				Lijiang Garden Lunar New Year
+				Lijiang Night Market
+				Lijiang Night Market Lunar New Year
 			}
 		}
 
@@ -47,13 +51,14 @@ variables
 		10: huntTimer
 		11: activateHunt
 		12: huntDuration
-		13: zoneAHudText
-		14: zoneBHudText
-		15: zoneCHudText
-		19: zoneAProgress
-		20: zoneBProgress
-		21: zoneCProgress
-		22: zoneLoopControl
+		13: huntMarkers
+		14: zoneAHudText
+		15: zoneBHudText
+		16: zoneCHudText
+		20: zoneAProgress
+		21: zoneBProgress
+		22: zoneCProgress
+		23: skullIcons
 }
 
 disabled rule("=====CUSTOMIZATION=====")
@@ -95,6 +100,19 @@ rule("huntDuration: How long The Hunt lasts for in seconds. Default: 25")
 	}
 }
 
+rule("huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True")
+{
+	event
+	{
+		Ongoing - Global;
+	}
+
+	actions
+	{
+		Set Global Variable(huntMarkers, True);
+	}
+}
+
 disabled rule("=====SETUP=====")
 {
 	event
@@ -117,8 +135,28 @@ disabled rule("DEBUG: Show CPU")
 
 	actions
 	{
-		Create HUD Text(All Players(All Teams), Custom String("Server Load: {0}/{1}/{2}", Server Load, Server Load Average,
-			Server Load Peak), Null, Null, Top, 4, White, White, White, Visible To and String, Default Visibility);
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Load: {0}", Server Load, Null, Null), Left, 0, White,
+			White, White, Visible To and String, Default Visibility);
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Avg: {0}", Server Load Average, Null, Null), Left, 1,
+			White, White, White, Visible To and String, Default Visibility);
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Peak: {0}", Server Load Peak, Null, Null), Left, 2,
+			White, White, White, Visible To and String, Default Visibility);
+	}
+}
+
+disabled rule("DEBUG: Show Player Position")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	actions
+	{
+		Create HUD Text(Event Player, Custom String("{0}", Position Of(Event Player), Null, Null), Null, Null, Left, -1, Yellow, White,
+			White, String, Visible Never);
 	}
 }
 
@@ -164,14 +202,15 @@ rule("Initialization")
 			Global Variable(zoneSizes), 2), All Teams, Off), And(Compare(Absolute Value(Global Variable(zoneCProgress)), >, 0), Not(
 			Global Variable(huntActive)))), Custom String("Progress: {0}%", Round To Integer(Absolute Value(Global Variable(
 			zoneCProgress)), Down), Null, Null), Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－", Null, Null, Null), Right, 1.500, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－​", Null, Null, Null), Right, 1.500, White, White,
 			White, Visible To and String, Visible Always);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－", Null, Null, Null), Right, 2.500, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－​", Null, Null, Null), Right, 2.500, White, White,
 			White, Visible To and String, Visible Always);
 		Create HUD Text(Filtered Array(All Players(All Teams), Global Variable(huntActive)), Custom String("The Hunt: {0}",
 			Round To Integer(Global Variable(huntTimer), Up), Null, Null), Null, Null, Top, 1, Yellow, White, White, Visible To and String,
 			Default Visibility);
 		Set Global Variable(huntActive, False);
+		Disable Inspector Recording;
 	}
 }
 
@@ -197,25 +236,25 @@ rule("Setup Zones: Lijang Tower")
 			Lijiang Control Center Lunar New Year)), Map(Lijiang Garden)), Map(Lijiang Garden Lunar New Year)), Map(Lijiang Night Market)),
 			Map(Lijiang Night Market Lunar New Year)), Current Map))));
 		disabled Abort;
-		Set Global Variable At Index(zoneLocations, 0, Vector(43, 95, 150));
-		Set Global Variable At Index(zoneSizes, 0, 5);
-		Set Global Variable At Index(zoneLocations, 1, Vector(0, 94, 130));
+		Set Global Variable At Index(zoneLocations, 0, Vector(48, 265, 329.150));
+		Set Global Variable At Index(zoneSizes, 0, 6);
+		Set Global Variable At Index(zoneLocations, 1, Vector(0, 267.330, 280));
 		Set Global Variable At Index(zoneSizes, 1, 7);
-		Set Global Variable At Index(zoneLocations, 2, Vector(-43.000, 95, 150));
-		Set Global Variable At Index(zoneSizes, 2, 5);
+		Set Global Variable At Index(zoneLocations, 2, Vector(-48, 265, 329.150));
+		Set Global Variable At Index(zoneSizes, 2, 6);
 		Abort;
 		Set Global Variable At Index(zoneLocations, 0, Vector(43, 95, 150));
 		Set Global Variable At Index(zoneSizes, 0, 5);
 		Set Global Variable At Index(zoneLocations, 1, Vector(0, 94, 130));
 		Set Global Variable At Index(zoneSizes, 1, 7);
-		Set Global Variable At Index(zoneLocations, 2, Vector(-43.000, 95, 150));
+		Set Global Variable At Index(zoneLocations, 2, Vector(-43, 95, 150));
 		Set Global Variable At Index(zoneSizes, 2, 5);
 		Abort;
-		Set Global Variable At Index(zoneLocations, 0, Vector(43, 95, 150));
+		Set Global Variable At Index(zoneLocations, 0, Vector(62, 2, -29));
 		Set Global Variable At Index(zoneSizes, 0, 5);
-		Set Global Variable At Index(zoneLocations, 1, Vector(0, 94, 130));
+		Set Global Variable At Index(zoneLocations, 1, Vector(1, -1, -61));
 		Set Global Variable At Index(zoneSizes, 1, 7);
-		Set Global Variable At Index(zoneLocations, 2, Vector(-43.000, 95, 150));
+		Set Global Variable At Index(zoneLocations, 2, Vector(-60, 2, -29));
 		Set Global Variable At Index(zoneSizes, 2, 5);
 		Abort;
 	}
@@ -546,7 +585,7 @@ rule("Point A: Fast Reset")
 	}
 }
 
-rule("Point A: Gradual Reset Trigger")
+rule("Point A: Gradual Reset")
 {
 	event
 	{
@@ -555,7 +594,7 @@ rule("Point A: Gradual Reset Trigger")
 
 	conditions
 	{
-		Global Variable(huntActive) == False;
+		Global Variable(huntTimer) == 0;
 		Absolute Value(Global Variable(zoneAProgress)) > 0;
 		Global Variable(numTeam1A) == 0;
 		Global Variable(numTeam2A) == 0;
@@ -564,47 +603,7 @@ rule("Point A: Gradual Reset Trigger")
 	actions
 	{
 		Wait(3, Abort When False);
-		Set Global Variable At Index(zoneLoopControl, 0, -1.000);
-	}
-}
-
-rule("Point A: Gradual Reset Loop")
-{
-	event
-	{
-		Ongoing - Global;
-	}
-
-	conditions
-	{
-		First Of(Global Variable(zoneLoopControl)) == -1.000;
-		Absolute Value(Global Variable(zoneAProgress)) > 0;
-	}
-
-	actions
-	{
-		Set Global Variable(zoneAProgress, Subtract(Global Variable(zoneAProgress), Divide(Global Variable(zoneAProgress), Absolute Value(
-			Global Variable(zoneAProgress)))));
-		Wait(0.040, Abort When False);
-		Loop If Condition Is True;
-	}
-}
-
-rule("Point A: Disable Reset Loop")
-{
-	event
-	{
-		Ongoing - Global;
-	}
-
-	conditions
-	{
-		Or(Compare(Global Variable(numTeam1A), >, 0), Compare(Global Variable(numTeam2A), >, 0)) == True;
-	}
-
-	actions
-	{
-		Set Global Variable At Index(zoneLoopControl, 0, 0);
+		Chase Global Variable At Rate(zoneAProgress, 0, 25, None);
 	}
 }
 
@@ -617,14 +616,14 @@ rule("Point A: Contesting")
 
 	conditions
 	{
-		Global Variable(huntActive) == False;
+		Global Variable(huntTimer) == 0;
 		Global Variable(numTeam1A) > 0;
 		Global Variable(numTeam2A) > 0;
 	}
 
 	actions
 	{
-		Set Global Variable At Index(zoneLoopControl, 0, 0);
+		Stop Chasing Global Variable(zoneAProgress);
 		Small Message(Filtered Array(Players Within Radius(First Of(Global Variable(zoneLocations)), First Of(Global Variable(zoneSizes)),
 			All Teams, Off), And(Is Alive(Current Array Element), Not(And(Compare(Hero Of(Current Array Element), ==, Hero(Sombra)),
 			Is Using Ability 1(Current Array Element))))), Custom String("Contesting!", Null, Null, Null));
@@ -651,13 +650,11 @@ rule("Point A: Capturing")
 		Skip If(Not(Compare(Global Variable(numTeam1A), >, 0)), 4);
 		Skip If(Not(Compare(Global Variable(zoneAProgress), <, 0)), 1);
 		Set Global Variable(zoneAProgress, 0);
-		Set Global Variable(zoneAProgress, Add(Global Variable(zoneAProgress), Global Variable(numTeam1A)));
+		Chase Global Variable At Rate(zoneAProgress, 100, Multiply(5, Global Variable(numTeam1A)), Destination and Rate);
 		Skip(3);
 		Skip If(Not(Compare(Global Variable(zoneAProgress), >, 0)), 1);
 		Set Global Variable(zoneAProgress, 0);
-		Set Global Variable(zoneAProgress, Subtract(Global Variable(zoneAProgress), Global Variable(numTeam2A)));
-		Wait(0.200, Abort When False);
-		Loop If Condition Is True;
+		Chase Global Variable At Rate(zoneAProgress, -100, Multiply(5, Global Variable(numTeam2A)), Destination and Rate);
 	}
 }
 
@@ -670,27 +667,26 @@ rule("Point A: Listen for Capture")
 
 	conditions
 	{
-		Absolute Value(Global Variable(zoneAProgress)) >= 100;
+		Absolute Value(Global Variable(zoneAProgress)) == 100;
 	}
 
 	actions
 	{
-		Skip If(Not(Compare(Global Variable(zoneAProgress), >=, 100)), 8);
+		Stop Chasing Global Variable(zoneAProgress);
+		Skip If(Not(Compare(Global Variable(zoneAProgress), ==, 100)), 7);
 		Set Global Variable(zoneAProgress, 0);
 		Set Global Variable At Index(zoneControl, 0, Team 1);
 		Modify Team Score(Team 1, 1);
 		Small Message(All Players(Team 1), Custom String("Zone A Captured", Null, Null, Null));
 		Small Message(All Players(Team 2), Custom String("Zone A Lost", Null, Null, Null));
-		Wait(0.016, Ignore Condition);
 		Play Effect(All Players(All Teams), Ring Explosion, Team 1, First Of(Global Variable(zoneLocations)), Multiply(First Of(
 			Global Variable(zoneSizes)), 2));
-		Skip(7);
+		Skip(6);
 		Set Global Variable(zoneAProgress, 0);
 		Set Global Variable At Index(zoneControl, 0, Team 2);
 		Modify Team Score(Team 2, 1);
 		Small Message(All Players(Team 1), Custom String("Zone A Lost", Null, Null, Null));
 		Small Message(All Players(Team 2), Custom String("Zone A Captured", Null, Null, Null));
-		Wait(0.016, Ignore Condition);
 		Play Effect(All Players(All Teams), Ring Explosion, Team 2, First Of(Global Variable(zoneLocations)), Multiply(First Of(
 			Global Variable(zoneSizes)), 2));
 	}
@@ -802,8 +798,8 @@ rule("Zone A HUD: Team.1 0")
 		Destroy HUD Text(First Of(Global Variable(zoneAHudText)));
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 2));
-		Create HUD Text(Null, Custom String("Zone A", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0} Control",
-			Team 1, Null, Null), Right, 1, Team 1, White, White, Visible To and String, Visible Always);
+		Create HUD Text(Null, Custom String("Zone A", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0}", Team 1,
+			Null, Null), Right, 1, Team 1, White, White, Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneAHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone A", Null, Null, Null), Custom String("", Null, Null, Null), Custom String(
 			"Defend Zone", Null, Null, Null), Right, 1, Team 1, White, White, Visible To and String, Visible Never);
@@ -835,8 +831,8 @@ rule("Zone A HUD: Team.1 1")
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 2));
 		Create HUD Text(Null, Custom String("Zone A", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(Absolute Value(
-			Global Variable(zoneAProgress)), Down), Null, Null), Custom String("{0} Control", Team 1, Null, Null), Right, 1, Team 1,
-			Team 2, White, Visible To and String, Visible Always);
+			Global Variable(zoneAProgress)), Down), Null, Null), Custom String("{0}", Team 1, Null, Null), Right, 1, Team 1, Team 2, White,
+			Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneAHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone A", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(
 			Absolute Value(Global Variable(zoneAProgress)), Down), Null, Null), Custom String("Defend Zone", Null, Null, Null), Right, 1,
@@ -869,8 +865,8 @@ rule("Zone A HUD: Team.2 0")
 		Destroy HUD Text(First Of(Global Variable(zoneAHudText)));
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 2));
-		Create HUD Text(Null, Custom String("Zone A", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0} Control",
-			Team 2, Null, Null), Right, 1, Team 2, White, White, Visible To and String, Visible Always);
+		Create HUD Text(Null, Custom String("Zone A", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0}", Team 2,
+			Null, Null), Right, 1, Team 2, White, White, Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneAHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone A", Null, Null, Null), Custom String("", Null, Null, Null), Custom String(
 			"Attack Zone", Null, Null, Null), Right, 1, Team 2, White, White, Visible To and String, Visible Never);
@@ -902,8 +898,8 @@ rule("Zone A HUD: Team.2 1")
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneAHudText), 2));
 		Create HUD Text(Null, Custom String("Zone A", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(Absolute Value(
-			Global Variable(zoneAProgress)), Down), Null, Null), Custom String("{0} Control", Team 2, Null, Null), Right, 1, Team 2,
-			Team 1, White, Visible To and String, Visible Always);
+			Global Variable(zoneAProgress)), Down), Null, Null), Custom String("{0}", Team 2, Null, Null), Right, 1, Team 2, Team 1, White,
+			Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneAHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone A", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(
 			Absolute Value(Global Variable(zoneAProgress)), Down), Null, Null), Custom String("Attack Zone", Null, Null, Null), Right, 1,
@@ -951,7 +947,7 @@ rule("Point B: Fast Reset")
 	}
 }
 
-rule("Point B: Gradual Reset Trigger")
+rule("Point B: Gradual Reset")
 {
 	event
 	{
@@ -960,7 +956,7 @@ rule("Point B: Gradual Reset Trigger")
 
 	conditions
 	{
-		Global Variable(huntActive) == False;
+		Global Variable(huntTimer) == 0;
 		Absolute Value(Global Variable(zoneBProgress)) > 0;
 		Global Variable(numTeam1B) == 0;
 		Global Variable(numTeam2B) == 0;
@@ -969,47 +965,7 @@ rule("Point B: Gradual Reset Trigger")
 	actions
 	{
 		Wait(3, Abort When False);
-		Set Global Variable At Index(zoneLoopControl, 1, -1.000);
-	}
-}
-
-rule("Point B: Gradual Reset Loop")
-{
-	event
-	{
-		Ongoing - Global;
-	}
-
-	conditions
-	{
-		Value In Array(Global Variable(zoneLoopControl), 1) == -1.000;
-		Absolute Value(Global Variable(zoneBProgress)) > 0;
-	}
-
-	actions
-	{
-		Set Global Variable(zoneBProgress, Subtract(Global Variable(zoneBProgress), Divide(Global Variable(zoneBProgress), Absolute Value(
-			Global Variable(zoneBProgress)))));
-		Wait(0.040, Abort When False);
-		Loop If Condition Is True;
-	}
-}
-
-rule("Point B: Disable Reset Loop")
-{
-	event
-	{
-		Ongoing - Global;
-	}
-
-	conditions
-	{
-		Or(Compare(Global Variable(numTeam1B), >, 0), Compare(Global Variable(numTeam2B), >, 0)) == True;
-	}
-
-	actions
-	{
-		Set Global Variable At Index(zoneLoopControl, 1, 0);
+		Chase Global Variable At Rate(zoneBProgress, 0, 25, None);
 	}
 }
 
@@ -1022,14 +978,14 @@ rule("Point B: Contesting")
 
 	conditions
 	{
-		Global Variable(huntActive) == False;
+		Global Variable(huntTimer) == 0;
 		Global Variable(numTeam1B) > 0;
 		Global Variable(numTeam2B) > 0;
 	}
 
 	actions
 	{
-		Set Global Variable At Index(zoneLoopControl, 1, 0);
+		Stop Chasing Global Variable(zoneBProgress);
 		Small Message(Filtered Array(Players Within Radius(Value In Array(Global Variable(zoneLocations), 1), Value In Array(
 			Global Variable(zoneSizes), 1), All Teams, Off), And(Is Alive(Current Array Element), Not(And(Compare(Hero Of(
 			Current Array Element), ==, Hero(Sombra)), Is Using Ability 1(Current Array Element))))), Custom String("Contesting!", Null,
@@ -1057,13 +1013,11 @@ rule("Point B: Capturing")
 		Skip If(Not(Compare(Global Variable(numTeam1B), >, 0)), 4);
 		Skip If(Not(Compare(Global Variable(zoneBProgress), <, 0)), 1);
 		Set Global Variable(zoneBProgress, 0);
-		Set Global Variable(zoneBProgress, Add(Global Variable(zoneBProgress), Global Variable(numTeam1B)));
+		Chase Global Variable At Rate(zoneBProgress, 100, Multiply(5, Global Variable(numTeam1B)), Destination and Rate);
 		Skip(3);
 		Skip If(Not(Compare(Global Variable(zoneBProgress), >, 0)), 1);
 		Set Global Variable(zoneBProgress, 0);
-		Set Global Variable(zoneBProgress, Subtract(Global Variable(zoneBProgress), Global Variable(numTeam2B)));
-		Wait(0.200, Abort When False);
-		Loop If Condition Is True;
+		Chase Global Variable At Rate(zoneBProgress, -100, Multiply(5, Global Variable(numTeam2B)), Destination and Rate);
 	}
 }
 
@@ -1076,27 +1030,26 @@ rule("Point B: Listen for Capture")
 
 	conditions
 	{
-		Absolute Value(Global Variable(zoneBProgress)) >= 100;
+		Absolute Value(Global Variable(zoneBProgress)) == 100;
 	}
 
 	actions
 	{
-		Skip If(Not(Compare(Global Variable(zoneBProgress), >=, 100)), 8);
+		Stop Chasing Global Variable(zoneBProgress);
+		Skip If(Not(Compare(Global Variable(zoneBProgress), ==, 100)), 7);
 		Set Global Variable(zoneBProgress, 0);
 		Set Global Variable At Index(zoneControl, 1, Team 1);
 		Modify Team Score(Team 1, 1);
 		Small Message(All Players(Team 1), Custom String("Zone B Captured", Null, Null, Null));
 		Small Message(All Players(Team 2), Custom String("Zone B Lost", Null, Null, Null));
-		Wait(0.016, Ignore Condition);
 		Play Effect(All Players(All Teams), Ring Explosion, Team 1, Value In Array(Global Variable(zoneLocations), 1), Multiply(
 			Value In Array(Global Variable(zoneSizes), 1), 2));
-		Skip(7);
+		Skip(6);
 		Set Global Variable(zoneBProgress, 0);
 		Set Global Variable At Index(zoneControl, 1, Team 2);
 		Modify Team Score(Team 2, 1);
 		Small Message(All Players(Team 1), Custom String("Zone B Lost", Null, Null, Null));
 		Small Message(All Players(Team 2), Custom String("Zone B Captured", Null, Null, Null));
-		Wait(0.016, Ignore Condition);
 		Play Effect(All Players(All Teams), Ring Explosion, Team 2, Value In Array(Global Variable(zoneLocations), 1), Multiply(
 			Value In Array(Global Variable(zoneSizes), 1), 2));
 	}
@@ -1208,8 +1161,8 @@ rule("Zone B HUD: Team.1 0")
 		Destroy HUD Text(First Of(Global Variable(zoneBHudText)));
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 2));
-		Create HUD Text(Null, Custom String("Zone B", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0} Control",
-			Team 1, Null, Null), Right, 2, Team 1, White, White, Visible To and String, Visible Always);
+		Create HUD Text(Null, Custom String("Zone B", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0}", Team 1,
+			Null, Null), Right, 2, Team 1, White, White, Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneBHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone B", Null, Null, Null), Custom String("", Null, Null, Null), Custom String(
 			"Defend Zone", Null, Null, Null), Right, 2, Team 1, White, White, Visible To and String, Visible Never);
@@ -1241,8 +1194,8 @@ rule("Zone B HUD: Team.1 1")
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 2));
 		Create HUD Text(Null, Custom String("Zone B", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(Absolute Value(
-			Global Variable(zoneBProgress)), Down), Null, Null), Custom String("{0} Control", Team 1, Null, Null), Right, 2, Team 1,
-			Team 2, White, Visible To and String, Visible Always);
+			Global Variable(zoneBProgress)), Down), Null, Null), Custom String("{0}", Team 1, Null, Null), Right, 2, Team 1, Team 2, White,
+			Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneBHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone B", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(
 			Absolute Value(Global Variable(zoneBProgress)), Down), Null, Null), Custom String("Defend Zone", Null, Null, Null), Right, 2,
@@ -1275,8 +1228,8 @@ rule("Zone B HUD: Team.2 0")
 		Destroy HUD Text(First Of(Global Variable(zoneBHudText)));
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 2));
-		Create HUD Text(Null, Custom String("Zone B", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0} Control",
-			Team 2, Null, Null), Right, 2, Team 2, White, White, Visible To and String, Visible Always);
+		Create HUD Text(Null, Custom String("Zone B", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0}", Team 2,
+			Null, Null), Right, 2, Team 2, White, White, Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneBHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone B", Null, Null, Null), Custom String("", Null, Null, Null), Custom String(
 			"Attack Zone", Null, Null, Null), Right, 2, Team 2, White, White, Visible To and String, Visible Never);
@@ -1308,8 +1261,8 @@ rule("Zone B HUD: Team.2 1")
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneBHudText), 2));
 		Create HUD Text(Null, Custom String("Zone B", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(Absolute Value(
-			Global Variable(zoneBProgress)), Down), Null, Null), Custom String("{0} Control", Team 2, Null, Null), Right, 2, Team 2,
-			Team 1, White, Visible To and String, Visible Always);
+			Global Variable(zoneBProgress)), Down), Null, Null), Custom String("{0}", Team 2, Null, Null), Right, 2, Team 2, Team 1, White,
+			Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneBHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone B", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(
 			Absolute Value(Global Variable(zoneBProgress)), Down), Null, Null), Custom String("Attack Zone", Null, Null, Null), Right, 2,
@@ -1357,7 +1310,7 @@ rule("Point C: Fast Reset")
 	}
 }
 
-rule("Point C: Gradual Reset Trigger")
+rule("Point C: Gradual Reset")
 {
 	event
 	{
@@ -1366,7 +1319,7 @@ rule("Point C: Gradual Reset Trigger")
 
 	conditions
 	{
-		Global Variable(huntActive) == False;
+		Global Variable(huntTimer) == 0;
 		Absolute Value(Global Variable(zoneCProgress)) > 0;
 		Global Variable(numTeam1C) == 0;
 		Global Variable(numTeam2C) == 0;
@@ -1375,47 +1328,7 @@ rule("Point C: Gradual Reset Trigger")
 	actions
 	{
 		Wait(3, Abort When False);
-		Set Global Variable At Index(zoneLoopControl, 2, -1.000);
-	}
-}
-
-rule("Point C: Gradual Reset Loop")
-{
-	event
-	{
-		Ongoing - Global;
-	}
-
-	conditions
-	{
-		Value In Array(Global Variable(zoneLoopControl), 2) == -1.000;
-		Absolute Value(Global Variable(zoneCProgress)) > 0;
-	}
-
-	actions
-	{
-		Set Global Variable(zoneCProgress, Subtract(Global Variable(zoneCProgress), Divide(Global Variable(zoneCProgress), Absolute Value(
-			Global Variable(zoneCProgress)))));
-		Wait(0.040, Abort When False);
-		Loop If Condition Is True;
-	}
-}
-
-rule("Point C: Disable Reset Loop")
-{
-	event
-	{
-		Ongoing - Global;
-	}
-
-	conditions
-	{
-		Or(Compare(Global Variable(numTeam1C), >, 0), Compare(Global Variable(numTeam2C), >, 0)) == True;
-	}
-
-	actions
-	{
-		Set Global Variable At Index(zoneLoopControl, 2, 0);
+		Chase Global Variable At Rate(zoneCProgress, 0, 25, None);
 	}
 }
 
@@ -1428,14 +1341,14 @@ rule("Point C: Contesting")
 
 	conditions
 	{
-		Global Variable(huntActive) == False;
+		Global Variable(huntTimer) == 0;
 		Global Variable(numTeam1C) > 0;
 		Global Variable(numTeam2C) > 0;
 	}
 
 	actions
 	{
-		Set Global Variable At Index(zoneLoopControl, 2, 0);
+		Stop Chasing Global Variable(zoneCProgress);
 		Small Message(Filtered Array(Players Within Radius(Value In Array(Global Variable(zoneLocations), 2), Value In Array(
 			Global Variable(zoneSizes), 2), All Teams, Off), And(Is Alive(Current Array Element), Not(And(Compare(Hero Of(
 			Current Array Element), ==, Hero(Sombra)), Is Using Ability 1(Current Array Element))))), Custom String("Contesting!", Null,
@@ -1463,13 +1376,11 @@ rule("Point C: Capturing")
 		Skip If(Not(Compare(Global Variable(numTeam1C), >, 0)), 4);
 		Skip If(Not(Compare(Global Variable(zoneCProgress), <, 0)), 1);
 		Set Global Variable(zoneCProgress, 0);
-		Set Global Variable(zoneCProgress, Add(Global Variable(zoneCProgress), Global Variable(numTeam1C)));
+		Chase Global Variable At Rate(zoneCProgress, 100, Multiply(5, Global Variable(numTeam1C)), Destination and Rate);
 		Skip(3);
 		Skip If(Not(Compare(Global Variable(zoneCProgress), >, 0)), 1);
 		Set Global Variable(zoneCProgress, 0);
-		Set Global Variable(zoneCProgress, Subtract(Global Variable(zoneCProgress), Global Variable(numTeam2C)));
-		Wait(0.200, Abort When False);
-		Loop If Condition Is True;
+		Chase Global Variable At Rate(zoneCProgress, -100, Multiply(5, Global Variable(numTeam2C)), Destination and Rate);
 	}
 }
 
@@ -1482,27 +1393,26 @@ rule("Point C: Listen for Capture")
 
 	conditions
 	{
-		Absolute Value(Global Variable(zoneCProgress)) >= 100;
+		Absolute Value(Global Variable(zoneCProgress)) == 100;
 	}
 
 	actions
 	{
-		Skip If(Not(Compare(Global Variable(zoneCProgress), >=, 100)), 8);
+		Stop Chasing Global Variable(zoneCProgress);
+		Skip If(Not(Compare(Global Variable(zoneCProgress), ==, 100)), 7);
 		Set Global Variable(zoneCProgress, 0);
 		Set Global Variable At Index(zoneControl, 2, Team 1);
 		Modify Team Score(Team 1, 1);
 		Small Message(All Players(Team 1), Custom String("Zone C Captured", Null, Null, Null));
 		Small Message(All Players(Team 2), Custom String("Zone C Lost", Null, Null, Null));
-		Wait(0.016, Ignore Condition);
 		Play Effect(All Players(All Teams), Ring Explosion, Team 1, Value In Array(Global Variable(zoneLocations), 2), Multiply(
 			Value In Array(Global Variable(zoneSizes), 2), 2));
-		Skip(7);
+		Skip(6);
 		Set Global Variable(zoneCProgress, 0);
 		Set Global Variable At Index(zoneControl, 2, Team 2);
 		Modify Team Score(Team 2, 1);
 		Small Message(All Players(Team 1), Custom String("Zone C Lost", Null, Null, Null));
 		Small Message(All Players(Team 2), Custom String("Zone C Captured", Null, Null, Null));
-		Wait(0.016, Ignore Condition);
 		Play Effect(All Players(All Teams), Ring Explosion, Team 2, Value In Array(Global Variable(zoneLocations), 2), Multiply(
 			Value In Array(Global Variable(zoneSizes), 2), 2));
 	}
@@ -1614,8 +1524,8 @@ rule("Zone C HUD: Team.1 0")
 		Destroy HUD Text(First Of(Global Variable(zoneCHudText)));
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 2));
-		Create HUD Text(Null, Custom String("Zone C", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0} Control",
-			Team 1, Null, Null), Right, 3, Team 1, White, White, Visible To and String, Visible Always);
+		Create HUD Text(Null, Custom String("Zone C", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0}", Team 1,
+			Null, Null), Right, 3, Team 1, White, White, Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneCHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone C", Null, Null, Null), Custom String("", Null, Null, Null), Custom String(
 			"Defend Zone", Null, Null, Null), Right, 3, Team 1, White, White, Visible To and String, Visible Never);
@@ -1647,8 +1557,8 @@ rule("Zone C HUD: Team.1 1")
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 2));
 		Create HUD Text(Null, Custom String("Zone C", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(Absolute Value(
-			Global Variable(zoneCProgress)), Down), Null, Null), Custom String("{0} Control", Team 1, Null, Null), Right, 3, Team 1,
-			Team 2, White, Visible To and String, Visible Always);
+			Global Variable(zoneCProgress)), Down), Null, Null), Custom String("{0}", Team 1, Null, Null), Right, 3, Team 1, Team 2, White,
+			Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneCHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone C", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(
 			Absolute Value(Global Variable(zoneCProgress)), Down), Null, Null), Custom String("Defend Zone", Null, Null, Null), Right, 3,
@@ -1681,8 +1591,8 @@ rule("Zone C HUD: Team.2 0")
 		Destroy HUD Text(First Of(Global Variable(zoneCHudText)));
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 2));
-		Create HUD Text(Null, Custom String("Zone C", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0} Control",
-			Team 2, Null, Null), Right, 3, Team 2, White, White, Visible To and String, Visible Always);
+		Create HUD Text(Null, Custom String("Zone C", Null, Null, Null), Custom String("", Null, Null, Null), Custom String("{0}", Team 2,
+			Null, Null), Right, 3, Team 2, White, White, Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneCHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone C", Null, Null, Null), Custom String("", Null, Null, Null), Custom String(
 			"Attack Zone", Null, Null, Null), Right, 3, Team 2, White, White, Visible To and String, Visible Never);
@@ -1714,8 +1624,8 @@ rule("Zone C HUD: Team.2 1")
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 1));
 		Destroy HUD Text(Value In Array(Global Variable(zoneCHudText), 2));
 		Create HUD Text(Null, Custom String("Zone C", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(Absolute Value(
-			Global Variable(zoneCProgress)), Down), Null, Null), Custom String("{0} Control", Team 2, Null, Null), Right, 3, Team 2,
-			Team 1, White, Visible To and String, Visible Always);
+			Global Variable(zoneCProgress)), Down), Null, Null), Custom String("{0}", Team 2, Null, Null), Right, 3, Team 2, Team 1, White,
+			Visible To and String, Visible Always);
 		Set Global Variable At Index(zoneCHudText, 0, Last Text ID);
 		Create HUD Text(All Players(Team 1), Custom String("Zone C", Null, Null, Null), Custom String("Progress: {0}%", Round To Integer(
 			Absolute Value(Global Variable(zoneCProgress)), Down), Null, Null), Custom String("Attack Zone", Null, Null, Null), Right, 3,
@@ -1796,6 +1706,7 @@ rule("If a Team controls all 3 points, activate the Hunt")
 		Set Global Variable At Index(zoneCHudText, 0, Last Text ID);
 		Wait(0.033, Ignore Condition);
 		Set Slow Motion(10);
+		Set Aim Speed(All Players(All Teams), 50);
 		Big Message(All Players(All Teams), Custom String("{0} is on The Hunt", First Of(Global Variable(zoneControl)), Null, Null));
 		Set Objective Description(All Players(All Teams), Custom String("The Hunt is On", Null, Null, Null), Visible To and String);
 		Big Message(All Players(First Of(Global Variable(zoneControl))), Custom String("Hunt Them Down", Null, Null, Null));
@@ -1803,9 +1714,49 @@ rule("If a Team controls all 3 points, activate the Hunt")
 			Null, Null, Null), Visible To and String);
 		Big Message(All Players(Opposite Team Of(First Of(Global Variable(zoneControl)))), Custom String("Survive The Hunt", Null, Null,
 			Null));
+		Skip If(Not(Global Variable(huntMarkers)), 26);
+		Skip If(Not(Compare(First Of(Global Variable(zoneControl)), ==, Team 1)), 13);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(0, Team 2)), Is Alive(Players In Slot(0,
+			Team 2)))), Players In Slot(0, Team 2), Skull, Visible To and Position, Team 2, False);
+		Set Global Variable At Index(skullIcons, 0, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(1, Team 2)), Is Alive(Players In Slot(1,
+			Team 2)))), Players In Slot(1, Team 2), Skull, Visible To and Position, Team 2, False);
+		Set Global Variable At Index(skullIcons, 1, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(2, Team 2)), Is Alive(Players In Slot(2,
+			Team 2)))), Players In Slot(2, Team 2), Skull, Visible To and Position, Team 2, False);
+		Set Global Variable At Index(skullIcons, 2, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(3, Team 2)), Is Alive(Players In Slot(3,
+			Team 2)))), Players In Slot(3, Team 2), Skull, Visible To and Position, Team 2, False);
+		Set Global Variable At Index(skullIcons, 3, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(4, Team 2)), Is Alive(Players In Slot(4,
+			Team 2)))), Players In Slot(4, Team 2), Skull, Visible To and Position, Team 2, False);
+		Set Global Variable At Index(skullIcons, 4, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(5, Team 2)), Is Alive(Players In Slot(5,
+			Team 2)))), Players In Slot(5, Team 2), Skull, Visible To and Position, Team 2, False);
+		Set Global Variable At Index(skullIcons, 5, Last Created Entity);
+		Skip(12);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(0, Team 1)), Is Alive(Players In Slot(0,
+			Team 1)))), Players In Slot(0, Team 1), Skull, Visible To and Position, Team 1, False);
+		Set Global Variable At Index(skullIcons, 0, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(1, Team 1)), Is Alive(Players In Slot(1,
+			Team 1)))), Players In Slot(1, Team 1), Skull, Visible To and Position, Team 1, False);
+		Set Global Variable At Index(skullIcons, 1, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(2, Team 1)), Is Alive(Players In Slot(2,
+			Team 1)))), Players In Slot(2, Team 1), Skull, Visible To and Position, Team 1, False);
+		Set Global Variable At Index(skullIcons, 2, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(3, Team 1)), Is Alive(Players In Slot(3,
+			Team 1)))), Players In Slot(3, Team 1), Skull, Visible To and Position, Team 1, False);
+		Set Global Variable At Index(skullIcons, 3, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(4, Team 1)), Is Alive(Players In Slot(4,
+			Team 1)))), Players In Slot(4, Team 1), Skull, Visible To and Position, Team 1, False);
+		Set Global Variable At Index(skullIcons, 4, Last Created Entity);
+		Create Icon(Filtered Array(All Players(All Teams), And(Entity Exists(Players In Slot(5, Team 1)), Is Alive(Players In Slot(5,
+			Team 1)))), Players In Slot(5, Team 1), Skull, Visible To and Position, Team 1, False);
+		Set Global Variable At Index(skullIcons, 5, Last Created Entity);
 		Play Effect(All Players(All Teams), Ring Explosion Sound, White, Value In Array(Global Variable(zoneLocations), 1), 200);
 		Wait(0.500, Ignore Condition);
 		Set Slow Motion(100);
+		Set Aim Speed(All Players(All Teams), 100);
 		Chase Global Variable At Rate(huntTimer, 0, 1, None);
 	}
 }
@@ -1826,6 +1777,13 @@ rule("At end of Hunt, reset points")
 	actions
 	{
 		Stop Chasing Global Variable(huntTimer);
+		Skip If(Not(Global Variable(huntMarkers)), 6);
+		Destroy Icon(First Of(Global Variable(skullIcons)));
+		Destroy Icon(Value In Array(Global Variable(skullIcons), 1));
+		Destroy Icon(Value In Array(Global Variable(skullIcons), 2));
+		Destroy Icon(Value In Array(Global Variable(skullIcons), 3));
+		Destroy Icon(Value In Array(Global Variable(skullIcons), 4));
+		Destroy Icon(Value In Array(Global Variable(skullIcons), 5));
 		Set Objective Description(All Players(All Teams), Custom String("Fight and Capture Zones", Null, Null, Null),
 			Visible To and String);
 		Play Effect(All Players(All Teams), Ring Explosion Sound, White, Value In Array(Global Variable(zoneLocations), 1), 200);
