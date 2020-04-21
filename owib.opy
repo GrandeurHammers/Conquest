@@ -3,44 +3,44 @@
 #Global variables
 
 # Where are the zones?
-#!declareGlobal zoneLocations
+globalvar zoneLocations
 # How large are the zones? (radius)
-#!declareGlobal zoneSizes
+globalvar zoneSizes
 # Who controls the zone?
-#!declareGlobal zoneControl
+globalvar zoneControl
 # How many members of Team 1 are on the zone?
-#!declareGlobal numTeam1A
-#!declareGlobal numTeam1B
-#!declareGlobal numTeam1C
+globalvar numTeam1A
+globalvar numTeam1B
+globalvar numTeam1C
 # How many members of Team 2 are on the zone?
-#!declareGlobal numTeam2A
-#!declareGlobal numTeam2B
-#!declareGlobal numTeam2C
+globalvar numTeam2A
+globalvar numTeam2B
+globalvar numTeam2C
 # Is the Hunt active?
-#!declareGlobal huntActive
+globalvar huntActive
 # How much time is left in the Hunt?
-#!declareGlobal huntTimer
+globalvar huntTimer
 # Whether the Hunt can be activated
-#!declareGlobal activateHunt
+globalvar activateHunt
 # How long the Hunt lasts for
-#!declareGlobal huntDuration
+globalvar huntDuration
 # Whether Hunt Markers are enabled
-#!declareGlobal huntMarkers
+globalvar huntMarkers
 
 # Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2)
-#!declareGlobal zoneAHudText
-#!declareGlobal zoneBHudText
-#!declareGlobal zoneCHudText
+globalvar zoneAHudText
+globalvar zoneBHudText
+globalvar zoneCHudText
 # Zone Visuals
-#!declareGlobal zoneAVisuals
-#!declareGlobal zoneBVisuals
-#!declareGlobal zoneCVisuals
+globalvar zoneAVisuals
+globalvar zoneBVisuals
+globalvar zoneCVisuals
 # Zone Progress
-#!declareGlobal zoneAProgress
-#!declareGlobal zoneBProgress
-#!declareGlobal zoneCProgress
+globalvar zoneAProgress
+globalvar zoneBProgress
+globalvar zoneCProgress
 # Skull Markers (The Hunt)
-#!declareGlobal skullIcons
+globalvar skullIcons
 
 # Helper pregen macros (thanks Zez)
 #!define generatePointFlags() __script__('generateSetPointFlags.js')
@@ -94,7 +94,7 @@ initialize()
 huntActive = false
 disableInspector()
 
-import "maps.opy"
+#!include "maps.opy"
 
 @Rule "Once Zones are defined, create visuals"
 @Event global
@@ -133,11 +133,11 @@ return
 
 generatePointFlags()
 
-import "normalPointControl.opy"
+#!include "normalPointControl.opy"
 
 @Rule "=====THE HUNT====="
 @Event global
 @Disabled
 return
 
-import "theHunt.opy"
+#!include "theHunt.opy"
