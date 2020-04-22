@@ -97,9 +97,9 @@ if isAssemblingHeroes():
 
 @Rule "Initialization"
 @Event global
+disableInspector()
 initialize()
 huntActive = false
-disableInspector()
 
 #!include "maps.opy"
 
