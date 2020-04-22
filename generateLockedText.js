@@ -13,8 +13,7 @@ if all([control == Team.1 for control in zoneControl]):
 else:
     hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", "", "Locked", HudPosition.RIGHT, ${point + 1}, Color.TEAM_2, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
         result += `
-zone${pointToLetter[point]}HudText[0] = getLastCreatedText()
-wait(0.033, Wait.IGNORE_CONDITION)`;
+zone${pointToLetter[point]}HudText[0] = getLastCreatedText()`;
 }
 
 result;
