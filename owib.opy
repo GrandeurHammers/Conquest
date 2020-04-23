@@ -77,24 +77,6 @@ huntMarkers = true
 @Disabled
 return
 
-@Rule "DEBUG: Show CPU"
-@Event global
-@Disabled
-hudSubtext(getAllPlayers(), "Server Load: {0}".format(getServerLoad()), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-hudSubtext(getAllPlayers(), "Server Avg: {0}".format(getAverageServerLoad()), HudPosition.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-hudSubtext(getAllPlayers(), "Server Peak: {0}".format(getPeakServerLoad()), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-
-@Rule "DEBUG: Show Player Position"
-@Event eachPlayer
-@Disabled
-hudHeader(eventPlayer, "{0}".format(eventPlayer.getPosition()), HudPosition.LEFT, -1, Color.YELLOW, HudReeval.STRING, SpecVisibility.NEVER)
-
-@Rule "DEBUG: Shorten assemble heroes"
-@Event global
-@Disabled
-if isAssemblingHeroes():
-    setMatchTime(10)
-
 @Rule "Initialization"
 @Event global
 disableInspector()
@@ -133,6 +115,7 @@ if isGameInProgress():
 @Event playerDealtFinalBlow
 if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
+    smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
 
 @Rule "# Keep track of point flags"
 @Event global
