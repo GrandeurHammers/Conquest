@@ -131,3 +131,5 @@ generatePointFlags()
 return
 
 #!include "theHunt.opy"
+
+#!include "debug.opy"
