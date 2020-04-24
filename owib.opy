@@ -56,6 +56,7 @@ subroutine declareWinner
 #!define generateLockedText() __script__('generateLockedText.js')
 #!define triggerPointReset(destroyText) __script__('triggerPointReset.js')
 #!define toggleSkulls(create) __script__('toggleSkullIcons.js')
+#!define progressBar(zoneProgVar, len) __script__('progressBarHelper.js')
 
 #!define normalObjDesc "Fight and Capture Zones"
 
