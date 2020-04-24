@@ -119,6 +119,7 @@ if len([control for control in zoneControl if control == attacker.getTeam()]) >=
 
 @Rule "# Keep track of point flags"
 @Event global
+@Disabled
 return
 
 generatePointFlags()
