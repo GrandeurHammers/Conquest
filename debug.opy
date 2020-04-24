@@ -1,3 +1,5 @@
+#!mainFile "owib.opy"
+
 @Rule "=====DEBUG====="
 @Event global
 @Disabled
