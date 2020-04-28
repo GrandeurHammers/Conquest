@@ -34,6 +34,7 @@ var controls = [
             },
             {
                 "progressCond": "> 0",
+                "subtitleTeam": "Team.1",
                 "subtitleColor": "TEAM_1",
                 "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Ally: {1}%"`,
@@ -41,6 +42,7 @@ var controls = [
             },
             {
                 "progressCond": "< 0",
+                "subtitleTeam": "Team.2",
                 "subtitleColor": "TEAM_2",
                 "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Enemy: {1}%"`,
@@ -63,6 +65,7 @@ var controls = [
             {
                 "progressCond": "< 0",
                 "subtitleColor": "TEAM_2",
+                "subtitleTeam": "Team.2",
                 "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Enemy: {1}%"`,
                 "subtitle_Team2": `"Ally: {1}%"`
@@ -84,6 +87,7 @@ var controls = [
             {
                 "progressCond": "> 0",
                 "subtitleColor": "TEAM_1",
+                "subtitleTeam": "Team.1",
                 "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Ally: {1}%"`,
                 "subtitle_Team2": `"Enemy: {1}%"`
@@ -112,7 +116,7 @@ if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zone
         } else if ("subtext_all" in control) {
             visKeys.forEach(function (visData, index) {
                 result += `
-    hudText(${visData.players}, "Zone ${pointToLetter[point]}", ${subtitle[visData.subtitleKey]}.format(${control.zoneControl}, floor(abs(${zoneProgress}))), ${control.subtext_all}, HudPosition.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${visData.specVis})
+    hudText(${visData.players}, "Zone ${pointToLetter[point]}", ${subtitle[visData.subtitleKey]}.format(${subtitle.subtitleTeam}, floor(abs(${zoneProgress}))), ${control.subtext_all}, HudPosition.RIGHT, ${point + 1}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.${visData.specVis})
     zone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
             });
         } else if ("subtitle_all" in subtitle) {
