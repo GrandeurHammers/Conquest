@@ -29,7 +29,7 @@ globalvar huntMarkers
 # Is Overtime in effect?
 globalvar overtime
 
-# Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2)
+# Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2, 3 = Capturing/Contested string)
 globalvar zoneAHudText
 globalvar zoneBHudText
 globalvar zoneCHudText
