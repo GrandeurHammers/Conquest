@@ -44,6 +44,7 @@ if not huntActive and \
 @Event global
 if abs(${zoneProgress}) == 100:
     stopChasingVariable(${zoneProgress})
+    zone${pointToLetter[point]}HudText[3] = "Capturing"
     if ${zoneProgress} == 100:
         ${zoneProgress} = 0
         zoneControl[${point}] = Team.1
