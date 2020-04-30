@@ -26,6 +26,8 @@ globalvar activateHunt
 globalvar huntDuration
 # Whether Hunt Markers are enabled
 globalvar huntMarkers
+# Is Overtime in effect?
+globalvar overtime
 
 # Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2)
 globalvar zoneAHudText
@@ -41,6 +43,8 @@ globalvar zoneBProgress
 globalvar zoneCProgress
 # Skull Markers (The Hunt)
 globalvar skullIcons
+
+subroutine declareWinner
 
 # Helper pregen macros (thanks Zez)
 #!define generatePointFlags() __script__('generateSetPointFlags.js')
@@ -80,6 +84,7 @@ return
 @Rule "Initialization"
 @Event global
 disableInspector()
+disableGamemodeCompletion()
 initialize()
 huntActive = false
 
@@ -116,6 +121,29 @@ if isGameInProgress():
 if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
+
+@Rule "Game End Handler: Trigger Overtime or Declare Victory"
+@Event global
+if isGameInProgress() and getMatchTime() == 0:
+    if teamScore(Team.1) == teamScore(Team.2):
+        setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
+        overtime = true
+    else:
+        declareWinner()
+
+@Rule "Overtime End Handler"
+@Event global
+if overtime and teamScore(Team.1) != teamScore(Team.2):
+    declareWinner()
+
+@Rule "SUB: Declare Winner"
+def declareWinner():
+    if teamScore(Team.1) == teamScore(Team.2):
+        return
+    if teamScore(Team.1) > teamScore(Team.2):
+        declareTeamVictory(Team.1)
+    else:
+        declareTeamVictory(Team.2)
 
 @Rule "# Keep track of point flags"
 @Event global
