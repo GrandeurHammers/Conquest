@@ -23,6 +23,12 @@ hudHeader(eventPlayer, "{0}".format(eventPlayer.getPosition()), HudPosition.LEFT
 if isAssemblingHeroes():
     setMatchTime(10)
 
+@Rule "DEBUG: Shorten match to 10 seconds"
+@Event global
+@Disabled
+if isGameInProgress():
+    setMatchTime(10)
+
 @Rule "DEBUG: Summon Dummy Bot on Player upon Melee + Interact"
 @Event eachPlayer
 @Disabled
