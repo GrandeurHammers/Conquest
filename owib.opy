@@ -128,7 +128,10 @@ if len([control for control in zoneControl if control == attacker.getTeam()]) >=
 if isGameInProgress() and getMatchTime() == 0:
     if teamScore(Team.1) == teamScore(Team.2):
         setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
+        setMatchTime(0.032)
         overtime = true
+        wait(0.016)
+        pauseMatchTime()
     else:
         declareWinner()
 
