@@ -28,7 +28,6 @@ if huntActive and huntTimer == 0:
     stopChasingVariable(huntTimer)
     if huntMarkers:
         toggleSkulls(false)
-    setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     bigMessage(getAllPlayers(), "The Hunt has Ended")
     triggerPointReset(true)
