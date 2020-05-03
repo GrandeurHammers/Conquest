@@ -2,6 +2,10 @@
 
 #Global variables
 
+# How many points does a team need to win?
+# In-game settings must be adjusted to properly display this value
+# See CUSTOMIZAION rule
+globalvar scoreToWin
 # Where are the zones?
 globalvar zoneLocations
 # How large are the zones? (radius)
@@ -58,7 +62,6 @@ subroutine declareWinner
 #!define toggleSkulls(create) __script__('toggleSkullIcons.js')
 #!define progressBar(zoneProgVar, len) __script__('progressBarHelper.js')
 
-#!define normalObjDesc "Fight and Capture Zones"
 
 @Rule "=====CUSTOMIZATION====="
 @Event global
@@ -76,6 +79,11 @@ huntDuration = 25
 @Rule "huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True"
 @Event global
 huntMarkers = true
+
+@Rule "scoreToWin: How many points a team must score to win. Default: 100"
+@Event global
+# This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
+scoreToWin = 100
 
 @Rule "=====SETUP====="
 @Event global
@@ -114,8 +122,6 @@ if isGameInProgress():
     triggerPointReset(false)
     setTeamScore(Team.1, 0)
     setTeamScore(Team.2, 0)
-    # wait(1, Wait.IGNORE_CONDITION)
-    # setObjectiveDescription(getAllPlayers(), normalObjDesc, HudReeval.VISIBILITY_AND_STRING)
 
 @Rule "Upon earning a kill, award additional points for zones controlled"
 @Event playerDealtFinalBlow
@@ -123,11 +129,17 @@ if len([control for control in zoneControl if control == attacker.getTeam()]) >=
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
 
+@Rule "Declare Winner if a team has requisite number of points"
+@Event global
+if isGameInProgress() and not overtime and (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin) and teamScore(Team.1) != teamScore(Team.2):
+    declareWinner()
+
 @Rule "Game End Handler: Trigger Overtime or Declare Victory"
 @Event global
 if isGameInProgress() and getMatchTime() == 0:
     if teamScore(Team.1) == teamScore(Team.2):
         setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
+        bigMessage(getAllPlayers(), "Overtime")
         setMatchTime(0.032)
         overtime = true
         wait(0.016)
