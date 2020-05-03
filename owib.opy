@@ -66,36 +66,36 @@ subroutine declareWinner
 rule "=====CUSTOMIZATION=====":
 	@Event global
 	@Disabled
-return
+    return
 
 rule "activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True":
 	@Event global
-activateHunt = true
+    activateHunt = true
 
 rule "huntDuration: How long The Hunt lasts for in seconds. Default: 25":
 	@Event global
-huntDuration = 25
+    huntDuration = 25
 
 rule "huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True":
 	@Event global
-huntMarkers = true
+    huntMarkers = true
 
 rule "scoreToWin: How many points a team must score to win. Default: 100":
 	@Event global
-# This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
-scoreToWin = 100
+    # This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
+    scoreToWin = 100
 
 rule "=====SETUP=====":
 	@Event global
 	@Disabled
-return
+    return
 
 rule "Initialization":
 	@Event global
-disableInspector()
-disableGamemodeCompletion()
-initialize()
-huntActive = false
+    disableInspector()
+    disableGamemodeCompletion()
+    initialize()
+    huntActive = false
 
 #!include "maps.opy"
 
@@ -107,13 +107,13 @@ rule "Once Zones are defined, create visuals":
 rule "=====GAMEPLAY=====":
 	@Event global
 	@Disabled
-return
+    return
 
 rule "Disable Self Respawn for 5 seconds":
 	@Event playerDied
-victim.disallowButton(Button.JUMP)
-wait(5, Wait.IGNORE_CONDITION)
-victim.allowButton(Button.JUMP)
+    victim.disallowButton(Button.JUMP)
+    wait(5, Wait.IGNORE_CONDITION)
+    victim.allowButton(Button.JUMP)
 
 rule "Reset on Game Start (Waiting for Players)":
 	@Event global
@@ -152,8 +152,8 @@ rule "Overtime End Handler":
 	@Condition overtime and teamScore(Team.1) != teamScore(Team.2)
     declareWinner()
 
-rule "SUB: Declare Winner":
 def declareWinner():
+    @Name "SUB: Declare Winner"
     if teamScore(Team.1) == teamScore(Team.2):
         return
     if teamScore(Team.1) > teamScore(Team.2):
@@ -164,7 +164,7 @@ def declareWinner():
 rule "# Keep track of point flags":
 	@Event global
 	@Disabled
-return
+    return
 
 generatePointFlags()
 
@@ -173,7 +173,7 @@ generatePointFlags()
 rule "=====THE HUNT=====":
 	@Event global
 	@Disabled
-return
+    return
 
 #!include "theHunt.opy"
 

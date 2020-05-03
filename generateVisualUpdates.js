@@ -1,3 +1,4 @@
+var point = 0;
 var pointToLetter = ['A', 'B', 'C'];
 var zoneProgress = `zone${pointToLetter[point]}Progress`;
 var result = "";
@@ -53,14 +54,14 @@ var controls = [
     {
         "zoneControl": "Team.1",
         "headerColor": "TEAM_1",
-        "subtext_spec": "\"{}\".format(Team.1)",
+        "subtext_spec": "\"{0}\".format(Team.1)",
         "subtext_Team1": "\"Defend Zone\"",
         "subtext_Team2": "\"Attack Zone\"",
         "subtitles": [
             {
                 "progressCond": "== 0",
                 "subtitleColor": "WHITE",
-                "subtitle_all": `""`
+                "subtitle_all": `" "`
             },
             {
                 "progressCond": "< 0",
@@ -75,14 +76,14 @@ var controls = [
     {
         "zoneControl": "Team.2",
         "headerColor": "TEAM_2",
-        "subtext_spec": "\"{}\".format(Team.2)",
+        "subtext_spec": "\"{0}\".format(Team.2)",
         "subtext_Team1": "\"Attack Zone\"",
         "subtext_Team2": "\"Defend Zone\"",
         "subtitles": [
             {
                 "progressCond": "== 0",
                 "subtitleColor": "WHITE",
-                "subtitle_all": `""`
+                "subtitle_all": `" "`
             },
             {
                 "progressCond": "> 0",
@@ -95,6 +96,7 @@ var controls = [
         ]
     }
 ];
+
 var visInd = -3 + point;
 controls.forEach(function (control) {
     control.subtitles.forEach(function (subtitle) {
@@ -135,4 +137,5 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
         }
     });
 });
+console.log(result);
 result;
