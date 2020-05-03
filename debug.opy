@@ -20,17 +20,17 @@ hudHeader(eventPlayer, "{0}".format(eventPlayer.getPosition()), HudPosition.LEFT
 rule "DEBUG: Shorten assemble heroes":
 	@Event global
 	@Disabled
-if isAssemblingHeroes():
+	@Condition isAssemblingHeroes()
     setMatchTime(10)
 
 rule "DEBUG: Shorten match to 10 seconds":
 	@Event global
 	@Disabled
-if isGameInProgress():
+	@Condition isGameInProgress()
     setMatchTime(10)
 
 rule "DEBUG: Summon Dummy Bot on Player upon Melee + Interact":
 	@Event eachPlayer
 	@Disabled
-if eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.MELEE):
+	@Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.MELEE)
     createDummy(Hero.ASHE, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
