@@ -9,19 +9,17 @@ for (var i = 0; i < numPoints; i++) {
 zone${pointToLetter[i]}HudText = [-1, -1, -1,"Capturing"]`;
 }
 for (var i = 0;  i < numPoints; i++) {
-    // Initialize zone control + flags
     // Generate Zone Progress Headers
     var visTo = `p for p in getAllPlayers() if abs(zone${pointToLetter[i]}Progress) > 0 and not huntActive and distance(vect(p.getPosition().x, zoneLocations[${i}].y, p.getPosition().z), zoneLocations[${i}]) < zoneSizes[${i}] and p.getPosition().y - zoneLocations[${i}].y >= -0.5 and p.getPosition().y - zoneLocations[${i}].y < zoneSizes[${i}]`;
     // Generate Progress Bar
     result += `
 ${progressBarHelper(i, visTo)}`;
-//TODO: add contesting/capturing and percentages
 }
 
 // Generate Zone Separators
-for (var i = 1.5; i < 3; i++) {
+for (var i = 1; i <= 2; i++) {
     result += `
-hudSubtext(getAllPlayers(), w"-----------", HudPosition.RIGHT, ${i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`
+hudSubtext(getAllPlayers(), w"-----------", HudPosition.RIGHT, ${-i - 0.5}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`
 }
 
 result += `
