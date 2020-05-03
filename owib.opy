@@ -64,34 +64,34 @@ subroutine declareWinner
 
 
 rule "=====CUSTOMIZATION=====":
-@Event global
-@Disabled
+	@Event global
+	@Disabled
 return
 
 rule "activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True":
-@Event global
+	@Event global
 activateHunt = true
 
 rule "huntDuration: How long The Hunt lasts for in seconds. Default: 25":
-@Event global
+	@Event global
 huntDuration = 25
 
 rule "huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True":
-@Event global
+	@Event global
 huntMarkers = true
 
 rule "scoreToWin: How many points a team must score to win. Default: 100":
-@Event global
+	@Event global
 # This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
 scoreToWin = 100
 
 rule "=====SETUP=====":
-@Event global
-@Disabled
+	@Event global
+	@Disabled
 return
 
 rule "Initialization":
-@Event global
+	@Event global
 disableInspector()
 disableGamemodeCompletion()
 initialize()
@@ -100,23 +100,23 @@ huntActive = false
 #!include "maps.opy"
 
 rule "Once Zones are defined, create visuals":
-@Event global
+	@Event global
 if len(zoneLocations) == 3 and len(zoneSizes) == 3:
     generateInitPointVisuals()
 
 rule "=====GAMEPLAY=====":
-@Event global
-@Disabled
+	@Event global
+	@Disabled
 return
 
 rule "Disable Self Respawn for 5 seconds":
-@Event playerDied
+	@Event playerDied
 victim.disallowButton(Button.JUMP)
 wait(5, Wait.IGNORE_CONDITION)
 victim.allowButton(Button.JUMP)
 
 rule "Reset on Game Start (Waiting for Players)":
-@Event global
+	@Event global
 if isGameInProgress():
     stopAllProgress()
     triggerPointReset(false)
@@ -124,18 +124,18 @@ if isGameInProgress():
     setTeamScore(Team.2, 0)
 
 rule "Upon earning a kill, award additional points for zones controlled":
-@Event playerDealtFinalBlow
+	@Event playerDealtFinalBlow
 if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
 
 rule "Declare Winner if a team has requisite number of points":
-@Event global
+	@Event global
 if isGameInProgress() and not overtime and (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin) and teamScore(Team.1) != teamScore(Team.2):
     declareWinner()
 
 rule "Game End Handler: Trigger Overtime or Declare Victory":
-@Event global
+	@Event global
 if isGameInProgress() and getMatchTime() == 0:
     if teamScore(Team.1) == teamScore(Team.2):
         setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
@@ -148,7 +148,7 @@ if isGameInProgress() and getMatchTime() == 0:
         declareWinner()
 
 rule "Overtime End Handler":
-@Event global
+	@Event global
 if overtime and teamScore(Team.1) != teamScore(Team.2):
     declareWinner()
 
@@ -162,8 +162,8 @@ def declareWinner():
         declareTeamVictory(Team.2)
 
 rule "# Keep track of point flags":
-@Event global
-@Disabled
+	@Event global
+	@Disabled
 return
 
 generatePointFlags()
@@ -171,8 +171,8 @@ generatePointFlags()
 #!include "normalPointControl.opy"
 
 rule "=====THE HUNT=====":
-@Event global
-@Disabled
+	@Event global
+	@Disabled
 return
 
 #!include "theHunt.opy"

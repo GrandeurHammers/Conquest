@@ -17,7 +17,7 @@ for (var point = 0; point < 3; point++) {
         var numPlayers = `[p for p in getPlayers(${team.constant}) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1()) and distance(vect(p.getPosition().x, zoneLocations[${point}].y, p.getPosition().z), zoneLocations[${point}]) < zoneSizes[${point}] and p.getPosition().y - zoneLocations[${point}].y >= -0.5 and p.getPosition().y - zoneLocations[${point}].y < zoneSizes[${point}]]`;
         result += 
 `rule "Point ${pointToLetter[point]}: Set ${team.variable}${pointToLetter[point]}":
-@Event global
+	@Event global
 if len(${numPlayers}) != ${team.variable}${pointToLetter[point]}:
     ${team.variable}${pointToLetter[point]} = len(${numPlayers})
 `;

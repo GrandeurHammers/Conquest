@@ -100,7 +100,7 @@ controls.forEach(function (control) {
     control.subtitles.forEach(function (subtitle) {
         result += `
 rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progress ${subtitle.progressCond}":
-@Event global
+	@Event global
 if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zoneProgress} ${subtitle.progressCond}:
     if zone${pointToLetter[point]}HudText != []:`;
         for (var i = 0; i < visKeys.length; i++) {
