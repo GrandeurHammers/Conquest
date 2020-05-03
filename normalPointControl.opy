@@ -1,6 +1,6 @@
 #!mainFile 'owib.opy'
 
-@Rule "# Point A"
+rule "# Point A":
 @Event global
 @Disabled
 return
@@ -8,7 +8,7 @@ return
 generateChaserRules(0)
 generateVisualUpdates(0)
 
-@Rule "# Point B"
+rule "# Point B":
 @Event global
 @Disabled
 return
@@ -16,7 +16,7 @@ return
 generateChaserRules(1)
 generateVisualUpdates(1)
 
-@Rule "# Point C"
+rule "# Point C":
 @Event global
 @Disabled
 return

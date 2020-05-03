@@ -99,7 +99,7 @@ var visInd = -3 + point;
 controls.forEach(function (control) {
     control.subtitles.forEach(function (subtitle) {
         result += `
-@Rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progress ${subtitle.progressCond}"
+rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progress ${subtitle.progressCond}":
 @Event global
 if not huntActive and zoneControl[${point}] == ${control.zoneControl} and ${zoneProgress} ${subtitle.progressCond}:
     if zone${pointToLetter[point]}HudText != []:`;
