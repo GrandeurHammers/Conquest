@@ -1,6 +1,6 @@
 #!mainFile "owib.opy"
 
-@Rule "Setup Zones: Lijang Tower"
+rule "Setup Zones: Lijang Tower":
 @Event global
 if getCurrentMap() in [Map.LIJIANG_CONTROL_CENTER, Map.LIJIANG_CONTROL_CENTER_LNY, Map.LIJIANG_GARDEN, Map.LIJIANG_GARDEN_LNY, Map.LIJIANG_NIGHT_MARKET, Map.LIJIANG_NIGHT_MARKET_LNY]:
     switch getCurrentMap():

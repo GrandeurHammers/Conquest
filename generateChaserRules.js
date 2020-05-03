@@ -1,7 +1,7 @@
 var pointToLetter = ['A', 'B', 'C'];
 var zoneProgress = `zone${pointToLetter[point]}Progress`;
 var result = `
-@Rule "Point ${pointToLetter[point]}: Fast Reset"
+rule "Point ${pointToLetter[point]}: Fast Reset":
 @Event global
 if not huntActive and \
 ((zoneControl[${point}] == Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or \
@@ -10,7 +10,7 @@ if not huntActive and \
     zone${pointToLetter[point]}Progress =  0
     zone${pointToLetter[point]}HudText[3] = "Capturing"
     
-@Rule "Point ${pointToLetter[point]}: Gradual Reset"
+rule "Point ${pointToLetter[point]}: Gradual Reset":
 @Event global
 if huntTimer == 0 and \
 abs(zone${pointToLetter[point]}Progress) > 0 and numTeam1${pointToLetter[point]} == 0 and numTeam2${pointToLetter[point]} == 0:
@@ -18,14 +18,14 @@ abs(zone${pointToLetter[point]}Progress) > 0 and numTeam1${pointToLetter[point]}
     chase(zone${pointToLetter[point]}Progress, 0, rate=25, ChaseReeval.NONE)
     zone${pointToLetter[point]}HudText[3] = "Capturing"
 
-@Rule "Point ${pointToLetter[point]}: Contesting"
+rule "Point ${pointToLetter[point]}: Contesting":
 @Event global
 if huntTimer == 0 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} > 0:
     stopChasingVariable(zone${pointToLetter[point]}Progress)
     zone${pointToLetter[point]}HudText[3] ="Contested"
     smallMessage([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.ALL, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())], "Contesting!")
 
-@Rule "Point ${pointToLetter[point]}: Capturing"
+rule "Point ${pointToLetter[point]}: Capturing":
 @Event global
 if not huntActive and \
 ((zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or \
@@ -40,7 +40,7 @@ if not huntActive and \
             zone${pointToLetter[point]}Progress = 0
         chase(zone${pointToLetter[point]}Progress, -100, rate=5*numTeam2${pointToLetter[point]}, ChaseReeval.DESTINATION_AND_RATE)
 
-@Rule "Point ${pointToLetter[point]}: Listen for Capture"
+rule "Point ${pointToLetter[point]}: Listen for Capture":
 @Event global
 if abs(${zoneProgress}) == 100:
     stopChasingVariable(${zoneProgress})

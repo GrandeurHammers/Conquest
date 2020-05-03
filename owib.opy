@@ -63,34 +63,34 @@ subroutine declareWinner
 #!define progressBar(zoneProgVar, len) __script__('progressBarHelper.js')
 
 
-@Rule "=====CUSTOMIZATION====="
+rule "=====CUSTOMIZATION=====":
 @Event global
 @Disabled
 return
 
-@Rule "activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True"
+rule "activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True":
 @Event global
 activateHunt = true
 
-@Rule "huntDuration: How long The Hunt lasts for in seconds. Default: 25"
+rule "huntDuration: How long The Hunt lasts for in seconds. Default: 25":
 @Event global
 huntDuration = 25
 
-@Rule "huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True"
+rule "huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True":
 @Event global
 huntMarkers = true
 
-@Rule "scoreToWin: How many points a team must score to win. Default: 100"
+rule "scoreToWin: How many points a team must score to win. Default: 100":
 @Event global
 # This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
 scoreToWin = 100
 
-@Rule "=====SETUP====="
+rule "=====SETUP=====":
 @Event global
 @Disabled
 return
 
-@Rule "Initialization"
+rule "Initialization":
 @Event global
 disableInspector()
 disableGamemodeCompletion()
@@ -99,23 +99,23 @@ huntActive = false
 
 #!include "maps.opy"
 
-@Rule "Once Zones are defined, create visuals"
+rule "Once Zones are defined, create visuals":
 @Event global
 if len(zoneLocations) == 3 and len(zoneSizes) == 3:
     generateInitPointVisuals()
 
-@Rule "=====GAMEPLAY====="
+rule "=====GAMEPLAY=====":
 @Event global
 @Disabled
 return
 
-@Rule "Disable Self Respawn for 5 seconds"
+rule "Disable Self Respawn for 5 seconds":
 @Event playerDied
 victim.disallowButton(Button.JUMP)
 wait(5, Wait.IGNORE_CONDITION)
 victim.allowButton(Button.JUMP)
 
-@Rule "Reset on Game Start (Waiting for Players)"
+rule "Reset on Game Start (Waiting for Players)":
 @Event global
 if isGameInProgress():
     stopAllProgress()
@@ -123,18 +123,18 @@ if isGameInProgress():
     setTeamScore(Team.1, 0)
     setTeamScore(Team.2, 0)
 
-@Rule "Upon earning a kill, award additional points for zones controlled"
+rule "Upon earning a kill, award additional points for zones controlled":
 @Event playerDealtFinalBlow
 if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
 
-@Rule "Declare Winner if a team has requisite number of points"
+rule "Declare Winner if a team has requisite number of points":
 @Event global
 if isGameInProgress() and not overtime and (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin) and teamScore(Team.1) != teamScore(Team.2):
     declareWinner()
 
-@Rule "Game End Handler: Trigger Overtime or Declare Victory"
+rule "Game End Handler: Trigger Overtime or Declare Victory":
 @Event global
 if isGameInProgress() and getMatchTime() == 0:
     if teamScore(Team.1) == teamScore(Team.2):
@@ -147,12 +147,12 @@ if isGameInProgress() and getMatchTime() == 0:
     else:
         declareWinner()
 
-@Rule "Overtime End Handler"
+rule "Overtime End Handler":
 @Event global
 if overtime and teamScore(Team.1) != teamScore(Team.2):
     declareWinner()
 
-@Rule "SUB: Declare Winner"
+rule "SUB: Declare Winner":
 def declareWinner():
     if teamScore(Team.1) == teamScore(Team.2):
         return
@@ -161,7 +161,7 @@ def declareWinner():
     else:
         declareTeamVictory(Team.2)
 
-@Rule "# Keep track of point flags"
+rule "# Keep track of point flags":
 @Event global
 @Disabled
 return
@@ -170,7 +170,7 @@ generatePointFlags()
 
 #!include "normalPointControl.opy"
 
-@Rule "=====THE HUNT====="
+rule "=====THE HUNT=====":
 @Event global
 @Disabled
 return

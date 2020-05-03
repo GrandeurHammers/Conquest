@@ -1,35 +1,35 @@
 #!mainFile "owib.opy"
 
-@Rule "=====DEBUG====="
+rule "=====DEBUG=====":
 @Event global
 @Disabled
 return
 
-@Rule "DEBUG: Show CPU"
+rule "DEBUG: Show CPU":
 @Event global
 @Disabled
 hudSubtext(getAllPlayers(), "Server Load: {0}".format(getServerLoad()), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 hudSubtext(getAllPlayers(), "Server Avg: {0}".format(getAverageServerLoad()), HudPosition.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 hudSubtext(getAllPlayers(), "Server Peak: {0}".format(getPeakServerLoad()), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
-@Rule "DEBUG: Show Player Position"
+rule "DEBUG: Show Player Position":
 @Event eachPlayer
 @Disabled
 hudHeader(eventPlayer, "{0}".format(eventPlayer.getPosition()), HudPosition.LEFT, -1, Color.YELLOW, HudReeval.STRING, SpecVisibility.NEVER)
 
-@Rule "DEBUG: Shorten assemble heroes"
+rule "DEBUG: Shorten assemble heroes":
 @Event global
 @Disabled
 if isAssemblingHeroes():
     setMatchTime(10)
 
-@Rule "DEBUG: Shorten match to 10 seconds"
+rule "DEBUG: Shorten match to 10 seconds":
 @Event global
 @Disabled
 if isGameInProgress():
     setMatchTime(10)
 
-@Rule "DEBUG: Summon Dummy Bot on Player upon Melee + Interact"
+rule "DEBUG: Summon Dummy Bot on Player upon Melee + Interact":
 @Event eachPlayer
 @Disabled
 if eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.MELEE):

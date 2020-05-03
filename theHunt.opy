@@ -1,6 +1,6 @@
 #!mainFile "owib.opy"
 
-@Rule "If a Team controls all 3 points, activate the Hunt"
+rule "If a Team controls all 3 points, activate the Hunt":
 @Event global
 if activateHunt and (all([control == Team.1 for control in zoneControl]) or all([control == Team.2 for control in zoneControl])):
     huntActive = true
@@ -22,7 +22,7 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
     getAllPlayers().setAimSpeed(100)
     chase(huntTimer, 0, rate=1, ChaseReeval.NONE)
 
-@Rule "At end of Hunt, reset points"
+rule "At end of Hunt, reset points":
 @Event global
 if huntActive and huntTimer == 0:
     stopChasingVariable(huntTimer)
