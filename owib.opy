@@ -101,7 +101,7 @@ huntActive = false
 
 rule "Once Zones are defined, create visuals":
 	@Event global
-if len(zoneLocations) == 3 and len(zoneSizes) == 3:
+	@Condition len(zoneLocations) == 3 and len(zoneSizes) == 3
     generateInitPointVisuals()
 
 rule "=====GAMEPLAY=====":
@@ -117,7 +117,7 @@ victim.allowButton(Button.JUMP)
 
 rule "Reset on Game Start (Waiting for Players)":
 	@Event global
-if isGameInProgress():
+	@Condition isGameInProgress()
     stopAllProgress()
     triggerPointReset(false)
     setTeamScore(Team.1, 0)
@@ -125,18 +125,18 @@ if isGameInProgress():
 
 rule "Upon earning a kill, award additional points for zones controlled":
 	@Event playerDealtFinalBlow
-if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
+	@Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
 
 rule "Declare Winner if a team has requisite number of points":
 	@Event global
-if isGameInProgress() and not overtime and (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin) and teamScore(Team.1) != teamScore(Team.2):
+	@Condition isGameInProgress() and not overtime and (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin) and teamScore(Team.1) != teamScore(Team.2)
     declareWinner()
 
 rule "Game End Handler: Trigger Overtime or Declare Victory":
 	@Event global
-if isGameInProgress() and getMatchTime() == 0:
+	@Condition isGameInProgress() and getMatchTime() == 0
     if teamScore(Team.1) == teamScore(Team.2):
         setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
         bigMessage(getAllPlayers(), "Overtime")
@@ -149,7 +149,7 @@ if isGameInProgress() and getMatchTime() == 0:
 
 rule "Overtime End Handler":
 	@Event global
-if overtime and teamScore(Team.1) != teamScore(Team.2):
+	@Condition overtime and teamScore(Team.1) != teamScore(Team.2)
     declareWinner()
 
 rule "SUB: Declare Winner":

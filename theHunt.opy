@@ -2,7 +2,7 @@
 
 rule "If a Team controls all 3 points, activate the Hunt":
 	@Event global
-if activateHunt and (all([control == Team.1 for control in zoneControl]) or all([control == Team.2 for control in zoneControl])):
+	@Condition activateHunt and (all([control == Team.1 for control in zoneControl]) or all([control == Team.2 for control in zoneControl]))
     huntActive = true
     huntTimer = huntDuration
     stopAllProgress()
@@ -24,7 +24,7 @@ if activateHunt and (all([control == Team.1 for control in zoneControl]) or all(
 
 rule "At end of Hunt, reset points":
 	@Event global
-if huntActive and huntTimer == 0:
+	@Condition huntActive and huntTimer == 0
     stopChasingVariable(huntTimer)
     if huntMarkers:
         toggleSkulls(false)
