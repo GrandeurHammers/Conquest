@@ -18,8 +18,8 @@ for (var point = 0; point < 3; point++) {
         result += 
 `rule "Point ${pointToLetter[point]}: Set ${team.variable}${pointToLetter[point]}":
 	@Event global
-if len(${numPlayers}) != ${team.variable}${pointToLetter[point]}:
-    ${team.variable}${pointToLetter[point]} = len(${numPlayers})
+    if len(${numPlayers}) != ${team.variable}${pointToLetter[point]}:
+        ${team.variable}${pointToLetter[point]} = len(${numPlayers})
 `;
     })
 }
