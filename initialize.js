@@ -3,7 +3,6 @@ var numPoints = 3;
 const pointToLetter = ['A', 'B', 'C'];
 // Initialize vars
 result += `
-    print(" ")
     zoneControl = [null, null, null]`;
 for (var i = 0; i < numPoints; i++) {
     result += `
