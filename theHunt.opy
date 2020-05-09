@@ -10,7 +10,6 @@ rule "If a Team controls all 3 points, activate the Hunt":
     setSlowMotion(10)
     getAllPlayers().setAimSpeed(50)
     bigMessage(getAllPlayers(), "{0} is on The Hunt".format(zoneControl[0]))
-    setObjectiveDescription(getAllPlayers(), "The Hunt is On", HudReeval.VISIBILITY_AND_STRING)
     bigMessage(getPlayers(zoneControl[0]), "Hunt Them Down")
     setObjectiveDescription(getPlayers(getOppositeTeam(zoneControl[0])), "Survive The Hunt", HudReeval.VISIBILITY_AND_STRING)
     bigMessage(getPlayers(getOppositeTeam(zoneControl[0])), "Survive The Hunt")
