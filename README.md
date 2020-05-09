@@ -9,17 +9,21 @@ Two teams fight to control 3 zones and earn kills. Fully capturing a zone yields
 
 Installation
 ----------
-The `lobby.owcs` contains custom game settings that can be copied and pasted into a Custom Game by the custom game owner by doing the following:
+The `lobby.owcs` contains custom game settings that can be copied and pasted into a Custom Game by the host by doing the following:
 - Copy the contents of `lobby.owcs`
 - Open the Settings of the custom game
 - Click the orange paste icon
 
 Alternatively, the latest Workshop code can be found [at this link](https://workshop.elohell.gg/eVXlsY0jGbWZfbg/Iron+Banner/)
 
-*Note: `lobby.owcs` is the latest compiled version of the `master` branch.*
+*Note: `lobby.owcs` is the latest compiled version of the branch it is in.*
 
 Supported Maps
 -----
-- Lijang Tower: Garden
+- Lijang Tower: Garden*
+- Lijang Tower: Control Center*
+- Lijang Tower: Night Market*
+
+\**All seasonal/event variants of maps are supported*
 
 More maps coming soon!
