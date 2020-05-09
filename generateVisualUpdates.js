@@ -1,4 +1,3 @@
-var point = 0;
 var pointToLetter = ['A', 'B', 'C'];
 var zoneProgress = `zone${pointToLetter[point]}Progress`;
 var result = "";
