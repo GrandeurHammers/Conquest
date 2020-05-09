@@ -4,9 +4,9 @@ var result = `
 rule "Point ${pointToLetter[point]}: Fast Reset":
 	@Event global
     @Condition not huntActive
-    @Condition ((zoneControl[${point}] == Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or (zoneControl[${point}] == Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0)):
+    @Condition ((zoneControl[${point}] == Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or (zoneControl[${point}] == Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0))
     wait(1, Wait.ABORT_WHEN_FALSE)
-    zone${pointToLetter[point]}Progress =  0
+    zone${pointToLetter[point]}Progress = 0
     zone${pointToLetter[point]}HudText[3] = "Capturing"
     
 rule "Point ${pointToLetter[point]}: Gradual Reset":
@@ -21,16 +21,18 @@ rule "Point ${pointToLetter[point]}: Gradual Reset":
 
 rule "Point ${pointToLetter[point]}: Contesting":
 	@Event global
-    @Condition huntTimer == 0 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} > 0:
+    @Condition huntTimer == 0
+    @Condition numTeam1${pointToLetter[point]} > 0
+    @Condition numTeam2${pointToLetter[point]} > 0
     stopChasingVariable(zone${pointToLetter[point]}Progress)
-    zone${pointToLetter[point]}HudText[3] ="Contested"
+    zone${pointToLetter[point]}HudText[3] = "Contested"
     smallMessage([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.ALL, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())], "Contested!")
 
 rule "Point ${pointToLetter[point]}: Capturing":
 	@Event global
     @Condition not huntActive
-    # If Team 1 alone on point or Team 2 alone on point
-    @Condition (zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or (zoneControl[${point}] != Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0)
+    #If Team 1 alone on point or Team 2 alone on point
+    @Condition ((zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or (zoneControl[${point}] != Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0))
     if numTeam1${pointToLetter[point]} > 0:
         if zone${pointToLetter[point]}Progress < 0:
             wait(1, Wait.ABORT_WHEN_FALSE)

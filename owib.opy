@@ -82,7 +82,7 @@ rule "huntMarkers: Whether the hunted have markers above their head during The H
 
 rule "scoreToWin: How many points a team must score to win. Default: 100":
 	@Event global
-    # This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
+    #This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
     scoreToWin = 100
 
 rule "=====SETUP=====":

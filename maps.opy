@@ -22,7 +22,6 @@ rule "Setup Zones: Lijang Tower":
             zoneLocations[2] = vect(-43, 95, 150)
             zoneSizes[2] = 5
             return
-        # FIXME: Change Night Market points
         case Map.LIJIANG_NIGHT_MARKET:
         case Map.LIJIANG_NIGHT_MARKET_LNY:
             zoneLocations[0] = vect(62, 2, -29)
