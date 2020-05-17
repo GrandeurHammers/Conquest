@@ -2,7 +2,7 @@ settings
 {
 	main
 	{
-		Description: "======= IRON BANNER v1.2 ======= By @Cactus_Puppy                                                A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
+		Description: "======== CONQUEST v1.2 ========    By @Cactus_Puppy                                                A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
 	}
 
 	lobby
@@ -48,11 +48,11 @@ variables
 		7: numTeam2A
 		8: numTeam2B
 		9: numTeam2C
-		10: huntActive
-		11: huntTimer
-		12: activateHunt
-		13: huntDuration
-		14: huntMarkers
+		10: powerPlayActive
+		11: powerPlayTimer
+		12: powerPlayEnabled
+		13: powerPlayDuration
+		14: powerPlayMarkers
 		15: overtime
 		16: zoneAHudText
 		17: zoneBHudText
@@ -81,7 +81,7 @@ disabled rule("=====CUSTOMIZATION=====")
 	}
 }
 
-rule("activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True")
+rule("powerPlayEnabled: Set to True to activate Power Play when a team caps all 3 points. Default: True")
 {
 	event
 	{
@@ -90,11 +90,11 @@ rule("activateHunt: Set to True to activate The Hunt when a team caps all 3 poin
 
 	actions
 	{
-		Global.activateHunt = True;
+		Global.powerPlayEnabled = True;
 	}
 }
 
-rule("huntDuration: How long The Hunt lasts for in seconds. Default: 25")
+rule("powerPlayDuration: How long Power Play lasts for in seconds. Default: 25")
 {
 	event
 	{
@@ -103,11 +103,11 @@ rule("huntDuration: How long The Hunt lasts for in seconds. Default: 25")
 
 	actions
 	{
-		Global.huntDuration = 25;
+		Global.powerPlayDuration = 25;
 	}
 }
 
-rule("huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True")
+rule("powerPlayMarkers: Whether the targeted team have markers above their head during Power Play. Default: True")
 {
 	event
 	{
@@ -116,7 +116,7 @@ rule("huntMarkers: Whether the hunted have markers above their head during The H
 
 	actions
 	{
-		Global.huntMarkers = True;
+		Global.powerPlayMarkers = True;
 	}
 }
 
@@ -163,7 +163,7 @@ rule("Initialization")
 		Global.zoneBHudText = Array(-1, -1, -1, Custom String("Capturing"));
 		Global.zoneCHudText = Array(-1, -1, -1, Custom String("Capturing"));
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneAProgress)
-			> 0 && !Global.huntActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
+			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[0])
 			< Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
@@ -176,14 +176,14 @@ rule("Initialization")
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"))[Round To Integer(Absolute Value(Global.zoneAProgress) * (18 / 100),
 			To Nearest)], Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneAProgress)
-			> 0 && !Global.huntActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
+			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[0])
 			< Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			< Global.zoneSizes[0]), Null, Null, Custom String("{0} - {1}%", Global.zoneAHudText[3], Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Top, 3, White, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneBProgress)
-			> 0 && !Global.huntActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
+			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
 			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
@@ -196,14 +196,14 @@ rule("Initialization")
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"))[Round To Integer(Absolute Value(Global.zoneBProgress) * (18 / 100),
 			To Nearest)], Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneBProgress)
-			> 0 && !Global.huntActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
+			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
 			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			< Global.zoneSizes[1]), Null, Null, Custom String("{0} - {1}%", Global.zoneBHudText[3], Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Top, 3, White, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneCProgress)
-			> 0 && !Global.huntActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
+			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
 			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
@@ -216,7 +216,7 @@ rule("Initialization")
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"))[Round To Integer(Absolute Value(Global.zoneCProgress) * (18 / 100),
 			To Nearest)], Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneCProgress)
-			> 0 && !Global.huntActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
+			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
 			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
@@ -226,9 +226,9 @@ rule("Initialization")
 			Visible To and String, Visible Always);
 		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－"), Right, -2.500, White, White, White,
 			Visible To and String, Visible Always);
-		Create HUD Text(Filtered Array(All Players(All Teams), Global.huntActive), Custom String("The Hunt: {0}", Round To Integer(
-			Global.huntTimer, Up)), Null, Null, Top, 1, Yellow, White, White, Visible To and String, Default Visibility);
-		Global.huntActive = False;
+		Create HUD Text(Filtered Array(All Players(All Teams), Global.powerPlayActive), Custom String("Power Play: {0}", Round To Integer(
+			Global.powerPlayTimer, Up)), Null, Null, Top, 1, Yellow, White, White, Visible To and String, Default Visibility);
+		Global.powerPlayActive = False;
 	}
 }
 
@@ -693,7 +693,7 @@ rule("Point A: Fast Reset")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		((Global.zoneControl[0] == Team 1 && Global.numTeam1A > 0 && Global.numTeam2A == 0) || (
 			Global.zoneControl[0] == Team 2 && Global.numTeam2A > 0 && Global.numTeam1A == 0)) == True;
 	}
@@ -715,7 +715,7 @@ rule("Point A: Gradual Reset")
 
 	conditions
 	{
-		Global.huntTimer == 0;
+		Global.powerPlayTimer == 0;
 		Absolute Value(Global.zoneAProgress) > 0;
 		Global.numTeam1A == 0;
 		Global.numTeam2A == 0;
@@ -738,7 +738,7 @@ rule("Point A: Contesting")
 
 	conditions
 	{
-		Global.huntTimer == 0;
+		Global.powerPlayTimer == 0;
 		Global.numTeam1A > 0;
 		Global.numTeam2A > 0;
 	}
@@ -762,7 +762,7 @@ rule("Point A: Capturing")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		"If Team 1 alone on point or Team 2 alone on point"
 		((Global.zoneControl[0] != Team 1 && Global.numTeam1A > 0 && Global.numTeam2A == 0) || (
 			Global.zoneControl[0] != Team 2 && Global.numTeam2A > 0 && Global.numTeam1A == 0)) == True;
@@ -829,7 +829,7 @@ rule("Zone A HUD: Control null | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[0] == Null;
 		Global.zoneAProgress == 0;
 	}
@@ -858,7 +858,7 @@ rule("Zone A HUD: Control null | Progress > 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[0] == Null;
 		Global.zoneAProgress > 0;
 	}
@@ -894,7 +894,7 @@ rule("Zone A HUD: Control null | Progress < 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[0] == Null;
 		Global.zoneAProgress < 0;
 	}
@@ -930,7 +930,7 @@ rule("Zone A HUD: Control Team.1 | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[0] == Team 1;
 		Global.zoneAProgress == 0;
 	}
@@ -963,7 +963,7 @@ rule("Zone A HUD: Control Team.1 | Progress < 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[0] == Team 1;
 		Global.zoneAProgress < 0;
 	}
@@ -999,7 +999,7 @@ rule("Zone A HUD: Control Team.2 | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[0] == Team 2;
 		Global.zoneAProgress == 0;
 	}
@@ -1032,7 +1032,7 @@ rule("Zone A HUD: Control Team.2 | Progress > 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[0] == Team 2;
 		Global.zoneAProgress > 0;
 	}
@@ -1081,7 +1081,7 @@ rule("Point B: Fast Reset")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		((Global.zoneControl[1] == Team 1 && Global.numTeam1B > 0 && Global.numTeam2B == 0) || (
 			Global.zoneControl[1] == Team 2 && Global.numTeam2B > 0 && Global.numTeam1B == 0)) == True;
 	}
@@ -1103,7 +1103,7 @@ rule("Point B: Gradual Reset")
 
 	conditions
 	{
-		Global.huntTimer == 0;
+		Global.powerPlayTimer == 0;
 		Absolute Value(Global.zoneBProgress) > 0;
 		Global.numTeam1B == 0;
 		Global.numTeam2B == 0;
@@ -1126,7 +1126,7 @@ rule("Point B: Contesting")
 
 	conditions
 	{
-		Global.huntTimer == 0;
+		Global.powerPlayTimer == 0;
 		Global.numTeam1B > 0;
 		Global.numTeam2B > 0;
 	}
@@ -1150,7 +1150,7 @@ rule("Point B: Capturing")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		"If Team 1 alone on point or Team 2 alone on point"
 		((Global.zoneControl[1] != Team 1 && Global.numTeam1B > 0 && Global.numTeam2B == 0) || (
 			Global.zoneControl[1] != Team 2 && Global.numTeam2B > 0 && Global.numTeam1B == 0)) == True;
@@ -1217,7 +1217,7 @@ rule("Zone B HUD: Control null | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[1] == Null;
 		Global.zoneBProgress == 0;
 	}
@@ -1246,7 +1246,7 @@ rule("Zone B HUD: Control null | Progress > 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[1] == Null;
 		Global.zoneBProgress > 0;
 	}
@@ -1282,7 +1282,7 @@ rule("Zone B HUD: Control null | Progress < 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[1] == Null;
 		Global.zoneBProgress < 0;
 	}
@@ -1318,7 +1318,7 @@ rule("Zone B HUD: Control Team.1 | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[1] == Team 1;
 		Global.zoneBProgress == 0;
 	}
@@ -1351,7 +1351,7 @@ rule("Zone B HUD: Control Team.1 | Progress < 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[1] == Team 1;
 		Global.zoneBProgress < 0;
 	}
@@ -1387,7 +1387,7 @@ rule("Zone B HUD: Control Team.2 | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[1] == Team 2;
 		Global.zoneBProgress == 0;
 	}
@@ -1420,7 +1420,7 @@ rule("Zone B HUD: Control Team.2 | Progress > 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[1] == Team 2;
 		Global.zoneBProgress > 0;
 	}
@@ -1469,7 +1469,7 @@ rule("Point C: Fast Reset")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		((Global.zoneControl[2] == Team 1 && Global.numTeam1C > 0 && Global.numTeam2C == 0) || (
 			Global.zoneControl[2] == Team 2 && Global.numTeam2C > 0 && Global.numTeam1C == 0)) == True;
 	}
@@ -1491,7 +1491,7 @@ rule("Point C: Gradual Reset")
 
 	conditions
 	{
-		Global.huntTimer == 0;
+		Global.powerPlayTimer == 0;
 		Absolute Value(Global.zoneCProgress) > 0;
 		Global.numTeam1C == 0;
 		Global.numTeam2C == 0;
@@ -1514,7 +1514,7 @@ rule("Point C: Contesting")
 
 	conditions
 	{
-		Global.huntTimer == 0;
+		Global.powerPlayTimer == 0;
 		Global.numTeam1C > 0;
 		Global.numTeam2C > 0;
 	}
@@ -1538,7 +1538,7 @@ rule("Point C: Capturing")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		"If Team 1 alone on point or Team 2 alone on point"
 		((Global.zoneControl[2] != Team 1 && Global.numTeam1C > 0 && Global.numTeam2C == 0) || (
 			Global.zoneControl[2] != Team 2 && Global.numTeam2C > 0 && Global.numTeam1C == 0)) == True;
@@ -1605,7 +1605,7 @@ rule("Zone C HUD: Control null | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[2] == Null;
 		Global.zoneCProgress == 0;
 	}
@@ -1634,7 +1634,7 @@ rule("Zone C HUD: Control null | Progress > 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[2] == Null;
 		Global.zoneCProgress > 0;
 	}
@@ -1670,7 +1670,7 @@ rule("Zone C HUD: Control null | Progress < 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[2] == Null;
 		Global.zoneCProgress < 0;
 	}
@@ -1706,7 +1706,7 @@ rule("Zone C HUD: Control Team.1 | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[2] == Team 1;
 		Global.zoneCProgress == 0;
 	}
@@ -1739,7 +1739,7 @@ rule("Zone C HUD: Control Team.1 | Progress < 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[2] == Team 1;
 		Global.zoneCProgress < 0;
 	}
@@ -1775,7 +1775,7 @@ rule("Zone C HUD: Control Team.2 | Progress == 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[2] == Team 2;
 		Global.zoneCProgress == 0;
 	}
@@ -1808,7 +1808,7 @@ rule("Zone C HUD: Control Team.2 | Progress > 0")
 
 	conditions
 	{
-		!Global.huntActive == True;
+		!Global.powerPlayActive == True;
 		Global.zoneControl[2] == Team 2;
 		Global.zoneCProgress > 0;
 	}
@@ -1835,7 +1835,7 @@ rule("Zone C HUD: Control Team.2 | Progress > 0")
 	}
 }
 
-disabled rule("=====THE HUNT=====")
+disabled rule("=====POWER PLAY=====")
 {
 	event
 	{
@@ -1848,7 +1848,7 @@ disabled rule("=====THE HUNT=====")
 	}
 }
 
-rule("If a Team controls all 3 points, activate the Hunt")
+rule("If a Team controls all 3 points, activate Power Play")
 {
 	event
 	{
@@ -1857,14 +1857,14 @@ rule("If a Team controls all 3 points, activate the Hunt")
 
 	conditions
 	{
-		(Global.activateHunt && (Is True For All(Global.zoneControl, Current Array Element == Team 1) || Is True For All(
+		(Global.powerPlayEnabled && (Is True For All(Global.zoneControl, Current Array Element == Team 1) || Is True For All(
 			Global.zoneControl, Current Array Element == Team 2))) == True;
 	}
 
 	actions
 	{
-		Global.huntActive = True;
-		Global.huntTimer = Global.huntDuration;
+		Global.powerPlayActive = True;
+		Global.powerPlayTimer = Global.powerPlayDuration;
 		Stop Chasing Global Variable(zoneAProgress);
 		Stop Chasing Global Variable(zoneBProgress);
 		Stop Chasing Global Variable(zoneCProgress);
@@ -1903,12 +1903,9 @@ rule("If a Team controls all 3 points, activate the Hunt")
 		Global.zoneCHudText[0] = Last Text ID;
 		Set Slow Motion(10);
 		Set Aim Speed(All Players(All Teams), 50);
-		Big Message(All Players(All Teams), Custom String("{0} is on The Hunt", Global.zoneControl[0]));
-		Big Message(All Players(Global.zoneControl[0]), Custom String("Hunt Them Down"));
-		Set Objective Description(All Players(Opposite Team Of(Global.zoneControl[0])), Custom String("Survive The Hunt"),
-			Visible To and String);
-		Big Message(All Players(Opposite Team Of(Global.zoneControl[0])), Custom String("Survive The Hunt"));
-		If(Global.huntMarkers);
+		Big Message(All Players(All Teams), Custom String("Power Play"));
+		Big Message(All Players(All Teams), Custom String("Zones Locked"));
+		If(Global.powerPlayMarkers);
 			If(Global.zoneControl[0] == Team 1);
 				Create Icon(Filtered Array(All Players(All Teams), Entity Exists(Players In Slot(0, Team 2)) && Is Alive(Players In Slot(0,
 					Team 2))), Players In Slot(0, Team 2), Skull, Visible To and Position, Team 2, False);
@@ -1953,11 +1950,11 @@ rule("If a Team controls all 3 points, activate the Hunt")
 		Wait(0.500, Ignore Condition);
 		Set Slow Motion(100);
 		Set Aim Speed(All Players(All Teams), 100);
-		Chase Global Variable At Rate(huntTimer, 0, 1, None);
+		Chase Global Variable At Rate(powerPlayTimer, 0, 1, None);
 	}
 }
 
-rule("At end of Hunt, reset points")
+rule("At end of Power Play, reset points")
 {
 	event
 	{
@@ -1966,13 +1963,13 @@ rule("At end of Hunt, reset points")
 
 	conditions
 	{
-		(Global.huntActive && Global.huntTimer == 0) == True;
+		(Global.powerPlayActive && Global.powerPlayTimer == 0) == True;
 	}
 
 	actions
 	{
-		Stop Chasing Global Variable(huntTimer);
-		If(Global.huntMarkers);
+		Stop Chasing Global Variable(powerPlayTimer);
+		If(Global.powerPlayMarkers);
 			Destroy Icon(Global.skullIcons[0]);
 			Destroy Icon(Global.skullIcons[1]);
 			Destroy Icon(Global.skullIcons[2]);
@@ -1981,7 +1978,7 @@ rule("At end of Hunt, reset points")
 			Destroy Icon(Global.skullIcons[5]);
 		End;
 		Play Effect(All Players(All Teams), Ring Explosion Sound, White, Global.zoneLocations[1], 200);
-		Big Message(All Players(All Teams), Custom String("The Hunt has Ended"));
+		Big Message(All Players(All Teams), Custom String("Power Play has Ended"));
 		Destroy HUD Text(Global.zoneAHudText[0]);
 		Global.zoneControl[0] = Null;
 		Global.zoneAProgress = 0;
@@ -1991,7 +1988,7 @@ rule("At end of Hunt, reset points")
 		Destroy HUD Text(Global.zoneCHudText[0]);
 		Global.zoneControl[2] = Null;
 		Global.zoneCProgress = 0;
-		Global.huntActive = False;
+		Global.powerPlayActive = False;
 	}
 }
 

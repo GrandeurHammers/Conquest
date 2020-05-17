@@ -3,7 +3,7 @@ var zoneProgress = `zone${pointToLetter[point]}Progress`;
 var result = `
 rule "Point ${pointToLetter[point]}: Fast Reset":
 	@Event global
-    @Condition not huntActive
+    @Condition not powerPlayActive
     @Condition ((zoneControl[${point}] == Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or (zoneControl[${point}] == Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0))
     wait(1, Wait.ABORT_WHEN_FALSE)
     zone${pointToLetter[point]}Progress = 0
@@ -11,7 +11,7 @@ rule "Point ${pointToLetter[point]}: Fast Reset":
     
 rule "Point ${pointToLetter[point]}: Gradual Reset":
 	@Event global
-    @Condition huntTimer == 0
+    @Condition powerPlayTimer == 0
     @Condition abs(zone${pointToLetter[point]}Progress) > 0
     @Condition numTeam1${pointToLetter[point]} == 0
     @Condition numTeam2${pointToLetter[point]} == 0
@@ -21,7 +21,7 @@ rule "Point ${pointToLetter[point]}: Gradual Reset":
 
 rule "Point ${pointToLetter[point]}: Contesting":
 	@Event global
-    @Condition huntTimer == 0
+    @Condition powerPlayTimer == 0
     @Condition numTeam1${pointToLetter[point]} > 0
     @Condition numTeam2${pointToLetter[point]} > 0
     stopChasingVariable(zone${pointToLetter[point]}Progress)
@@ -30,7 +30,7 @@ rule "Point ${pointToLetter[point]}: Contesting":
 
 rule "Point ${pointToLetter[point]}: Capturing":
 	@Event global
-    @Condition not huntActive
+    @Condition not powerPlayActive
     #If Team 1 alone on point or Team 2 alone on point
     @Condition ((zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or (zoneControl[${point}] != Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0))
     if numTeam1${pointToLetter[point]} > 0:
