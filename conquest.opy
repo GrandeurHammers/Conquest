@@ -20,16 +20,16 @@ globalvar numTeam1C
 globalvar numTeam2A
 globalvar numTeam2B
 globalvar numTeam2C
-# Is the Hunt active?
-globalvar huntActive
-# How much time is left in the Hunt?
-globalvar huntTimer
-# Whether the Hunt can be activated
-globalvar activateHunt
-# How long the Hunt lasts for
-globalvar huntDuration
-# Whether Hunt Markers are enabled
-globalvar huntMarkers
+# Is Power Play active?
+globalvar powerPlayActive
+# How much time is left in Power Play?
+globalvar powerPlayTimer
+# Whether Power Play can be activated
+globalvar powerPlayEnabled
+# How long Power Play lasts for
+globalvar powerPlayDuration
+# Whether Power Play Markers are enabled
+globalvar powerPlayMarkers
 # Is Overtime in effect?
 globalvar overtime
 
@@ -45,7 +45,7 @@ globalvar zoneCVisuals
 globalvar zoneAProgress
 globalvar zoneBProgress
 globalvar zoneCProgress
-# Skull Markers (The Hunt)
+# Skull Markers (Power Play)
 globalvar skullIcons
 
 subroutine declareWinner
@@ -68,17 +68,17 @@ rule "=====CUSTOMIZATION=====":
 	@Disabled
     return
 
-rule "activateHunt: Set to True to activate The Hunt when a team caps all 3 points. Default: True":
+rule "powerPlayEnabled: Set to True to activate Power Play when a team caps all 3 points. Default: True":
 	@Event global
-    activateHunt = true
+    powerPlayEnabled = true
 
-rule "huntDuration: How long The Hunt lasts for in seconds. Default: 25":
+rule "powerPlayDuration: How long Power Play lasts for in seconds. Default: 25":
 	@Event global
-    huntDuration = 25
+    powerPlayDuration = 25
 
-rule "huntMarkers: Whether the hunted have markers above their head during The Hunt. Default: True":
+rule "powerPlayMarkers: Whether the targeted team have markers above their head during Power Play. Default: True":
 	@Event global
-    huntMarkers = true
+    powerPlayMarkers = true
 
 rule "scoreToWin: How many points a team must score to win. Default: 100":
 	@Event global
@@ -95,7 +95,7 @@ rule "Initialization":
     disableInspector()
     disableGamemodeCompletion()
     initialize()
-    huntActive = false
+    powerPlayActive = false
 
 #!include "maps.opy"
 
@@ -170,11 +170,11 @@ generatePointFlags()
 
 #!include "normalPointControl.opy"
 
-rule "=====THE HUNT=====":
+rule "=====POWER PLAY=====":
 	@Event global
 	@Disabled
     return
 
-#!include "theHunt.opy"
+#!include "powerPlay.opy"
 
 #!include "debug.opy"

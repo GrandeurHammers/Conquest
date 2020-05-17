@@ -10,7 +10,7 @@ for (var i = 0; i < numPoints; i++) {
 }
 for (var i = 0;  i < numPoints; i++) {
     // Generate Zone Progress Headers
-    var visTo = `p for p in getLivingPlayers(Team.ALL) if abs(zone${pointToLetter[i]}Progress) > 0 and not huntActive and distance(vect(p.getPosition().x, zoneLocations[${i}].y, p.getPosition().z), zoneLocations[${i}]) < zoneSizes[${i}] and p.getPosition().y - zoneLocations[${i}].y >= -0.5 and p.getPosition().y - zoneLocations[${i}].y < zoneSizes[${i}]`;
+    var visTo = `p for p in getLivingPlayers(Team.ALL) if abs(zone${pointToLetter[i]}Progress) > 0 and not powerPlayActive and distance(vect(p.getPosition().x, zoneLocations[${i}].y, p.getPosition().z), zoneLocations[${i}]) < zoneSizes[${i}] and p.getPosition().y - zoneLocations[${i}].y >= -0.5 and p.getPosition().y - zoneLocations[${i}].y < zoneSizes[${i}]`;
     // Generate Progress Bar
     result += `
     ${progressBarHelper(i, visTo)}`;
@@ -23,7 +23,7 @@ for (var i = 1; i <= 2; i++) {
 }
 
 result += `
-    hudHeader([p for p in getAllPlayers() if huntActive], "The Hunt: {}".format(ceil(huntTimer)), HudPosition.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
+    hudHeader([p for p in getAllPlayers() if powerPlayActive], "Power Play: {}".format(ceil(powerPlayTimer)), HudPosition.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
 console.log(result);
 result;
 

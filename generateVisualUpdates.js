@@ -102,7 +102,7 @@ controls.forEach(function (control) {
         result += `
 rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progress ${subtitle.progressCond}":
 	@Event global
-    @Condition not huntActive
+    @Condition not powerPlayActive
     @Condition zoneControl[${point}] == ${control.zoneControl}
     @Condition ${zoneProgress} ${subtitle.progressCond}
     if zone${pointToLetter[point]}HudText != []:`;
