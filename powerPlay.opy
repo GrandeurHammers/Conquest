@@ -1,4 +1,4 @@
-#!mainFile "owib.opy"
+#!mainFile "conquest.opy"
 
 rule "If a Team controls all 3 points, activate Power Play":
 	@Event global
