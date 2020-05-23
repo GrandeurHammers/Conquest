@@ -37,12 +37,12 @@ rule "Point ${pointToLetter[point]}: Capturing":
         if zone${pointToLetter[point]}Progress < 0:
             wait(1, Wait.ABORT_WHEN_FALSE)
             zone${pointToLetter[point]}Progress = 0
-        chase(zone${pointToLetter[point]}Progress, 100, rate=5*numTeam1${pointToLetter[point]}, ChaseReeval.DESTINATION_AND_RATE)
+        chase(zone${pointToLetter[point]}Progress, 100, rate=(2*numTeam1${pointToLetter[point]} + 3 if numTeam1${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
     else:
         if zone${pointToLetter[point]}Progress > 0:
             wait(1, Wait.ABORT_WHEN_FALSE)
             zone${pointToLetter[point]}Progress = 0
-        chase(zone${pointToLetter[point]}Progress, -100, rate=5*numTeam2${pointToLetter[point]}, ChaseReeval.DESTINATION_AND_RATE)
+        chase(zone${pointToLetter[point]}Progress, -100, rate=(2*numTeam2${pointToLetter[point]} + 3 if numTeam2${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
     zone${pointToLetter[point]}HudText[3] = "Capturing"
 
 rule "Point ${pointToLetter[point]}: Listen for Capture":
