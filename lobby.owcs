@@ -2,7 +2,7 @@ settings
 {
 	main
 	{
-		Description: "======== CONQUEST v1.2 ========    By @Cactus_Puppy                                                A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
+		Description: "======== CONQUEST v1.3 ========    By @Cactus_Puppy                                                A port of Destiny 2's Iron Banner gamemode to Overwatch. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate The Hunt. First to 100 points wins!"
 	}
 
 	lobby
@@ -23,6 +23,9 @@ settings
 				Lijiang Garden Lunar New Year
 				Lijiang Night Market
 				Lijiang Night Market Lunar New Year
+				Oasis City Center
+				Oasis Gardens
+				Oasis University
 			}
 		}
 
@@ -273,6 +276,46 @@ rule("Setup Zones: Lijang Tower")
 		Global.zoneLocations[1] = Vector(1, -1, -61);
 		Global.zoneSizes[1] = 7;
 		Global.zoneLocations[2] = Vector(-60, 2, -29);
+		Global.zoneSizes[2] = 5;
+		Abort;
+	}
+}
+
+rule("Setup Zones: Oasis")
+{
+	event
+	{
+		Ongoing - Global;
+	}
+
+	conditions
+	{
+		Array Contains(Array(Map(Oasis City Center), Map(Oasis Gardens), Map(Oasis University)), Current Map) == True;
+	}
+
+	actions
+	{
+		Skip(Array(21, 0, 7, 14)[1 + Index Of Array Value(Array(Map(Oasis City Center), Map(Oasis Gardens), Map(Oasis University)),
+			Current Map)]);
+		Global.zoneLocations[0] = Vector(98.500, 0.850, 300);
+		Global.zoneSizes[0] = 5;
+		Global.zoneLocations[1] = Vector(143.500, 2.150, 247.500);
+		Global.zoneSizes[1] = 4.500;
+		Global.zoneLocations[2] = Vector(196.500, 0.850, 202.500);
+		Global.zoneSizes[2] = 5;
+		Abort;
+		Global.zoneLocations[0] = Vector(101.500, 8, -287);
+		Global.zoneSizes[0] = 5;
+		Global.zoneLocations[1] = Vector(121.255, 5.500, -227.480);
+		Global.zoneSizes[1] = 7;
+		Global.zoneLocations[2] = Vector(180.850, 8, -207.850);
+		Global.zoneSizes[2] = 5;
+		Abort;
+		Global.zoneLocations[0] = Vector(-188, 18, 53.500);
+		Global.zoneSizes[0] = 5;
+		Global.zoneLocations[1] = Vector(-210, 19, 0);
+		Global.zoneSizes[1] = 5;
+		Global.zoneLocations[2] = Vector(-188, 18, -53.500);
 		Global.zoneSizes[2] = 5;
 		Abort;
 	}
