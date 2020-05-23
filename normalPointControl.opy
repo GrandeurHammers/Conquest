@@ -1,4 +1,4 @@
-#!mainFile 'owib.opy'
+#!mainFile 'conquest.opy'
 
 rule "# Point A":
 	@Event global
