@@ -61,6 +61,10 @@ variables
 		23: zoneBProgress
 		24: zoneCProgress
 		25: skullIcons
+
+	player:
+		0: respawnBlocked
+		1: respawnBuffered
 }
 
 subroutines
@@ -352,8 +356,34 @@ rule("Disable Self Respawn for 5 seconds")
 	actions
 	{
 		Disallow Button(Victim, Jump);
+		Victim.respawnBlocked = True;
 		Wait(5, Ignore Condition);
 		Allow Button(Victim, Jump);
+		Victim.respawnBlocked = False;
+		If(Victim.respawnBuffered);
+			Respawn(Victim);
+			Victim.respawnBuffered = False;
+	}
+}
+
+rule("If player attempts to respawn while blocked, mark them to respawn")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Event Player.respawnBlocked != False;
+		Is Dead(Event Player) == True;
+	}
+
+	actions
+	{
+		Event Player.respawnBuffered = True;
 	}
 }
 

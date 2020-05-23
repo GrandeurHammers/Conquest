@@ -48,6 +48,12 @@ globalvar zoneCProgress
 # Skull Markers (Power Play)
 globalvar skullIcons
 
+#Player variables
+# Whether a respawn input can be buffered
+playervar respawnBlocked
+# Tracker for buffered respawn input
+playervar respawnBuffered
+
 subroutine declareWinner
 
 # Helper pregen macros (thanks Zez)
@@ -112,8 +118,19 @@ rule "=====GAMEPLAY=====":
 rule "Disable Self Respawn for 5 seconds":
 	@Event playerDied
     victim.disallowButton(Button.JUMP)
+    victim.respawnBlocked = true
     wait(5, Wait.IGNORE_CONDITION)
     victim.allowButton(Button.JUMP)
+    victim.respawnBlocked = false
+    if victim.respawnBuffered:
+        victim.respawn()
+        victim.respawnBuffered = false
+
+rule "If player attempts to respawn while blocked, mark them to respawn":
+    @Event eachPlayer
+    @Condition eventPlayer.respawnBlocked
+    @Condition eventPlayer.isDead()
+    eventPlayer.respawnBuffered = true
 
 rule "Reset on Game Start (Waiting for Players)":
 	@Event global
