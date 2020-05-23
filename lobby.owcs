@@ -805,13 +805,13 @@ rule("Point A: Capturing")
 				Wait(1, Abort When False);
 				Global.zoneAProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneAProgress, 100, 5 * Global.numTeam1A, Destination and Rate);
+			Chase Global Variable At Rate(zoneAProgress, 100, Global.numTeam1A > 0 ? 2 * Global.numTeam1A + 3 : 0, Destination and Rate);
 		Else;
 			If(Global.zoneAProgress > 0);
 				Wait(1, Abort When False);
 				Global.zoneAProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneAProgress, -100, 5 * Global.numTeam2A, Destination and Rate);
+			Chase Global Variable At Rate(zoneAProgress, -100, Global.numTeam2A > 0 ? 2 * Global.numTeam2A + 3 : 0, Destination and Rate);
 		End;
 		Global.zoneAHudText[3] = Custom String("Capturing");
 	}
@@ -1193,13 +1193,13 @@ rule("Point B: Capturing")
 				Wait(1, Abort When False);
 				Global.zoneBProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneBProgress, 100, 5 * Global.numTeam1B, Destination and Rate);
+			Chase Global Variable At Rate(zoneBProgress, 100, Global.numTeam1B > 0 ? 2 * Global.numTeam1B + 3 : 0, Destination and Rate);
 		Else;
 			If(Global.zoneBProgress > 0);
 				Wait(1, Abort When False);
 				Global.zoneBProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneBProgress, -100, 5 * Global.numTeam2B, Destination and Rate);
+			Chase Global Variable At Rate(zoneBProgress, -100, Global.numTeam2B > 0 ? 2 * Global.numTeam2B + 3 : 0, Destination and Rate);
 		End;
 		Global.zoneBHudText[3] = Custom String("Capturing");
 	}
@@ -1581,13 +1581,13 @@ rule("Point C: Capturing")
 				Wait(1, Abort When False);
 				Global.zoneCProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneCProgress, 100, 5 * Global.numTeam1C, Destination and Rate);
+			Chase Global Variable At Rate(zoneCProgress, 100, Global.numTeam1C > 0 ? 2 * Global.numTeam1C + 3 : 0, Destination and Rate);
 		Else;
 			If(Global.zoneCProgress > 0);
 				Wait(1, Abort When False);
 				Global.zoneCProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneCProgress, -100, 5 * Global.numTeam2C, Destination and Rate);
+			Chase Global Variable At Rate(zoneCProgress, -100, Global.numTeam2C > 0 ? 2 * Global.numTeam2C + 3 : 0, Destination and Rate);
 		End;
 		Global.zoneCHudText[3] = Custom String("Capturing");
 	}
