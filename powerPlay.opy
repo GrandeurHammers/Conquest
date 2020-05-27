@@ -13,8 +13,9 @@ rule "If a Team controls all 3 points, activate Power Play":
     bigMessage(getAllPlayers(), "Zones Locked")
     if powerPlayMarkers:
         toggleSkulls(true)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
+    powerPlaySoundTrigger = true
     wait(0.5, Wait.IGNORE_CONDITION)
+    powerPlaySoundTrigger = false
     setSlowMotion(100)
     getAllPlayers().setAimSpeed(100)
     chase(powerPlayTimer, 0, rate=1, ChaseReeval.NONE)
@@ -29,3 +30,8 @@ rule "At end of Power Play, reset points":
     bigMessage(getAllPlayers(), "Power Play has Ended")
     triggerPointReset(true)
     powerPlayActive = false
+
+rule "HELPER: Play Power Play Sound at Player Position":
+    @Event eachPlayer
+    @Condition powerPlaySoundTrigger
+    playEffect(eventPlayer, DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getPosition(), 200)
