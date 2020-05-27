@@ -19,7 +19,7 @@ for (var i = 0;  i < numPoints; i++) {
 // Generate Zone Separators
 for (var i = 1; i <= 2; i++) {
     result += `
-    hudSubtext(getAllPlayers(), w"-----------", HudPosition.RIGHT, ${-i - 0.5}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`
+    hudSubtext(getAllPlayers(), w"-----------", HudPosition.RIGHT, ${-i - 0.5}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`
 }
 
 result += `

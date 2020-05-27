@@ -3,12 +3,6 @@ var zoneProgress = `zone${pointToLetter[point]}Progress`;
 var result = "";
 var visKeys = [
     {
-        "textKey": "subtext_spec",
-        "subtitleKey": "subtitle_spec",
-        "specVis": "ALWAYS",
-        "players": "null"
-    },
-    {
         "textKey": "subtext_Team1",
         "subtitleKey": "subtitle_Team1",
         "specVis": "NEVER",
@@ -36,7 +30,6 @@ var controls = [
                 "progressCond": "> 0",
                 "subtitleTeam": "Team.1",
                 "subtitleColor": "TEAM_1",
-                "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Ally: {1}%"`,
                 "subtitle_Team2": `"Enemy: {1}%"`
             },
@@ -44,7 +37,6 @@ var controls = [
                 "progressCond": "< 0",
                 "subtitleTeam": "Team.2",
                 "subtitleColor": "TEAM_2",
-                "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Enemy: {1}%"`,
                 "subtitle_Team2": `"Ally: {1}%"`
             }
@@ -53,7 +45,6 @@ var controls = [
     {
         "zoneControl": "Team.1",
         "headerColor": "TEAM_1",
-        "subtext_spec": "\"{0}\".format(Team.1)",
         "subtext_Team1": "\"Defend Zone\"",
         "subtext_Team2": "\"Attack Zone\"",
         "subtitles": [
@@ -66,7 +57,6 @@ var controls = [
                 "progressCond": "< 0",
                 "subtitleColor": "TEAM_2",
                 "subtitleTeam": "Team.2",
-                "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Enemy: {1}%"`,
                 "subtitle_Team2": `"Ally: {1}%"`
             }
@@ -75,7 +65,6 @@ var controls = [
     {
         "zoneControl": "Team.2",
         "headerColor": "TEAM_2",
-        "subtext_spec": "\"{0}\".format(Team.2)",
         "subtext_Team1": "\"Attack Zone\"",
         "subtext_Team2": "\"Defend Zone\"",
         "subtitles": [
@@ -88,7 +77,6 @@ var controls = [
                 "progressCond": "> 0",
                 "subtitleColor": "TEAM_1",
                 "subtitleTeam": "Team.1",
-                "subtitle_spec": `"{0}: {1}%"`,
                 "subtitle_Team1": `"Ally: {1}%"`,
                 "subtitle_Team2": `"Enemy: {1}%"`
             }
@@ -112,7 +100,7 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
         }
         if ("subtext_all" in control && "subtitle_all" in subtitle) {
             result += `
-    hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", ${subtitle.subtitle_all}, ${control.subtext_all}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
+    hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", ${subtitle.subtitle_all}, ${control.subtext_all}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
             for (var i = 0; i < visKeys.length; i++) {
                 result += `
     zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
