@@ -9,6 +9,7 @@ rule "If a Team controls all 3 points, activate Power Play":
     generateLockedText()
     setSlowMotion(10)
     getAllPlayers().setAimSpeed(50)
+    setObjectiveDescription(getAllPlayers(), "Power Play", HudReeval.VISIBILITY)
     bigMessage(getAllPlayers(), "Power Play")
     bigMessage(getAllPlayers(), "Zones Locked")
     if powerPlayMarkers:
@@ -27,7 +28,11 @@ rule "At end of Power Play, reset points":
     if powerPlayMarkers:
         toggleSkulls(false)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
-    bigMessage(getAllPlayers(), "Power Play has Ended")
+    if overtime:
+        setObjectiveDescription(getAllPlayers(), "Overtime", HudReeval.VISIBILITY)
+    else:
+        setObjectiveDescription(getAllPlayers(), "Fight", HudReeval.VISIBILITY)
+    bigMessage(getAllPlayers(), "Power Play Ended")
     triggerPointReset(true)
     powerPlayActive = false
 
