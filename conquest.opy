@@ -39,10 +39,6 @@ globalvar overtime
 globalvar zoneAHudText
 globalvar zoneBHudText
 globalvar zoneCHudText
-# Zone Visuals
-globalvar zoneAVisuals
-globalvar zoneBVisuals
-globalvar zoneCVisuals
 # Zone Progress
 globalvar zoneAProgress
 globalvar zoneBProgress
