@@ -23,7 +23,14 @@ for (var i = 1; i <= 2; i++) {
 }
 
 result += `
-    hudHeader([p for p in getAllPlayers() if powerPlayActive], "Power Play: {}".format(ceil(powerPlayTimer)), HudPosition.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
+    #Score multiplier under scoreboard
+    scoreMultipliers = [1, 1]
+    #Team 1 score multiplier
+    hudHeader(getPlayers(Team.1), "{0} Score Multiplier {1}".format(scoreMultipliers[0], scoreMultipliers[1]), HudPosition.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    #Team 2 score multiplier
+    hudHeader(getPlayers(Team.2), "{0} Score Multiplier {1}".format(scoreMultipliers[1], scoreMultipliers[0]), HudPosition.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    #Power Play Timer - Visible when power play is active
+    hudHeader([p for p in getAllPlayers() if powerPlayActive], "Power Play: {0}".format(ceil(powerPlayTimer)), HudPosition.TOP, 3, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
 console.log(result);
 result;
 
