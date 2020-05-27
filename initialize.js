@@ -3,7 +3,9 @@ var numPoints = 3;
 const pointToLetter = ['A', 'B', 'C'];
 // Initialize vars
 result += `
-    zoneControl = [null, null, null]`;
+    #Set up all points to have neither team controlling
+    zoneControl = [null, null, null]
+    #Initialize HUD IDs for each point`;
 for (var i = 0; i < numPoints; i++) {
     result += `
     zone${pointToLetter[i]}HudText = [-1, -1, -1,"Capturing"]`;
@@ -13,8 +15,12 @@ for (var i = 0;  i < numPoints; i++) {
     var visTo = `p for p in getLivingPlayers(Team.ALL) if abs(zone${pointToLetter[i]}Progress) > 0 and not powerPlayActive and distance(vect(p.getPosition().x, zoneLocations[${i}].y, p.getPosition().z), zoneLocations[${i}]) < zoneSizes[${i}] and p.getPosition().y - zoneLocations[${i}].y >= -0.5 and p.getPosition().y - zoneLocations[${i}].y < zoneSizes[${i}]`;
     // Generate Progress Bar
     result += `
+    #Progress Bar for Zone ${pointToLetter[i]} - Visible to all living players within the radius during normal play when point has progress on it
     ${progressBarHelper(i, visTo)}`;
 }
+
+result += `
+    #HUD Separator Lines`;
 
 // Generate Zone Separators
 for (var i = 1; i <= 2; i++) {
@@ -56,9 +62,9 @@ function progressBarHelper(i, visTo) {
         }
     }
     
-    result += `][round(abs(zone${pointToLetter[i]}Progress) * ${len} / 100)], HudPosition.TOP, 2, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    result += `][round(abs(zone${pointToLetter[i]}Progress) * ${len} / 100)], HudPosition.TOP, 4, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
     // Add Capturing/Contested undertext and initialize 
     result += `
-    hudSubtext([${visTo}], "{0} - {1}%".format(zone${pointToLetter[i]}HudText[3], floor(abs(zone${pointToLetter[i]}Progress))), HudPosition.TOP, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    hudSubtext([${visTo}], "{0} - {1}%".format(zone${pointToLetter[i]}HudText[3], floor(abs(zone${pointToLetter[i]}Progress))), HudPosition.TOP, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
     return result;
 }

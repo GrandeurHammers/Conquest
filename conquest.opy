@@ -145,6 +145,7 @@ rule "Upon earning a kill, award additional points for zones controlled":
 	@Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
+    # TODO: Improve communication about more points on kill
 
 rule "Declare Winner if a team has requisite number of points":
 	@Event global
@@ -156,7 +157,7 @@ rule "Game End Handler: Trigger Overtime or Declare Victory":
 	@Condition isGameInProgress() and getMatchTime() == 0
     if teamScore(Team.1) == teamScore(Team.2):
         setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
-        bigMessage(getAllPlayers(), "Overtime")
+        bigMessage(getAllPlayers(), l"Overtime")
         setMatchTime(0.032)
         overtime = true
         wait(0.016)
