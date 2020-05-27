@@ -45,25 +45,27 @@ variables
 		1: zoneLocations
 		2: zoneSizes
 		3: zoneControl
-		4: numTeam1A
-		5: numTeam1B
-		6: numTeam1C
-		7: numTeam2A
-		8: numTeam2B
-		9: numTeam2C
-		10: powerPlayActive
-		11: powerPlayTimer
-		12: powerPlayEnabled
-		13: powerPlayDuration
-		14: powerPlayMarkers
-		15: overtime
-		16: zoneAHudText
-		17: zoneBHudText
-		18: zoneCHudText
-		22: zoneAProgress
-		23: zoneBProgress
-		24: zoneCProgress
-		25: skullIcons
+		4: scoreMultipliers
+		5: numTeam1A
+		6: numTeam1B
+		7: numTeam1C
+		8: numTeam2A
+		9: numTeam2B
+		10: numTeam2C
+		11: powerPlayActive
+		12: powerPlayTimer
+		13: powerPlaySoundTrigger
+		14: powerPlayEnabled
+		15: powerPlayDuration
+		16: powerPlayMarkers
+		17: overtime
+		18: zoneAHudText
+		19: zoneBHudText
+		20: zoneCHudText
+		21: zoneAProgress
+		22: zoneBProgress
+		23: zoneCProgress
+		24: skullIcons
 
 	player:
 		0: respawnBlocked
@@ -165,10 +167,13 @@ rule("Initialization")
 	{
 		Disable Inspector Recording;
 		Disable Built-In Game Mode Completion;
+		"Set up all points to have neither team controlling"
 		Global.zoneControl = Array(Null, Null, Null);
+		"Initialize HUD IDs for each point"
 		Global.zoneAHudText = Array(-1, -1, -1, Custom String("Capturing"));
 		Global.zoneBHudText = Array(-1, -1, -1, Custom String("Capturing"));
 		Global.zoneCHudText = Array(-1, -1, -1, Custom String("Capturing"));
+		"Progress Bar for Zone A - Visible to all living players within the radius during normal play when point has progress on it"
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneAProgress)
 			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[0])
@@ -181,14 +186,15 @@ rule("Initialization")
 			"▒▒▒▒▒▒▒▒▒▒▒　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　"), Custom String(
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"))[Round To Integer(Absolute Value(Global.zoneAProgress) * (18 / 100),
-			To Nearest)], Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
+			To Nearest)], Null, Null, Top, 4, Lime Green, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneAProgress)
 			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[0])
 			< Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			< Global.zoneSizes[0]), Null, Null, Custom String("{0} - {1}%", Global.zoneAHudText[3], Round To Integer(Absolute Value(
-			Global.zoneAProgress), Down)), Top, 3, White, White, White, Visible To and String, Visible Never);
+			Global.zoneAProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
+		"Progress Bar for Zone B - Visible to all living players within the radius during normal play when point has progress on it"
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneBProgress)
 			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
@@ -201,14 +207,15 @@ rule("Initialization")
 			"▒▒▒▒▒▒▒▒▒▒▒　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　"), Custom String(
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"))[Round To Integer(Absolute Value(Global.zoneBProgress) * (18 / 100),
-			To Nearest)], Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
+			To Nearest)], Null, Null, Top, 4, Lime Green, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneBProgress)
 			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
 			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			< Global.zoneSizes[1]), Null, Null, Custom String("{0} - {1}%", Global.zoneBHudText[3], Round To Integer(Absolute Value(
-			Global.zoneBProgress), Down)), Top, 3, White, White, White, Visible To and String, Visible Never);
+			Global.zoneBProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
+		"Progress Bar for Zone C - Visible to all living players within the radius during normal play when point has progress on it"
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneCProgress)
 			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
@@ -221,20 +228,30 @@ rule("Initialization")
 			"▒▒▒▒▒▒▒▒▒▒▒　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　　"), Custom String(
 			"▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒　"), Custom String("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"))[Round To Integer(Absolute Value(Global.zoneCProgress) * (18 / 100),
-			To Nearest)], Null, Null, Top, 2, Lime Green, White, White, Visible To and String, Visible Never);
+			To Nearest)], Null, Null, Top, 4, Lime Green, White, White, Visible To and String, Visible Never);
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneCProgress)
 			> 0 && !Global.powerPlayActive && Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(
 			Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
 			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
 			< Global.zoneSizes[2]), Null, Null, Custom String("{0} - {1}%", Global.zoneCHudText[3], Round To Integer(Absolute Value(
-			Global.zoneCProgress), Down)), Top, 3, White, White, White, Visible To and String, Visible Never);
+			Global.zoneCProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
+		"HUD Separator Lines"
 		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－"), Right, -1.500, White, White, White,
-			Visible To and String, Visible Always);
+			Visible To and String, Visible Never);
 		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－"), Right, -2.500, White, White, White,
-			Visible To and String, Visible Always);
+			Visible To and String, Visible Never);
+		"Score multiplier under scoreboard"
+		Global.scoreMultipliers = Array(1, 1);
+		"Team 1 score multiplier"
+		Create HUD Text(All Players(Team 1), Custom String("{0} Score Multiplier {1}", Global.scoreMultipliers[0],
+			Global.scoreMultipliers[1]), Null, Null, Top, 1, White, White, White, Visible To and String, Visible Never);
+		"Team 2 score multiplier"
+		Create HUD Text(All Players(Team 2), Custom String("{0} Score Multiplier {1}", Global.scoreMultipliers[1],
+			Global.scoreMultipliers[0]), Null, Null, Top, 1, White, White, White, Visible To and String, Visible Never);
+		"Power Play Timer - Visible when power play is active"
 		Create HUD Text(Filtered Array(All Players(All Teams), Global.powerPlayActive), Custom String("Power Play: {0}", Round To Integer(
-			Global.powerPlayTimer, Up)), Null, Null, Top, 1, Yellow, White, White, Visible To and String, Default Visibility);
+			Global.powerPlayTimer, Up)), Null, Null, Top, 3, Yellow, White, White, Visible To and String, Default Visibility);
 		Global.powerPlayActive = False;
 	}
 }
@@ -337,40 +354,67 @@ rule("Once Zones are defined, create visuals")
 	{
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null), Ring, White, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null), Custom String("A"),
-			Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip, Visible To and String, White, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null && !Global.powerPlayActive),
+			Custom String("A"), Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip, Visible To and String, White, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1), Ring, Team 1, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1), Custom String("A"),
-			Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 1, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1 && !Global.powerPlayActive),
+			Custom String("A"), Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 1, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1 && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2), Ring, Team 2, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2), Custom String("A"),
-			Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 2, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2 && !Global.powerPlayActive),
+			Custom String("A"), Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 2, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2 && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null), Ring, White, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null), Custom String("B"),
-			Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip, Visible To and String, White, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null && !Global.powerPlayActive),
+			Custom String("B"), Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip, Visible To and String, White, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1), Ring, Team 1, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1), Custom String("B"),
-			Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 1, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1 && !Global.powerPlayActive),
+			Custom String("B"), Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 1, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1 && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2), Ring, Team 2, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2), Custom String("B"),
-			Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 2, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2 && !Global.powerPlayActive),
+			Custom String("B"), Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 2, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2 && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null), Ring, White, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null), Custom String("C"),
-			Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip, Visible To and String, White, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null && !Global.powerPlayActive),
+			Custom String("C"), Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip, Visible To and String, White, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1), Ring, Team 1, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1), Custom String("C"),
-			Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 1, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1 && !Global.powerPlayActive),
+			Custom String("C"), Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 1, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1 && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2), Ring, Team 2, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
-		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2), Custom String("C"),
-			Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 2, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2 && !Global.powerPlayActive),
+			Custom String("C"), Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip, Visible To and String, Team 2, Default Visibility);
+		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2 && Global.powerPlayActive),
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Default Visibility);
 	}
 }
 
@@ -515,7 +559,7 @@ rule("Game End Handler: Trigger Overtime or Declare Victory")
 	{
 		If(Team Score(Team 1) == Team Score(Team 2));
 			Set Objective Description(All Players(All Teams), String("Overtime"), Visible To and String);
-			Big Message(All Players(All Teams), Custom String("Overtime"));
+			Big Message(All Players(All Teams), String("Overtime"));
 			Set Match Time(0.032);
 			Global.overtime = True;
 			Wait(0.016, Ignore Condition);
@@ -848,13 +892,13 @@ rule("Point A: Capturing")
 				Wait(1, Abort When False);
 				Global.zoneAProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneAProgress, 100, Global.numTeam1A > 0 ? 2 * Global.numTeam1A + 3 : 0, Destination and Rate);
+			Chase Global Variable At Rate(zoneAProgress, 100, Global.numTeam1A > 0 ? 2 * Global.numTeam1A + 4 : 0, Destination and Rate);
 		Else;
 			If(Global.zoneAProgress > 0);
 				Wait(1, Abort When False);
 				Global.zoneAProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneAProgress, -100, Global.numTeam2A > 0 ? 2 * Global.numTeam2A + 3 : 0, Destination and Rate);
+			Chase Global Variable At Rate(zoneAProgress, -100, Global.numTeam2A > 0 ? 2 * Global.numTeam2A + 4 : 0, Destination and Rate);
 		End;
 		Global.zoneAHudText[3] = Custom String("Capturing");
 	}
@@ -890,6 +934,9 @@ rule("Point A: Listen for Capture")
 			Small Message(All Players(Team 1), Custom String("Zone A Lost"));
 			Small Message(All Players(Team 2), Custom String("Zone A Captured"));
 			Play Effect(All Players(All Teams), Ring Explosion, Team 2, Global.zoneLocations[0], Global.zoneSizes[0] * 2);
+		End;
+		Global.scoreMultipliers[0] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 1)));
+		Global.scoreMultipliers[1] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 2)));
 	}
 }
 
@@ -912,13 +959,11 @@ rule("Zone A HUD: Control null | Progress == 0")
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
-			Destroy HUD Text(Global.zoneAHudText[2]);
 		End;
 		Create HUD Text(All Players(All Teams), Custom String("Zone A"), Custom String("Neutral"), Custom String("Unlocked"), Right, -3,
-			White, White, White, Visible To and String, Visible Always);
+			White, White, White, Visible To and String, Visible Never);
 		Global.zoneAHudText[0] = Last Text ID;
 		Global.zoneAHudText[1] = Last Text ID;
-		Global.zoneAHudText[2] = Last Text ID;
 	}
 }
 
@@ -941,20 +986,15 @@ rule("Zone A HUD: Control null | Progress > 0")
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
-			Destroy HUD Text(Global.zoneAHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone A"), Custom String("{0}: {1}%", Team 1, Round To Integer(Absolute Value(
-			Global.zoneAProgress), Down)), Custom String("Unlocked"), Right, -3, White, Team 1, White, Visible To and String,
-			Visible Always);
-		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Unlocked"), Right, -3, White, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[1] = Last Text ID;
+		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Unlocked"), Right, -3, White, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[2] = Last Text ID;
+		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
 
@@ -977,20 +1017,15 @@ rule("Zone A HUD: Control null | Progress < 0")
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
-			Destroy HUD Text(Global.zoneAHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone A"), Custom String("{0}: {1}%", Team 2, Round To Integer(Absolute Value(
-			Global.zoneAProgress), Down)), Custom String("Unlocked"), Right, -3, White, Team 2, White, Visible To and String,
-			Visible Always);
-		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Unlocked"), Right, -3, White, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[1] = Last Text ID;
+		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Unlocked"), Right, -3, White, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[2] = Last Text ID;
+		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
 
@@ -1013,17 +1048,13 @@ rule("Zone A HUD: Control Team.1 | Progress == 0")
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
-			Destroy HUD Text(Global.zoneAHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone A"), Custom String(" "), Custom String("{0}", Team 1), Right, -3, Team 1, White, White,
-			Visible To and String, Visible Always);
-		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String(" "), Custom String("Defend Zone"), Right, -3, Team 1,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneAHudText[1] = Last Text ID;
+		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String(" "), Custom String("Attack Zone"), Right, -3, Team 1,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneAHudText[2] = Last Text ID;
+		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
 
@@ -1046,20 +1077,15 @@ rule("Zone A HUD: Control Team.1 | Progress < 0")
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
-			Destroy HUD Text(Global.zoneAHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone A"), Custom String("{0}: {1}%", Team 1, Round To Integer(Absolute Value(
-			Global.zoneAProgress), Down)), Custom String("{0}", Team 1), Right, -3, Team 1, Team 2, White, Visible To and String,
-			Visible Always);
-		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Defend Zone"), Right, -3, Team 1, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[1] = Last Text ID;
+		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Attack Zone"), Right, -3, Team 1, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[2] = Last Text ID;
+		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
 
@@ -1082,17 +1108,13 @@ rule("Zone A HUD: Control Team.2 | Progress == 0")
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
-			Destroy HUD Text(Global.zoneAHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone A"), Custom String(" "), Custom String("{0}", Team 2), Right, -3, Team 2, White, White,
-			Visible To and String, Visible Always);
-		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String(" "), Custom String("Attack Zone"), Right, -3, Team 2,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneAHudText[1] = Last Text ID;
+		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String(" "), Custom String("Defend Zone"), Right, -3, Team 2,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneAHudText[2] = Last Text ID;
+		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
 
@@ -1115,20 +1137,15 @@ rule("Zone A HUD: Control Team.2 | Progress > 0")
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
-			Destroy HUD Text(Global.zoneAHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone A"), Custom String("{0}: {1}%", Team 2, Round To Integer(Absolute Value(
-			Global.zoneAProgress), Down)), Custom String("{0}", Team 2), Right, -3, Team 2, Team 1, White, Visible To and String,
-			Visible Always);
-		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Attack Zone"), Right, -3, Team 2, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[1] = Last Text ID;
+		Global.zoneAHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Custom String("Defend Zone"), Right, -3, Team 2, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneAHudText[2] = Last Text ID;
+		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
 
@@ -1236,13 +1253,13 @@ rule("Point B: Capturing")
 				Wait(1, Abort When False);
 				Global.zoneBProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneBProgress, 100, Global.numTeam1B > 0 ? 2 * Global.numTeam1B + 3 : 0, Destination and Rate);
+			Chase Global Variable At Rate(zoneBProgress, 100, Global.numTeam1B > 0 ? 2 * Global.numTeam1B + 4 : 0, Destination and Rate);
 		Else;
 			If(Global.zoneBProgress > 0);
 				Wait(1, Abort When False);
 				Global.zoneBProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneBProgress, -100, Global.numTeam2B > 0 ? 2 * Global.numTeam2B + 3 : 0, Destination and Rate);
+			Chase Global Variable At Rate(zoneBProgress, -100, Global.numTeam2B > 0 ? 2 * Global.numTeam2B + 4 : 0, Destination and Rate);
 		End;
 		Global.zoneBHudText[3] = Custom String("Capturing");
 	}
@@ -1278,6 +1295,9 @@ rule("Point B: Listen for Capture")
 			Small Message(All Players(Team 1), Custom String("Zone B Lost"));
 			Small Message(All Players(Team 2), Custom String("Zone B Captured"));
 			Play Effect(All Players(All Teams), Ring Explosion, Team 2, Global.zoneLocations[1], Global.zoneSizes[1] * 2);
+		End;
+		Global.scoreMultipliers[0] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 1)));
+		Global.scoreMultipliers[1] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 2)));
 	}
 }
 
@@ -1300,13 +1320,11 @@ rule("Zone B HUD: Control null | Progress == 0")
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
-			Destroy HUD Text(Global.zoneBHudText[2]);
 		End;
 		Create HUD Text(All Players(All Teams), Custom String("Zone B"), Custom String("Neutral"), Custom String("Unlocked"), Right, -2,
-			White, White, White, Visible To and String, Visible Always);
+			White, White, White, Visible To and String, Visible Never);
 		Global.zoneBHudText[0] = Last Text ID;
 		Global.zoneBHudText[1] = Last Text ID;
-		Global.zoneBHudText[2] = Last Text ID;
 	}
 }
 
@@ -1329,20 +1347,15 @@ rule("Zone B HUD: Control null | Progress > 0")
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
-			Destroy HUD Text(Global.zoneBHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone B"), Custom String("{0}: {1}%", Team 1, Round To Integer(Absolute Value(
-			Global.zoneBProgress), Down)), Custom String("Unlocked"), Right, -2, White, Team 1, White, Visible To and String,
-			Visible Always);
-		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Unlocked"), Right, -2, White, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[1] = Last Text ID;
+		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Unlocked"), Right, -2, White, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[2] = Last Text ID;
+		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
 
@@ -1365,20 +1378,15 @@ rule("Zone B HUD: Control null | Progress < 0")
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
-			Destroy HUD Text(Global.zoneBHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone B"), Custom String("{0}: {1}%", Team 2, Round To Integer(Absolute Value(
-			Global.zoneBProgress), Down)), Custom String("Unlocked"), Right, -2, White, Team 2, White, Visible To and String,
-			Visible Always);
-		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Unlocked"), Right, -2, White, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[1] = Last Text ID;
+		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Unlocked"), Right, -2, White, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[2] = Last Text ID;
+		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
 
@@ -1401,17 +1409,13 @@ rule("Zone B HUD: Control Team.1 | Progress == 0")
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
-			Destroy HUD Text(Global.zoneBHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone B"), Custom String(" "), Custom String("{0}", Team 1), Right, -2, Team 1, White, White,
-			Visible To and String, Visible Always);
-		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String(" "), Custom String("Defend Zone"), Right, -2, Team 1,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneBHudText[1] = Last Text ID;
+		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String(" "), Custom String("Attack Zone"), Right, -2, Team 1,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneBHudText[2] = Last Text ID;
+		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
 
@@ -1434,20 +1438,15 @@ rule("Zone B HUD: Control Team.1 | Progress < 0")
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
-			Destroy HUD Text(Global.zoneBHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone B"), Custom String("{0}: {1}%", Team 1, Round To Integer(Absolute Value(
-			Global.zoneBProgress), Down)), Custom String("{0}", Team 1), Right, -2, Team 1, Team 2, White, Visible To and String,
-			Visible Always);
-		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Defend Zone"), Right, -2, Team 1, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[1] = Last Text ID;
+		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Attack Zone"), Right, -2, Team 1, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[2] = Last Text ID;
+		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
 
@@ -1470,17 +1469,13 @@ rule("Zone B HUD: Control Team.2 | Progress == 0")
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
-			Destroy HUD Text(Global.zoneBHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone B"), Custom String(" "), Custom String("{0}", Team 2), Right, -2, Team 2, White, White,
-			Visible To and String, Visible Always);
-		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String(" "), Custom String("Attack Zone"), Right, -2, Team 2,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneBHudText[1] = Last Text ID;
+		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String(" "), Custom String("Defend Zone"), Right, -2, Team 2,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneBHudText[2] = Last Text ID;
+		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
 
@@ -1503,20 +1498,15 @@ rule("Zone B HUD: Control Team.2 | Progress > 0")
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
-			Destroy HUD Text(Global.zoneBHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone B"), Custom String("{0}: {1}%", Team 2, Round To Integer(Absolute Value(
-			Global.zoneBProgress), Down)), Custom String("{0}", Team 2), Right, -2, Team 2, Team 1, White, Visible To and String,
-			Visible Always);
-		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Attack Zone"), Right, -2, Team 2, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[1] = Last Text ID;
+		Global.zoneBHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Custom String("Defend Zone"), Right, -2, Team 2, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneBHudText[2] = Last Text ID;
+		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
 
@@ -1624,13 +1614,13 @@ rule("Point C: Capturing")
 				Wait(1, Abort When False);
 				Global.zoneCProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneCProgress, 100, Global.numTeam1C > 0 ? 2 * Global.numTeam1C + 3 : 0, Destination and Rate);
+			Chase Global Variable At Rate(zoneCProgress, 100, Global.numTeam1C > 0 ? 2 * Global.numTeam1C + 4 : 0, Destination and Rate);
 		Else;
 			If(Global.zoneCProgress > 0);
 				Wait(1, Abort When False);
 				Global.zoneCProgress = 0;
 			End;
-			Chase Global Variable At Rate(zoneCProgress, -100, Global.numTeam2C > 0 ? 2 * Global.numTeam2C + 3 : 0, Destination and Rate);
+			Chase Global Variable At Rate(zoneCProgress, -100, Global.numTeam2C > 0 ? 2 * Global.numTeam2C + 4 : 0, Destination and Rate);
 		End;
 		Global.zoneCHudText[3] = Custom String("Capturing");
 	}
@@ -1666,6 +1656,9 @@ rule("Point C: Listen for Capture")
 			Small Message(All Players(Team 1), Custom String("Zone C Lost"));
 			Small Message(All Players(Team 2), Custom String("Zone C Captured"));
 			Play Effect(All Players(All Teams), Ring Explosion, Team 2, Global.zoneLocations[2], Global.zoneSizes[2] * 2);
+		End;
+		Global.scoreMultipliers[0] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 1)));
+		Global.scoreMultipliers[1] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 2)));
 	}
 }
 
@@ -1688,13 +1681,11 @@ rule("Zone C HUD: Control null | Progress == 0")
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
-			Destroy HUD Text(Global.zoneCHudText[2]);
 		End;
 		Create HUD Text(All Players(All Teams), Custom String("Zone C"), Custom String("Neutral"), Custom String("Unlocked"), Right, -1,
-			White, White, White, Visible To and String, Visible Always);
+			White, White, White, Visible To and String, Visible Never);
 		Global.zoneCHudText[0] = Last Text ID;
 		Global.zoneCHudText[1] = Last Text ID;
-		Global.zoneCHudText[2] = Last Text ID;
 	}
 }
 
@@ -1717,20 +1708,15 @@ rule("Zone C HUD: Control null | Progress > 0")
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
-			Destroy HUD Text(Global.zoneCHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone C"), Custom String("{0}: {1}%", Team 1, Round To Integer(Absolute Value(
-			Global.zoneCProgress), Down)), Custom String("Unlocked"), Right, -1, White, Team 1, White, Visible To and String,
-			Visible Always);
-		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Unlocked"), Right, -1, White, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[1] = Last Text ID;
+		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Unlocked"), Right, -1, White, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[2] = Last Text ID;
+		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
 
@@ -1753,20 +1739,15 @@ rule("Zone C HUD: Control null | Progress < 0")
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
-			Destroy HUD Text(Global.zoneCHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone C"), Custom String("{0}: {1}%", Team 2, Round To Integer(Absolute Value(
-			Global.zoneCProgress), Down)), Custom String("Unlocked"), Right, -1, White, Team 2, White, Visible To and String,
-			Visible Always);
-		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Unlocked"), Right, -1, White, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[1] = Last Text ID;
+		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Unlocked"), Right, -1, White, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[2] = Last Text ID;
+		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
 
@@ -1789,17 +1770,13 @@ rule("Zone C HUD: Control Team.1 | Progress == 0")
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
-			Destroy HUD Text(Global.zoneCHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone C"), Custom String(" "), Custom String("{0}", Team 1), Right, -1, Team 1, White, White,
-			Visible To and String, Visible Always);
-		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String(" "), Custom String("Defend Zone"), Right, -1, Team 1,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneCHudText[1] = Last Text ID;
+		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String(" "), Custom String("Attack Zone"), Right, -1, Team 1,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneCHudText[2] = Last Text ID;
+		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
 
@@ -1822,20 +1799,15 @@ rule("Zone C HUD: Control Team.1 | Progress < 0")
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
-			Destroy HUD Text(Global.zoneCHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone C"), Custom String("{0}: {1}%", Team 1, Round To Integer(Absolute Value(
-			Global.zoneCProgress), Down)), Custom String("{0}", Team 1), Right, -1, Team 1, Team 2, White, Visible To and String,
-			Visible Always);
-		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Defend Zone"), Right, -1, Team 1, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[1] = Last Text ID;
+		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Attack Zone"), Right, -1, Team 1, Team 2, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[2] = Last Text ID;
+		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
 
@@ -1858,17 +1830,13 @@ rule("Zone C HUD: Control Team.2 | Progress == 0")
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
-			Destroy HUD Text(Global.zoneCHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone C"), Custom String(" "), Custom String("{0}", Team 2), Right, -1, Team 2, White, White,
-			Visible To and String, Visible Always);
-		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String(" "), Custom String("Attack Zone"), Right, -1, Team 2,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneCHudText[1] = Last Text ID;
+		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String(" "), Custom String("Defend Zone"), Right, -1, Team 2,
 			White, White, Visible To and String, Visible Never);
-		Global.zoneCHudText[2] = Last Text ID;
+		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
 
@@ -1891,20 +1859,15 @@ rule("Zone C HUD: Control Team.2 | Progress > 0")
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
-			Destroy HUD Text(Global.zoneCHudText[2]);
 		End;
-		Create HUD Text(Null, Custom String("Zone C"), Custom String("{0}: {1}%", Team 2, Round To Integer(Absolute Value(
-			Global.zoneCProgress), Down)), Custom String("{0}", Team 2), Right, -1, Team 2, Team 1, White, Visible To and String,
-			Visible Always);
-		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String("Ally: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Attack Zone"), Right, -1, Team 2, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[1] = Last Text ID;
+		Global.zoneCHudText[0] = Last Text ID;
 		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String("Enemy: {0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Custom String("Defend Zone"), Right, -1, Team 2, Team 1, White, Visible To and String,
 			Visible Never);
-		Global.zoneCHudText[2] = Last Text ID;
+		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
 
@@ -1976,6 +1939,7 @@ rule("If a Team controls all 3 points, activate Power Play")
 		Global.zoneCHudText[0] = Last Text ID;
 		Set Slow Motion(10);
 		Set Aim Speed(All Players(All Teams), 50);
+		Set Objective Description(All Players(All Teams), Custom String("Power Play"), Visible To);
 		Big Message(All Players(All Teams), Custom String("Power Play"));
 		Big Message(All Players(All Teams), Custom String("Zones Locked"));
 		If(Global.powerPlayMarkers);
@@ -2019,8 +1983,9 @@ rule("If a Team controls all 3 points, activate Power Play")
 				Global.skullIcons[5] = Last Created Entity;
 			End;
 		End;
-		Play Effect(All Players(All Teams), Ring Explosion Sound, White, Global.zoneLocations[1], 200);
+		Global.powerPlaySoundTrigger = True;
 		Wait(0.500, Ignore Condition);
+		Global.powerPlaySoundTrigger = False;
 		Set Slow Motion(100);
 		Set Aim Speed(All Players(All Teams), 100);
 		Chase Global Variable At Rate(powerPlayTimer, 0, 1, None);
@@ -2051,7 +2016,12 @@ rule("At end of Power Play, reset points")
 			Destroy Icon(Global.skullIcons[5]);
 		End;
 		Play Effect(All Players(All Teams), Ring Explosion Sound, White, Global.zoneLocations[1], 200);
-		Big Message(All Players(All Teams), Custom String("Power Play has Ended"));
+		If(Global.overtime);
+			Set Objective Description(All Players(All Teams), Custom String("Overtime"), Visible To);
+		Else;
+			Set Objective Description(All Players(All Teams), Custom String("Fight"), Visible To);
+		End;
+		Big Message(All Players(All Teams), Custom String("Power Play Ended"));
 		Destroy HUD Text(Global.zoneAHudText[0]);
 		Global.zoneControl[0] = Null;
 		Global.zoneAProgress = 0;
@@ -2062,6 +2032,26 @@ rule("At end of Power Play, reset points")
 		Global.zoneControl[2] = Null;
 		Global.zoneCProgress = 0;
 		Global.powerPlayActive = False;
+	}
+}
+
+rule("HELPER: Play Power Play Sound at Player Position")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Global.powerPlaySoundTrigger != False;
+	}
+
+	actions
+	{
+		Play Effect(Event Player, Ring Explosion Sound, White, Position Of(Event Player), 200);
 	}
 }
 
