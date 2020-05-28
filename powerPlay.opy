@@ -27,7 +27,6 @@ rule "At end of Power Play, reset points":
     stopChasingVariable(powerPlayTimer)
     if powerPlayMarkers:
         toggleSkulls(false)
-    playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, zoneLocations[1], 200)
     if overtime:
         setObjectiveDescription(getAllPlayers(), "Overtime", HudReeval.VISIBILITY)
     else:
@@ -35,6 +34,9 @@ rule "At end of Power Play, reset points":
     bigMessage(getAllPlayers(), "Power Play Ended")
     triggerPointReset(true)
     powerPlayActive = false
+    powerPlaySoundTrigger = true
+    wait(0.016, Wait.IGNORE_CONDITION)
+    powerPlaySoundTrigger = false
 
 rule "HELPER: Play Power Play Sound at Player Position":
     @Event eachPlayer
