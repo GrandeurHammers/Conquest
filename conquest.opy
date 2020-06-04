@@ -54,6 +54,8 @@ playervar respawnBlocked
 # Tracker for buffered respawn input
 playervar respawnBuffered
 
+#Subroutines
+subroutine playElimSounds
 subroutine declareWinner
 
 # Helper pregen macros (thanks Zez)
@@ -141,11 +143,21 @@ rule "Reset on Game Start (Waiting for Players)":
     setTeamScore(Team.2, 0)
 
 rule "Upon earning a kill, award additional points for zones controlled":
-	@Event playerDealtFinalBlow
+	@Event playerEarnedElimination
 	@Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
-    # TODO: Improve communication about more points on kill
+    playElimSounds()
+
+def playElimSounds():
+    @Name "SUB: Play sounds for earning elims with zone advantage"
+    switch len([control for control in zoneControl if control == attacker.getTeam()]):
+        case 3:
+            wait(0.5)
+            playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getPosition(), 200)
+        default:
+            wait(0.5)
+            playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getPosition(), 200)
 
 rule "Declare Winner if a team has requisite number of points":
 	@Event global
