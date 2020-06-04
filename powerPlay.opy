@@ -15,6 +15,7 @@ rule "If a Team controls all 3 points, activate Power Play":
     if powerPlayMarkers:
         toggleSkulls(true)
     powerPlaySoundTrigger = true
+    getPlayers(getOppositeTeam(zoneControl[0])).setStatusEffect(null, Status.BURNING, powerPlayDuration + 0.5)
     wait(0.5, Wait.IGNORE_CONDITION)
     powerPlaySoundTrigger = false
     setSlowMotion(100)
@@ -34,6 +35,8 @@ rule "At end of Power Play, reset points":
     bigMessage(getAllPlayers(), "Power Play Ended")
     triggerPointReset(true)
     powerPlayActive = false
+    # Reset Score Multipliers
+    scoreMultipliers = [1, 1]
     powerPlaySoundTrigger = true
     wait(0.016, Wait.IGNORE_CONDITION)
     powerPlaySoundTrigger = false
