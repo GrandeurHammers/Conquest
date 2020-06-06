@@ -10,6 +10,8 @@ globalvar scoreToWin
 globalvar zoneLocations
 # How large are the zones? (radius)
 globalvar zoneSizes
+# How tall are the zones? (height)
+globalvar zoneHeights
 # Who controls the zone?
 globalvar zoneControl
 # Zone advantage multipliers
