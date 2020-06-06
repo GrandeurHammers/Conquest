@@ -34,6 +34,8 @@ globalvar powerPlayEnabled
 globalvar powerPlayDuration
 # Whether Power Play Markers are enabled
 globalvar powerPlayMarkers
+# Store match time to set when Power Play ends
+globalvar resumeMatchTime
 # Is Overtime in effect?
 globalvar overtime
 
@@ -80,9 +82,9 @@ rule "powerPlayEnabled: Set to True to activate Power Play when a team caps all 
 	@Event global
     powerPlayEnabled = true
 
-rule "powerPlayDuration: How long Power Play lasts for in seconds. Default: 25":
+rule "powerPlayDuration: How long Power Play lasts for in seconds. Default: 30":
 	@Event global
-    powerPlayDuration = 25
+    powerPlayDuration = 30
 
 rule "powerPlayMarkers: Whether the targeted team have markers above their head during Power Play. Default: True":
 	@Event global
