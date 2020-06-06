@@ -168,7 +168,10 @@ rule "Declare Winner if a team has requisite number of points":
 
 rule "Game End Handler: Trigger Overtime or Declare Victory":
 	@Event global
-	@Condition isGameInProgress() and getMatchTime() == 0
+    @Condition isGameInProgress()
+    @Condition getMatchTime() == 0
+    @Condition not powerPlayActive
+    @Condition not overtime
     if teamScore(Team.1) == teamScore(Team.2):
         setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
         bigMessage(getAllPlayers(), l"Overtime")
@@ -178,6 +181,18 @@ rule "Game End Handler: Trigger Overtime or Declare Victory":
         pauseMatchTime()
     else:
         declareWinner()
+
+rule "Maintain Overtime Music":
+    @Event global
+    @Condition isGameInProgress()
+    @Condition overtime
+    while overtime:
+        wait(30, Wait.ABORT_WHEN_FALSE)
+        setMatchTime(0)
+        wait(0.016)
+        setMatchTime(0.032)
+        wait(0.016)
+        pauseMatchTime()
 
 rule "Overtime End Handler":
 	@Event global
