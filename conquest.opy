@@ -121,6 +121,12 @@ rule "=====GAMEPLAY=====":
 	@Disabled
     return
 
+rule "Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)":
+    @Event eachPlayer
+    @Condition eventPlayer.isAlive()
+    @Condition eventPlayer.respawnBuffered
+    eventPlayer.respawnBuffered = false
+
 rule "Disable Self Respawn for 5 seconds":
 	@Event playerDied
     victim.disallowButton(Button.JUMP)

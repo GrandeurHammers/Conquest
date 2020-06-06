@@ -17,15 +17,7 @@ settings
 		{
 			enabled maps
 			{
-				Lijiang Control Center
-				Lijiang Control Center Lunar New Year
-				Lijiang Garden
-				Lijiang Garden Lunar New Year
-				Lijiang Night Market
-				Lijiang Night Market Lunar New Year
-				Oasis City Center
 				Oasis Gardens
-				Oasis University
 			}
 		}
 
@@ -44,6 +36,7 @@ variables
 		0: scoreToWin
 		1: zoneLocations
 		2: zoneSizes
+		3: zoneHeights
 		4: zoneControl
 		5: scoreMultipliers
 		6: numTeam1A
@@ -181,7 +174,7 @@ rule("Initialization")
 			Current Array Element)), Y Component Of(Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[0]) < Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[0]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[0]) < Global.zoneSizes[0]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
+			Global.zoneLocations[0]) < Global.zoneHeights[0]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
 			"▒　　　　　　　　　　　　　　　　　"), Custom String("▒▒　　　　　　　　　　　　　　　　"), Custom String("▒▒▒　　　　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒　　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒　　　　　　　　　"), Custom String(
@@ -195,7 +188,7 @@ rule("Initialization")
 			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[0]), Z Component Of(Position Of(
 			Current Array Element))), Global.zoneLocations[0]) < Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element))
 			- Y Component Of(Global.zoneLocations[0]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[0]) < Global.zoneSizes[0]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
+			Global.zoneLocations[0]) < Global.zoneHeights[0]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
 			"▒　　　　　　　　　　　　　　　　　"), Custom String("▒▒　　　　　　　　　　　　　　　　"), Custom String("▒▒▒　　　　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒　　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒　　　　　　　　　"), Custom String(
@@ -209,7 +202,7 @@ rule("Initialization")
 			Y Component Of(Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[0])
 			< Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
-			< Global.zoneSizes[0]), Null, Null, Custom String("{0} - {1}%", Global.zoneAHudText[3], Round To Integer(Absolute Value(
+			< Global.zoneHeights[0]), Null, Null, Custom String("{0} - {1}%", Global.zoneAHudText[3], Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
 		"Progress Bars for Zone B - Visible to all living players within the radius during normal play when point has progress on it. First one is for non-contested, second one is for contested."
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneBProgress) > 0 && !(
@@ -217,7 +210,7 @@ rule("Initialization")
 			Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneSizes[1]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
+			Global.zoneLocations[1]) < Global.zoneHeights[1]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
 			"▒　　　　　　　　　　　　　　　　　"), Custom String("▒▒　　　　　　　　　　　　　　　　"), Custom String("▒▒▒　　　　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒　　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒　　　　　　　　　"), Custom String(
@@ -231,7 +224,7 @@ rule("Initialization")
 			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(
 			Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element))
 			- Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneSizes[1]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
+			Global.zoneLocations[1]) < Global.zoneHeights[1]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
 			"▒　　　　　　　　　　　　　　　　　"), Custom String("▒▒　　　　　　　　　　　　　　　　"), Custom String("▒▒▒　　　　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒　　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒　　　　　　　　　"), Custom String(
@@ -245,7 +238,7 @@ rule("Initialization")
 			Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
 			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
-			< Global.zoneSizes[1]), Null, Null, Custom String("{0} - {1}%", Global.zoneBHudText[3], Round To Integer(Absolute Value(
+			< Global.zoneHeights[1]), Null, Null, Custom String("{0} - {1}%", Global.zoneBHudText[3], Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
 		"Progress Bars for Zone C - Visible to all living players within the radius during normal play when point has progress on it. First one is for non-contested, second one is for contested."
 		Create HUD Text(Filtered Array(All Living Players(All Teams), Absolute Value(Global.zoneCProgress) > 0 && !(
@@ -253,7 +246,7 @@ rule("Initialization")
 			Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneSizes[2]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
+			Global.zoneLocations[2]) < Global.zoneHeights[2]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
 			"▒　　　　　　　　　　　　　　　　　"), Custom String("▒▒　　　　　　　　　　　　　　　　"), Custom String("▒▒▒　　　　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒　　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒　　　　　　　　　"), Custom String(
@@ -267,7 +260,7 @@ rule("Initialization")
 			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(
 			Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element))
 			- Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneSizes[2]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
+			Global.zoneLocations[2]) < Global.zoneHeights[2]), Array(Custom String("　　　　　　　　　　　　　　　　　　"), Custom String(
 			"▒　　　　　　　　　　　　　　　　　"), Custom String("▒▒　　　　　　　　　　　　　　　　"), Custom String("▒▒▒　　　　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒　　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒　　　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒　　　　　　　　　　　　"), Custom String(
 			"▒▒▒▒▒▒▒　　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒　　　　　　　　　　"), Custom String("▒▒▒▒▒▒▒▒▒　　　　　　　　　"), Custom String(
@@ -281,7 +274,7 @@ rule("Initialization")
 			Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
 			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
-			< Global.zoneSizes[2]), Null, Null, Custom String("{0} - {1}%", Global.zoneCHudText[3], Round To Integer(Absolute Value(
+			< Global.zoneHeights[2]), Null, Null, Custom String("{0} - {1}%", Global.zoneCHudText[3], Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
 		"HUD Separator Lines"
 		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－"), Right, -1.500, White, White, White,
@@ -321,29 +314,47 @@ rule("Setup Zones: Lijang Tower")
 
 	actions
 	{
-		Skip(Array(21, 0, 0, 7, 7, 14, 14)[1 + Index Of Array Value(Array(Map(Lijiang Control Center), Map(
+		Skip(Array(30, 0, 0, 10, 10, 20, 20)[1 + Index Of Array Value(Array(Map(Lijiang Control Center), Map(
 			Lijiang Control Center Lunar New Year), Map(Lijiang Garden), Map(Lijiang Garden Lunar New Year), Map(Lijiang Night Market),
 			Map(Lijiang Night Market Lunar New Year)), Current Map)]);
+		" Zone A\r\n"
 		Global.zoneLocations[0] = Vector(48, 265, 329.150);
 		Global.zoneSizes[0] = 6;
+		Global.zoneHeights[0] = 6;
+		" Zone B\r\n"
 		Global.zoneLocations[1] = Vector(0, 267.330, 280);
 		Global.zoneSizes[1] = 7;
+		Global.zoneHeights[1] = 7;
+		" Zone C\r\n"
 		Global.zoneLocations[2] = Vector(-48, 265, 329.150);
 		Global.zoneSizes[2] = 6;
+		Global.zoneHeights[2] = 6;
 		Abort;
+		" Zone A\r\n"
 		Global.zoneLocations[0] = Vector(43, 95, 150);
 		Global.zoneSizes[0] = 5;
+		Global.zoneHeights[0] = 5;
+		" Zone B\r\n"
 		Global.zoneLocations[1] = Vector(0, 94, 130);
 		Global.zoneSizes[1] = 7;
+		Global.zoneHeights[1] = 7;
+		" Zone C\r\n"
 		Global.zoneLocations[2] = Vector(-43, 95, 150);
 		Global.zoneSizes[2] = 5;
+		Global.zoneHeights[2] = 5;
 		Abort;
+		" Zone A\r\n"
 		Global.zoneLocations[0] = Vector(62, 2, -29);
 		Global.zoneSizes[0] = 5;
+		Global.zoneHeights[0] = 5;
+		" Zone B\r\n"
 		Global.zoneLocations[1] = Vector(1, -1, -61);
 		Global.zoneSizes[1] = 7;
+		Global.zoneHeights[1] = 7;
+		" Zone C\r\n"
 		Global.zoneLocations[2] = Vector(-60, 2, -29);
 		Global.zoneSizes[2] = 5;
+		Global.zoneHeights[2] = 5;
 		Abort;
 	}
 }
@@ -362,28 +373,46 @@ rule("Setup Zones: Oasis")
 
 	actions
 	{
-		Skip(Array(21, 0, 7, 14)[1 + Index Of Array Value(Array(Map(Oasis City Center), Map(Oasis Gardens), Map(Oasis University)),
+		Skip(Array(30, 0, 10, 20)[1 + Index Of Array Value(Array(Map(Oasis City Center), Map(Oasis Gardens), Map(Oasis University)),
 			Current Map)]);
+		" Zone A\r\n"
 		Global.zoneLocations[0] = Vector(98.500, 0.850, 300);
 		Global.zoneSizes[0] = 5;
+		Global.zoneHeights[0] = 5;
+		" Zone B\r\n"
 		Global.zoneLocations[1] = Vector(143.500, 2.150, 247.500);
 		Global.zoneSizes[1] = 4.500;
+		Global.zoneHeights[1] = 5;
+		" Zone C\r\n"
 		Global.zoneLocations[2] = Vector(196.500, 0.850, 202.500);
 		Global.zoneSizes[2] = 5;
+		Global.zoneHeights[2] = 5;
 		Abort;
+		" Zone A\r\n"
 		Global.zoneLocations[0] = Vector(101.500, 8, -287);
 		Global.zoneSizes[0] = 5;
+		Global.zoneHeights[0] = 5;
+		" Zone B\r\n"
 		Global.zoneLocations[1] = Vector(121.255, 5.500, -227.480);
 		Global.zoneSizes[1] = 7;
+		Global.zoneHeights[1] = 5;
+		" Zone C\r\n"
 		Global.zoneLocations[2] = Vector(180.850, 8, -207.850);
 		Global.zoneSizes[2] = 5;
+		Global.zoneHeights[2] = 5;
 		Abort;
+		" Zone A\r\n"
 		Global.zoneLocations[0] = Vector(-188, 18, 53.500);
 		Global.zoneSizes[0] = 5;
+		Global.zoneHeights[0] = 5;
+		" Zone B\r\n"
 		Global.zoneLocations[1] = Vector(-210, 19, 0);
 		Global.zoneSizes[1] = 5;
+		Global.zoneHeights[1] = 5;
+		" Zone C\r\n"
 		Global.zoneLocations[2] = Vector(-188, 18, -53.500);
 		Global.zoneSizes[2] = 5;
+		Global.zoneHeights[2] = 5;
 		Abort;
 	}
 }
@@ -514,6 +543,27 @@ disabled rule("=====GAMEPLAY=====")
 	actions
 	{
 		Abort;
+	}
+}
+
+rule("Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Alive(Event Player) == True;
+		Event Player.respawnBuffered != False;
+	}
+
+	actions
+	{
+		Event Player.respawnBuffered = False;
 	}
 }
 
@@ -769,7 +819,7 @@ rule("Point A: Set numTeam1A")
 			Y Component Of(Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[0])
 			< Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
-			< Global.zoneSizes[0])) != Global.numTeam1A;
+			< Global.zoneHeights[0])) != Global.numTeam1A;
 	}
 
 	actions
@@ -779,7 +829,7 @@ rule("Point A: Set numTeam1A")
 			Current Array Element)), Y Component Of(Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[0]) < Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[0]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[0]) < Global.zoneSizes[0]));
+			Global.zoneLocations[0]) < Global.zoneHeights[0]));
 	}
 }
 
@@ -797,7 +847,7 @@ rule("Point A: Set numTeam2A")
 			Y Component Of(Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[0])
 			< Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[0])
-			< Global.zoneSizes[0])) != Global.numTeam2A;
+			< Global.zoneHeights[0])) != Global.numTeam2A;
 	}
 
 	actions
@@ -807,7 +857,7 @@ rule("Point A: Set numTeam2A")
 			Current Array Element)), Y Component Of(Global.zoneLocations[0]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[0]) < Global.zoneSizes[0] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[0]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[0]) < Global.zoneSizes[0]));
+			Global.zoneLocations[0]) < Global.zoneHeights[0]));
 	}
 }
 
@@ -825,7 +875,7 @@ rule("Point B: Set numTeam1B")
 			Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
 			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
-			< Global.zoneSizes[1])) != Global.numTeam1B;
+			< Global.zoneHeights[1])) != Global.numTeam1B;
 	}
 
 	actions
@@ -835,7 +885,7 @@ rule("Point B: Set numTeam1B")
 			Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneSizes[1]));
+			Global.zoneLocations[1]) < Global.zoneHeights[1]));
 	}
 }
 
@@ -853,7 +903,7 @@ rule("Point B: Set numTeam2B")
 			Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
 			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
-			< Global.zoneSizes[1])) != Global.numTeam2B;
+			< Global.zoneHeights[1])) != Global.numTeam2B;
 	}
 
 	actions
@@ -863,7 +913,7 @@ rule("Point B: Set numTeam2B")
 			Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneSizes[1]));
+			Global.zoneLocations[1]) < Global.zoneHeights[1]));
 	}
 }
 
@@ -881,7 +931,7 @@ rule("Point C: Set numTeam1C")
 			Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
 			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
-			< Global.zoneSizes[2])) != Global.numTeam1C;
+			< Global.zoneHeights[2])) != Global.numTeam1C;
 	}
 
 	actions
@@ -891,7 +941,7 @@ rule("Point C: Set numTeam1C")
 			Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneSizes[2]));
+			Global.zoneLocations[2]) < Global.zoneHeights[2]));
 	}
 }
 
@@ -909,7 +959,7 @@ rule("Point C: Set numTeam2C")
 			Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
 			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
 			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
-			< Global.zoneSizes[2])) != Global.numTeam2C;
+			< Global.zoneHeights[2])) != Global.numTeam2C;
 	}
 
 	actions
@@ -919,7 +969,7 @@ rule("Point C: Set numTeam2C")
 			Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))),
 			Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
 			Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneSizes[2]));
+			Global.zoneLocations[2]) < Global.zoneHeights[2]));
 	}
 }
 
