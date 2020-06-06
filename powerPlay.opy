@@ -10,6 +10,9 @@ rule "If a Team controls all 3 points, activate Power Play":
     setSlowMotion(10)
     getAllPlayers().setAimSpeed(50)
     setObjectiveDescription(getAllPlayers(), "Power Play", HudReeval.VISIBILITY)
+    resumeMatchTime = max(getMatchTime() - powerPlayDuration, 0)
+    pauseMatchTime()
+    setMatchTime(powerPlayDuration)
     bigMessage(getAllPlayers(), "Power Play")
     bigMessage(getAllPlayers(), "Zones Locked")
     if powerPlayMarkers:
@@ -20,6 +23,7 @@ rule "If a Team controls all 3 points, activate Power Play":
     powerPlaySoundTrigger = false
     setSlowMotion(100)
     getAllPlayers().setAimSpeed(100)
+    unpauseMatchTime()
     chase(powerPlayTimer, 0, rate=1, ChaseReeval.NONE)
 
 rule "At end of Power Play, reset points":
@@ -33,6 +37,7 @@ rule "At end of Power Play, reset points":
     else:
         setObjectiveDescription(getAllPlayers(), "Fight", HudReeval.VISIBILITY)
     bigMessage(getAllPlayers(), "Power Play Ended")
+    setMatchTime(resumeMatchTime)
     triggerPointReset(true)
     powerPlayActive = false
     # Reset Score Multipliers
