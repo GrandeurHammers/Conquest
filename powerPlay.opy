@@ -11,15 +11,16 @@ rule "If a Team controls all 3 points, activate Power Play":
     getAllPlayers().setAimSpeed(50)
     setObjectiveDescription(getAllPlayers(), "Power Play", HudReeval.VISIBILITY)
     resumeMatchTime = max(getMatchTime() - powerPlayDuration, 0)
-    pauseMatchTime()
-    setMatchTime(powerPlayDuration)
+    setMatchTime(powerPlayDuration + 0.016)
     bigMessage(getAllPlayers(), "Power Play")
     bigMessage(getAllPlayers(), "Zones Locked")
     if powerPlayMarkers:
         toggleSkulls(true)
     powerPlaySoundTrigger = true
     getPlayers(getOppositeTeam(zoneControl[0])).setStatusEffect(null, Status.BURNING, powerPlayDuration + 0.5)
-    wait(0.5, Wait.IGNORE_CONDITION)
+    wait(0.016)
+    pauseMatchTime()
+    wait(0.5 - 0.016, Wait.IGNORE_CONDITION)
     powerPlaySoundTrigger = false
     setSlowMotion(100)
     getAllPlayers().setAimSpeed(100)
