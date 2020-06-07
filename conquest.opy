@@ -14,8 +14,6 @@ globalvar zoneSizes
 globalvar zoneHeights
 # Who controls the zone?
 globalvar zoneControl
-# Zone advantage multipliers
-globalvar scoreMultipliers
 # How many members of Team 1 are on the zone?
 globalvar numTeam1A
 globalvar numTeam1B
