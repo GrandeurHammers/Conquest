@@ -1,7 +1,12 @@
-// let point = 0;
+if (typeof point === 'undefined') {
+    var point = 0
+}
 var pointToLetter = ['A', 'B', 'C'];
 var zoneProgress = `zone${pointToLetter[point]}Progress`;
 var result = "";
+var progressBarLen = 10;
+var emptyChar = "　";
+var fullChar = "▒";
 var visKeys = [
     {
         "textKey": "subtextTeam1",
@@ -24,7 +29,7 @@ const controls = [
                 "subtextAll": `"Unlocked"`,
                 "subtextColor": "WHITE",
                 "subtitleColor": "WHITE",
-                "subtitleAll": `"Neutral"`
+                "subtitleAll": `"Neutral${emptyChar.repeat(7)}"`
             },
             {
                 "progressCond": "> 0",
@@ -51,7 +56,7 @@ const controls = [
             {
                 "progressCond": "== 0",
                 "subtitleColor": "WHITE",
-                "subtitleAll": `" "`,
+                "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
                 "subtextTeam1": `"Defend Zone"`,
                 "subtextTeam2": `"Attack Zone"`
@@ -73,7 +78,7 @@ const controls = [
             {
                 "progressCond": "== 0",
                 "subtitleColor": "WHITE",
-                "subtitleAll": `" "`,
+                "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
                 "subtextTeam1": `"Attack Zone"`,
                 "subtextTeam2": `"Defend Zone"`
@@ -141,14 +146,11 @@ result;
 
 
 function progressBar() {
-    var len = 10;
-    var emptyChar = "　";
-    var fullChar = "▒";
     result = `[`;
 
-    for (let bar = 0; bar <= len; bar++) {
+    for (let bar = 0; bar <= progressBarLen; bar++) {
         result += `"[`;
-        for (let place = 0; place < len; place++) {
+        for (let place = 0; place < progressBarLen; place++) {
             if (place < bar) {
                 result += fullChar;
             } else {
@@ -156,10 +158,10 @@ function progressBar() {
             }
         }
         result += `]"`;
-        if (bar != len) {
+        if (bar != progressBarLen) {
             result += ', ';
         }
     }
-    result += `][round(abs(${zoneProgress}) * ${len} / 100)]`;
+    result += `][round(abs(${zoneProgress}) * ${progressBarLen} / 100)]`;
     return result;
 }
