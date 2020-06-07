@@ -1,5 +1,3 @@
-#!disableUnusedVars
-
 #Global variables
 
 # How many points does a team need to win?

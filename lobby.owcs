@@ -17,7 +17,15 @@ settings
 		{
 			enabled maps
 			{
+				Lijiang Control Center
+				Lijiang Control Center Lunar New Year
+				Lijiang Garden
+				Lijiang Garden Lunar New Year
+				Lijiang Night Market
+				Lijiang Night Market Lunar New Year
+				Oasis City Center
 				Oasis Gardens
+				Oasis University
 			}
 		}
 
@@ -133,7 +141,7 @@ rule("scoreToWin: How many points a team must score to win. Default: 100")
 
 	actions
 	{
-		"This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change \"Settings > Modes > Score to Win\" to match this value.\r\n"
+		"This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change \"Settings > Modes > Score to Win\" to match this value."
 		Global.scoreToWin = 100;
 	}
 }
@@ -277,21 +285,10 @@ rule("Initialization")
 			< Global.zoneHeights[2]), Null, Null, Custom String("{0} - {1}%", Global.zoneCHudText[3], Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
 		"HUD Separator Lines"
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－"), Right, -1.500, White, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -1.500, White, White, White,
 			Visible To and String, Visible Never);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－"), Right, -2.500, White, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -2.500, White, White, White,
 			Visible To and String, Visible Never);
-		"Add spacer for big messages"
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String(" \r\n\r\n"), Top, 2, White, White, White, Visible To,
-			Default Visibility);
-		"Score multiplier under scoreboard"
-		Global.scoreMultipliers = Array(1, 1);
-		"Team 1 score multiplier"
-		Create HUD Text(All Players(Team 1), Custom String("{0}  |  Multiplier  |  {1}", Global.scoreMultipliers[0],
-			Global.scoreMultipliers[1]), Null, Null, Top, 1, White, White, White, Visible To and String, Visible Never);
-		"Team 2 score multiplier"
-		Create HUD Text(All Players(Team 2), Custom String("{0}  |  Multiplier  |  {1}", Global.scoreMultipliers[1],
-			Global.scoreMultipliers[0]), Null, Null, Top, 1, White, White, White, Visible To and String, Visible Never);
 		"Power Play Timer - Visible when power play is active"
 		Create HUD Text(Filtered Array(All Players(All Teams), Global.powerPlayActive), Custom String("Power Play: {0}", Round To Integer(
 			Global.powerPlayTimer, Up)), Null, Null, Top, 3, Yellow, White, White, Visible To and String, Default Visibility);
@@ -317,41 +314,41 @@ rule("Setup Zones: Lijang Tower")
 		Skip(Array(30, 0, 0, 10, 10, 20, 20)[1 + Index Of Array Value(Array(Map(Lijiang Control Center), Map(
 			Lijiang Control Center Lunar New Year), Map(Lijiang Garden), Map(Lijiang Garden Lunar New Year), Map(Lijiang Night Market),
 			Map(Lijiang Night Market Lunar New Year)), Current Map)]);
-		" Zone A\r\n"
+		"Zone A"
 		Global.zoneLocations[0] = Vector(48, 265, 329.150);
 		Global.zoneSizes[0] = 6;
 		Global.zoneHeights[0] = 6;
-		" Zone B\r\n"
+		"Zone B"
 		Global.zoneLocations[1] = Vector(0, 267.330, 280);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 7;
-		" Zone C\r\n"
+		"Zone C"
 		Global.zoneLocations[2] = Vector(-48, 265, 329.150);
 		Global.zoneSizes[2] = 6;
 		Global.zoneHeights[2] = 6;
 		Abort;
-		" Zone A\r\n"
+		"Zone A"
 		Global.zoneLocations[0] = Vector(43, 95, 150);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		" Zone B\r\n"
+		"Zone B"
 		Global.zoneLocations[1] = Vector(0, 94, 130);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 7;
-		" Zone C\r\n"
+		"Zone C"
 		Global.zoneLocations[2] = Vector(-43, 95, 150);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
 		Abort;
-		" Zone A\r\n"
+		"Zone A"
 		Global.zoneLocations[0] = Vector(62, 2, -29);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		" Zone B\r\n"
+		"Zone B"
 		Global.zoneLocations[1] = Vector(1, -1, -61);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 7;
-		" Zone C\r\n"
+		"Zone C"
 		Global.zoneLocations[2] = Vector(-60, 2, -29);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
@@ -375,41 +372,41 @@ rule("Setup Zones: Oasis")
 	{
 		Skip(Array(30, 0, 10, 20)[1 + Index Of Array Value(Array(Map(Oasis City Center), Map(Oasis Gardens), Map(Oasis University)),
 			Current Map)]);
-		" Zone A\r\n"
+		"Zone A"
 		Global.zoneLocations[0] = Vector(98.500, 0.850, 300);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		" Zone B\r\n"
+		"Zone B"
 		Global.zoneLocations[1] = Vector(143.500, 2.150, 247.500);
 		Global.zoneSizes[1] = 4.500;
 		Global.zoneHeights[1] = 5;
-		" Zone C\r\n"
+		"Zone C"
 		Global.zoneLocations[2] = Vector(196.500, 0.850, 202.500);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
 		Abort;
-		" Zone A\r\n"
+		"Zone A"
 		Global.zoneLocations[0] = Vector(101.500, 8, -287);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		" Zone B\r\n"
+		"Zone B"
 		Global.zoneLocations[1] = Vector(121.255, 5.500, -227.480);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 5;
-		" Zone C\r\n"
+		"Zone C"
 		Global.zoneLocations[2] = Vector(180.850, 8, -207.850);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
 		Abort;
-		" Zone A\r\n"
+		"Zone A"
 		Global.zoneLocations[0] = Vector(-188, 18, 53.500);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		" Zone B\r\n"
+		"Zone B"
 		Global.zoneLocations[1] = Vector(-210, 19, 0);
 		Global.zoneSizes[1] = 5;
 		Global.zoneHeights[1] = 5;
-		" Zone C\r\n"
+		"Zone C"
 		Global.zoneLocations[2] = Vector(-188, 18, -53.500);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
@@ -431,7 +428,7 @@ rule("Once Zones are defined, create visuals")
 
 	actions
 	{
-		" Zone A Visuals"
+		"Zone A Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null), Ring, White, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null && !Global.powerPlayActive),
@@ -442,7 +439,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone A Visuals"
+		"Zone A Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1), Ring, Team 1, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1 && !Global.powerPlayActive),
@@ -453,7 +450,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone A Visuals"
+		"Zone A Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2), Ring, Team 2, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2 && !Global.powerPlayActive),
@@ -464,7 +461,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone B Visuals"
+		"Zone B Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null), Ring, White, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null && !Global.powerPlayActive),
@@ -475,7 +472,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone B Visuals"
+		"Zone B Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1), Ring, Team 1, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1 && !Global.powerPlayActive),
@@ -486,7 +483,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone B Visuals"
+		"Zone B Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2), Ring, Team 2, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2 && !Global.powerPlayActive),
@@ -497,7 +494,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone C Visuals"
+		"Zone C Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null), Ring, White, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null && !Global.powerPlayActive),
@@ -508,7 +505,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone C Visuals"
+		"Zone C Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1), Ring, Team 1, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1 && !Global.powerPlayActive),
@@ -519,7 +516,7 @@ rule("Once Zones are defined, create visuals")
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		" Zone C Visuals"
+		"Zone C Visuals"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2), Ring, Team 2, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2 && !Global.powerPlayActive),
@@ -1141,14 +1138,14 @@ rule("Zone A HUD: Control null | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(All Teams), Custom String("Zone A"), Custom String("Neutral"), Custom String("Unlocked"), Right, -3,
-			White, White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(All Teams), Custom String("Zone A"), Custom String("Neutral　　　　　　　"), Custom String("Unlocked"), Right,
+			-3, White, White, White, Visible To and String, Visible Never);
 		Global.zoneAHudText[0] = Last Text ID;
 		Global.zoneAHudText[1] = Last Text ID;
 	}
@@ -1170,12 +1167,12 @@ rule("Zone A HUD: Control null | Progress > 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1209,12 +1206,12 @@ rule("Zone A HUD: Control null | Progress < 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1248,17 +1245,17 @@ rule("Zone A HUD: Control Team.1 | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String(" "), Custom String("Defend Zone"), Right, -3, Team 1,
-			White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String("　　　　　　　　　　　"), Custom String("Defend Zone"), Right,
+			-3, Team 1, White, White, Visible To and String, Visible Never);
 		Global.zoneAHudText[0] = Last Text ID;
-		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String(" "), Custom String("Attack Zone"), Right, -3, Team 1,
-			White, White, Visible To and String, Visible Never);
+		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String("　　　　　　　　　　　"), Custom String("Attack Zone"), Right,
+			-3, Team 1, White, White, Visible To and String, Visible Never);
 		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
@@ -1279,12 +1276,12 @@ rule("Zone A HUD: Control Team.1 | Progress < 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1318,17 +1315,17 @@ rule("Zone A HUD: Control Team.2 | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String(" "), Custom String("Attack Zone"), Right, -3, Team 2,
-			White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Custom String("　　　　　　　　　　　"), Custom String("Attack Zone"), Right,
+			-3, Team 2, White, White, Visible To and String, Visible Never);
 		Global.zoneAHudText[0] = Last Text ID;
-		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String(" "), Custom String("Defend Zone"), Right, -3, Team 2,
-			White, White, Visible To and String, Visible Never);
+		Create HUD Text(All Players(Team 2), Custom String("Zone A"), Custom String("　　　　　　　　　　　"), Custom String("Defend Zone"), Right,
+			-3, Team 2, White, White, Visible To and String, Visible Never);
 		Global.zoneAHudText[1] = Last Text ID;
 	}
 }
@@ -1349,12 +1346,12 @@ rule("Zone A HUD: Control Team.2 | Progress > 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(Global.zoneAHudText[0]);
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone A"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1540,14 +1537,14 @@ rule("Zone B HUD: Control null | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(All Teams), Custom String("Zone B"), Custom String("Neutral"), Custom String("Unlocked"), Right, -2,
-			White, White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(All Teams), Custom String("Zone B"), Custom String("Neutral　　　　　　　"), Custom String("Unlocked"), Right,
+			-2, White, White, White, Visible To and String, Visible Never);
 		Global.zoneBHudText[0] = Last Text ID;
 		Global.zoneBHudText[1] = Last Text ID;
 	}
@@ -1569,12 +1566,12 @@ rule("Zone B HUD: Control null | Progress > 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1608,12 +1605,12 @@ rule("Zone B HUD: Control null | Progress < 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1647,17 +1644,17 @@ rule("Zone B HUD: Control Team.1 | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String(" "), Custom String("Defend Zone"), Right, -2, Team 1,
-			White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String("　　　　　　　　　　　"), Custom String("Defend Zone"), Right,
+			-2, Team 1, White, White, Visible To and String, Visible Never);
 		Global.zoneBHudText[0] = Last Text ID;
-		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String(" "), Custom String("Attack Zone"), Right, -2, Team 1,
-			White, White, Visible To and String, Visible Never);
+		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String("　　　　　　　　　　　"), Custom String("Attack Zone"), Right,
+			-2, Team 1, White, White, Visible To and String, Visible Never);
 		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
@@ -1678,12 +1675,12 @@ rule("Zone B HUD: Control Team.1 | Progress < 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1717,17 +1714,17 @@ rule("Zone B HUD: Control Team.2 | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String(" "), Custom String("Attack Zone"), Right, -2, Team 2,
-			White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Custom String("　　　　　　　　　　　"), Custom String("Attack Zone"), Right,
+			-2, Team 2, White, White, Visible To and String, Visible Never);
 		Global.zoneBHudText[0] = Last Text ID;
-		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String(" "), Custom String("Defend Zone"), Right, -2, Team 2,
-			White, White, Visible To and String, Visible Never);
+		Create HUD Text(All Players(Team 2), Custom String("Zone B"), Custom String("　　　　　　　　　　　"), Custom String("Defend Zone"), Right,
+			-2, Team 2, White, White, Visible To and String, Visible Never);
 		Global.zoneBHudText[1] = Last Text ID;
 	}
 }
@@ -1748,12 +1745,12 @@ rule("Zone B HUD: Control Team.2 | Progress > 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(Global.zoneBHudText[0]);
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone B"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -1939,14 +1936,14 @@ rule("Zone C HUD: Control null | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(All Teams), Custom String("Zone C"), Custom String("Neutral"), Custom String("Unlocked"), Right, -1,
-			White, White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(All Teams), Custom String("Zone C"), Custom String("Neutral　　　　　　　"), Custom String("Unlocked"), Right,
+			-1, White, White, White, Visible To and String, Visible Never);
 		Global.zoneCHudText[0] = Last Text ID;
 		Global.zoneCHudText[1] = Last Text ID;
 	}
@@ -1968,12 +1965,12 @@ rule("Zone C HUD: Control null | Progress > 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -2007,12 +2004,12 @@ rule("Zone C HUD: Control null | Progress < 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -2046,17 +2043,17 @@ rule("Zone C HUD: Control Team.1 | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String(" "), Custom String("Defend Zone"), Right, -1, Team 1,
-			White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String("　　　　　　　　　　　"), Custom String("Defend Zone"), Right,
+			-1, Team 1, White, White, Visible To and String, Visible Never);
 		Global.zoneCHudText[0] = Last Text ID;
-		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String(" "), Custom String("Attack Zone"), Right, -1, Team 1,
-			White, White, Visible To and String, Visible Never);
+		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String("　　　　　　　　　　　"), Custom String("Attack Zone"), Right,
+			-1, Team 1, White, White, Visible To and String, Visible Never);
 		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
@@ -2077,12 +2074,12 @@ rule("Zone C HUD: Control Team.1 | Progress < 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -2116,17 +2113,17 @@ rule("Zone C HUD: Control Team.2 | Progress == 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
-		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String(" "), Custom String("Attack Zone"), Right, -1, Team 2,
-			White, White, Visible To and String, Visible Never);
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
+		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Custom String("　　　　　　　　　　　"), Custom String("Attack Zone"), Right,
+			-1, Team 2, White, White, Visible To and String, Visible Never);
 		Global.zoneCHudText[0] = Last Text ID;
-		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String(" "), Custom String("Defend Zone"), Right, -1, Team 2,
-			White, White, Visible To and String, Visible Never);
+		Create HUD Text(All Players(Team 2), Custom String("Zone C"), Custom String("　　　　　　　　　　　"), Custom String("Defend Zone"), Right,
+			-1, Team 2, White, White, Visible To and String, Visible Never);
 		Global.zoneCHudText[1] = Last Text ID;
 	}
 }
@@ -2147,12 +2144,12 @@ rule("Zone C HUD: Control Team.2 | Progress > 0")
 
 	actions
 	{
-		" Remove existing zone huds"
+		"Remove existing zone huds"
 		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(Global.zoneCHudText[0]);
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
-		" Create new zone HUD element(s) and store to zone's HUD text ID array"
+		"Create new zone HUD element(s) and store to zone's HUD text ID array"
 		Create HUD Text(All Players(Team 1), Custom String("Zone C"), Array(Custom String("[　　　　　　　　　　]"), Custom String("[▒　　　　　　　　　]"),
 			Custom String("[▒▒　　　　　　　　]"), Custom String("[▒▒▒　　　　　　　]"), Custom String("[▒▒▒▒　　　　　　]"), Custom String("[▒▒▒▒▒　　　　　]"),
 			Custom String("[▒▒▒▒▒▒　　　　]"), Custom String("[▒▒▒▒▒▒▒　　　]"), Custom String("[▒▒▒▒▒▒▒▒　　]"), Custom String("[▒▒▒▒▒▒▒▒▒　]"),
@@ -2336,7 +2333,7 @@ rule("At end of Power Play, reset points")
 		Global.zoneControl[2] = Null;
 		Global.zoneCProgress = 0;
 		Global.powerPlayActive = False;
-		" Reset Score Multipliers\r\n"
+		"Reset Score Multipliers"
 		Global.scoreMultipliers = Array(1, 1);
 		Global.powerPlaySoundTrigger = True;
 		Wait(0.016, Ignore Condition);
