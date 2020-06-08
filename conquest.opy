@@ -53,6 +53,12 @@ globalvar skullIcons
 playervar respawnBlocked
 # Tracker for buffered respawn input
 playervar respawnBuffered
+# Current message to display to player
+playervar playerMessage
+# HUD text ID for playerMessage
+playervar msgTextID
+# Time to available respawn
+playervar timeToRespawn
 
 #Subroutines
 subroutine playElimSounds
@@ -63,17 +69,18 @@ subroutine declareWinner
 #!define generateInitPointVisuals() __script__('generateInitialPointVisuals.js')
 #!define generateChaserRules(point) __script__('generateChaserRules.js')
 #!define generateVisualUpdates(point) __script__('generateVisualUpdates.js')
-#!define initialize() __script__('initialize.js')
+#!define initializeHelper() __script__('initialize.js')
 #!define stopAllProgress() __script__('stopAllProgress.js')
 #!define generateLockedText() __script__('generateLockedText.js')
 #!define triggerPointReset(destroyText) __script__('triggerPointReset.js')
 #!define toggleSkulls(create) __script__('toggleSkullIcons.js')
-#!define progressBar(zoneProgVar, len) __script__('progressBarHelper.js')
+#!define generatePlayerHUDSpacer() __script__('generatePlayerHUDSpacer.js')
+#!define generatePlayerHUD() __script__('generatePlayerHUD.js')
 
 
 rule "=====CUSTOMIZATION=====":
 	@Event global
-	@Disabled
+    @Disabled
     return
 
 rule "powerPlayEnabled: Set to True to activate Power Play when a team caps all 3 points. Default: True":
@@ -98,16 +105,31 @@ rule "=====SETUP=====":
 	@Disabled
     return
 
-rule "Initialization":
-	@Event global
+rule "Global Initialization - includes center zone HUD elements":
+    @Event global
+    # Mostly for debugging purposes
     disableInspector()
+    # We use our own custom gamemode completion
     disableGamemodeCompletion()
-    initialize()
+    initializeHelper()
+    # Push player-specific HUD down to crosshair level
+    generatePlayerHUDSpacer()
     powerPlayActive = false
+
+rule "Player Initialization":
+    @Event eachPlayer
+    generatePlayerHUD()
+    # Store the text ID for destruction on exit
+    eventPlayer.msgTextID = getLastCreatedText()
+
+rule "Player Cleanup":
+    @Event playerLeft
+    # Cleanup the player-specific HUD
+    destroyHudText(eventPlayer.msgTextID)
 
 #!include "maps.opy"
 
-rule "Once Zones are defined, create visuals":
+rule "Generate initial in-world zone visuals":
 	@Event global
 	@Condition len(zoneLocations) == 3 and len(zoneSizes) == 3
     generateInitPointVisuals()
@@ -120,16 +142,23 @@ rule "=====GAMEPLAY=====":
 rule "Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)":
     @Event eachPlayer
     @Condition eventPlayer.isAlive()
-    @Condition eventPlayer.respawnBuffered
+    # Reset for next death
     eventPlayer.respawnBuffered = false
+    eventPlayer.respawnBlocked = false
 
 rule "Disable Self Respawn for 5 seconds":
-	@Event playerDied
+    @Event playerDied
+    # Prevent manual respawn for 5 seconds
     victim.disallowButton(Button.JUMP)
     victim.respawnBlocked = true
+    # Track time until respawn
+    victim.timeToRespawn = 5
+    chase(victim.timeToRespawn, 0, rate=1, ChaseReeval.NONE)
     wait(5, Wait.IGNORE_CONDITION)
+    # Allow manual respawn
     victim.allowButton(Button.JUMP)
     victim.respawnBlocked = false
+    # Respawn if they pressed jump while blocked
     if victim.respawnBuffered:
         victim.respawn()
         victim.respawnBuffered = false
@@ -138,6 +167,7 @@ rule "If player attempts to respawn while blocked, mark them to respawn":
     @Event eachPlayer
     @Condition eventPlayer.respawnBlocked
     @Condition eventPlayer.isDead()
+    @Condition eventPlayer.isHoldingButton(Button.JUMP)
     eventPlayer.respawnBuffered = true
 
 rule "Reset on Game Start (Waiting for Players)":
