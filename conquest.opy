@@ -172,18 +172,22 @@ rule "If player attempts to respawn while blocked, mark them to respawn":
 
 rule "Reset on Game Start (Waiting for Players)":
 	@Event global
-	@Condition isGameInProgress()
+    @Condition isGameInProgress()
+    # Stop all zone progress
     stopAllProgress()
+    # Reset Zones
     triggerPointReset(false)
+    # Reset Scores
     setTeamScore(Team.1, 0)
     setTeamScore(Team.2, 0)
 
 rule "Upon earning a kill, award additional points for zones controlled":
 	@Event playerEarnedElimination
-	@Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
+    @Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
+    # Award bonus points
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
-    playElimSounds()
+    async(playElimSounds, AsyncBehavior.NOOP)
 
 def playElimSounds():
     @Name "SUB: Play sounds for earning elims with zone advantage"

@@ -63,8 +63,5 @@ rule "Point ${pointToLetter[point]}: Listen for Capture":
         addToTeamScore(Team.2, 1)
         smallMessage(getPlayers(Team.1), "Zone ${pointToLetter[point]} Lost")
         smallMessage(getPlayers(Team.2), "Zone ${pointToLetter[point]} Captured")
-        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)
-    scoreMultipliers[0] = max(1, len([control for control in zoneControl if control == Team.1]))
-    scoreMultipliers[1] = max(1, len([control for control in zoneControl if control == Team.2]))
-`;
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)`;
 result;

@@ -41,8 +41,6 @@ rule "At end of Power Play, reset points":
     setMatchTime(resumeMatchTime)
     triggerPointReset(true)
     powerPlayActive = false
-    # Reset Score Multipliers
-    scoreMultipliers = [1, 1]
     powerPlaySoundTrigger = true
     wait(0.016, Wait.IGNORE_CONDITION)
     powerPlaySoundTrigger = false
