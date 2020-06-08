@@ -4,13 +4,13 @@ rule "If a Team controls all 3 points, activate Power Play":
 	@Event global
 	@Condition powerPlayEnabled and (all([control == Team.1 for control in zoneControl]) or all([control == Team.2 for control in zoneControl]))
     powerPlayActive = true
-    powerPlayTimer = powerPlayDuration
+    powerPlayTimer = min(powerPlayDuration, getMatchTime())
     stopAllProgress()
     generateLockedText()
     setSlowMotion(10)
     getAllPlayers().setAimSpeed(50)
     setObjectiveDescription(getAllPlayers(), "Power Play", HudReeval.VISIBILITY)
-    resumeMatchTime = max(getMatchTime() - powerPlayDuration, 0)
+    resumeMatchTime = max(getMatchTime() - powerPlayTimer, 0)
     setMatchTime(powerPlayDuration + 0.016)
     bigMessage(getAllPlayers(), "Power Play")
     bigMessage(getAllPlayers(), "Zones Locked")
@@ -26,6 +26,13 @@ rule "If a Team controls all 3 points, activate Power Play":
     getAllPlayers().setAimSpeed(100)
     unpauseMatchTime()
     chase(powerPlayTimer, 0, rate=1, ChaseReeval.NONE)
+
+rule "Reapply burning effect if not burning":
+    @Event eachPlayer
+    @Condition powerPlayActive
+    @Condition eventPlayer.getTeam() == getOppositeTeam(zoneControl[0])
+    @Condition not eventPlayer.hasStatusEffect(Status.BURNING)
+    eventPlayer.setStatusEffect(null, Status.BURNING, powerPlayDuration)
 
 rule "At end of Power Play, reset points":
 	@Event global
