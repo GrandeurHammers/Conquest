@@ -25,14 +25,23 @@ for (var i = 0;  i < numPoints; i++) {
     hudSubtext([${visTo.replace('%CONTEST%', 'true')}], "{0} - {1}%".format(zone${pointToLetter[i]}HudText[3], floor(abs(zone${pointToLetter[i]}Progress))), HudPosition.TOP, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 }
 
+// Separator Lines
 result += `
     #HUD Separator Lines`;
-
-// Generate Zone Separators
-for (var i = 1; i <= 2; i++) {
+for (var i = 0; i <= 2; i++) {
     result += `
-    hudSubtext(getAllPlayers(), w"--------------", HudPosition.RIGHT, ${-i - 0.5}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`
+    hudSubtext(getAllPlayers(), w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`
 }
+
+//
+result += `
+    #Explanation HUDs`;
+let teams = ['Team.1', 'Team.2'];
+teams.forEach(function (team) {
+    let pointsControlled = `len([control for control in zoneControl if control == ${team}])`;
+    result += `
+    hudHeader(getPlayers(${team}), "{0}{1} = +{2} Bonus/{3}".format(${pointsControlled}, iconString(Icon.FLAG), max(${pointsControlled} - 1, 0), iconString(Icon.SKULL)), HudPosition.RIGHT, -0.4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+});
 
 result += `
     #Power Play Timer - Visible when power play is active
