@@ -46,32 +46,33 @@ variables
 		2: zoneSizes
 		3: zoneHeights
 		4: zoneControl
-		5: scoreMultipliers
-		6: numTeam1A
-		7: numTeam1B
-		8: numTeam1C
-		9: numTeam2A
-		10: numTeam2B
-		11: numTeam2C
-		12: powerPlayActive
-		13: powerPlayTimer
-		14: powerPlaySoundTrigger
-		15: powerPlayEnabled
-		16: powerPlayDuration
-		17: powerPlayMarkers
-		18: resumeMatchTime
-		19: overtime
-		20: zoneAHudText
-		21: zoneBHudText
-		22: zoneCHudText
-		23: zoneAProgress
-		24: zoneBProgress
-		25: zoneCProgress
-		26: skullIcons
+		5: numTeam1A
+		6: numTeam1B
+		7: numTeam1C
+		8: numTeam2A
+		9: numTeam2B
+		10: numTeam2C
+		11: powerPlayActive
+		12: powerPlayTimer
+		13: powerPlaySoundTrigger
+		14: powerPlayEnabled
+		15: powerPlayDuration
+		16: powerPlayMarkers
+		17: resumeMatchTime
+		18: overtime
+		19: zoneAHudText
+		20: zoneBHudText
+		21: zoneCHudText
+		22: zoneAProgress
+		23: zoneBProgress
+		24: zoneCProgress
+		25: skullIcons
 
 	player:
 		0: respawnBlocked
 		1: respawnBuffered
+		3: msgTextID
+		4: timeToRespawn
 }
 
 subroutines
@@ -159,7 +160,7 @@ disabled rule("=====SETUP=====")
 	}
 }
 
-rule("Initialization")
+rule("Global Initialization - includes center zone HUD elements")
 {
 	event
 	{
@@ -168,7 +169,9 @@ rule("Initialization")
 
 	actions
 	{
+		"Mostly for debugging purposes"
 		Disable Inspector Recording;
+		"We use our own custom gamemode completion"
 		Disable Built-In Game Mode Completion;
 		"Set up all points to have neither team controlling"
 		Global.zoneControl = Array(Null, Null, Null);
@@ -285,14 +288,64 @@ rule("Initialization")
 			< Global.zoneHeights[2]), Null, Null, Custom String("{0} - {1}%", Global.zoneCHudText[3], Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down)), Top, 5, White, White, White, Visible To and String, Visible Never);
 		"HUD Separator Lines"
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -1.500, White, White, White,
-			Visible To and String, Visible Never);
 		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -2.500, White, White, White,
 			Visible To and String, Visible Never);
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -1.500, White, White, White,
+			Visible To and String, Visible Never);
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -0.500, White, White, White,
+			Visible To and String, Visible Never);
+		"Explanation HUDs"
+		Create HUD Text(All Players(Team 1), Custom String("{0}{1} = +{2}", Count Of(Filtered Array(Global.zoneControl,
+			Current Array Element == Team 1)), Icon String(Flag), Custom String("{0} Bonus/{1}", Max(Count Of(Filtered Array(
+			Global.zoneControl, Current Array Element == Team 1)) - 1, 0), Icon String(Skull))), Null, Null, Right, -0.400, White, White,
+			White, Visible To and String, Visible Never);
+		Create HUD Text(All Players(Team 2), Custom String("{0}{1} = +{2}", Count Of(Filtered Array(Global.zoneControl,
+			Current Array Element == Team 2)), Icon String(Flag), Custom String("{0} Bonus/{1}", Max(Count Of(Filtered Array(
+			Global.zoneControl, Current Array Element == Team 2)) - 1, 0), Icon String(Skull))), Null, Null, Right, -0.400, White, White,
+			White, Visible To and String, Visible Never);
 		"Power Play Timer - Visible when power play is active"
 		Create HUD Text(Filtered Array(All Players(All Teams), Global.powerPlayActive), Custom String("Power Play: {0}", Round To Integer(
-			Global.powerPlayTimer, Up)), Null, Null, Top, 3, Yellow, White, White, Visible To and String, Default Visibility);
+			Global.powerPlayTimer, Down)), Null, Null, Top, 3, Yellow, White, White, Visible To and String, Default Visibility);
+		"Push player-specific HUD down to crosshair level"
+		Create HUD Text(All Dead Players(All Teams), Null, Null, Global.powerPlayActive ? Custom String(" \r\n\r\n\r\n\r\n\r\n\r\n\r\n")
+			: Custom String("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"), Top, 4, White, White, White, Visible To and String,
+			Visible Never);
 		Global.powerPlayActive = False;
+	}
+}
+
+rule("Player Initialization")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	actions
+	{
+		Create HUD Text(Filtered Array(Event Player, Event Player.timeToRespawn > 0), Event Player.respawnBuffered ? Custom String(
+			"Respawning in {0}", Round To Integer(Event Player.timeToRespawn, Down)) : Custom String("Press Jump to Respawn"), Null, Null,
+			Top, 5, Yellow, White, White, Visible To and String, Visible Never);
+		"Store the text ID for destruction on exit"
+		Event Player.msgTextID = Last Text ID;
+	}
+}
+
+rule("Player Cleanup")
+{
+	event
+	{
+		Player Left Match;
+		All;
+		All;
+	}
+
+	actions
+	{
+		"Cleanup the player-specific HUD"
+		Destroy HUD Text(Event Player.msgTextID);
 	}
 }
 
@@ -314,41 +367,41 @@ rule("Setup Zones: Lijang Tower")
 		Skip(Array(30, 0, 0, 10, 10, 20, 20)[1 + Index Of Array Value(Array(Map(Lijiang Control Center), Map(
 			Lijiang Control Center Lunar New Year), Map(Lijiang Garden), Map(Lijiang Garden Lunar New Year), Map(Lijiang Night Market),
 			Map(Lijiang Night Market Lunar New Year)), Current Map)]);
-		"Zone A"
+		"Lijang Tower: Control Center - Zone A"
 		Global.zoneLocations[0] = Vector(48, 265, 329.150);
 		Global.zoneSizes[0] = 6;
 		Global.zoneHeights[0] = 6;
-		"Zone B"
+		"Lijang Tower: Control Center - Zone B"
 		Global.zoneLocations[1] = Vector(0, 267.330, 280);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 7;
-		"Zone C"
+		"Lijang Tower: Control Center - Zone C"
 		Global.zoneLocations[2] = Vector(-48, 265, 329.150);
 		Global.zoneSizes[2] = 6;
 		Global.zoneHeights[2] = 6;
 		Abort;
-		"Zone A"
+		"Lijang Tower: Garden - Zone A"
 		Global.zoneLocations[0] = Vector(43, 95, 150);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		"Zone B"
+		"Lijang Tower: Garden - Zone B"
 		Global.zoneLocations[1] = Vector(0, 94, 130);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 7;
-		"Zone C"
+		"Lijang Tower: Garden - Zone C"
 		Global.zoneLocations[2] = Vector(-43, 95, 150);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
 		Abort;
-		"Zone A"
+		"Lijang Tower: Night Market - Zone A"
 		Global.zoneLocations[0] = Vector(62, 2, -29);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		"Zone B"
+		"Lijang Tower: Night Market - Zone B"
 		Global.zoneLocations[1] = Vector(1, -1, -61);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 7;
-		"Zone C"
+		"Lijang Tower: Night Market - Zone C"
 		Global.zoneLocations[2] = Vector(-60, 2, -29);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
@@ -372,41 +425,41 @@ rule("Setup Zones: Oasis")
 	{
 		Skip(Array(30, 0, 10, 20)[1 + Index Of Array Value(Array(Map(Oasis City Center), Map(Oasis Gardens), Map(Oasis University)),
 			Current Map)]);
-		"Zone A"
+		"Oasis: City Center - Zone A"
 		Global.zoneLocations[0] = Vector(98.500, 0.850, 300);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		"Zone B"
+		"Oasis: City Center - Zone B"
 		Global.zoneLocations[1] = Vector(143.500, 2.150, 247.500);
 		Global.zoneSizes[1] = 4.500;
 		Global.zoneHeights[1] = 5;
-		"Zone C"
+		"Oasis: City Center - Zone C"
 		Global.zoneLocations[2] = Vector(196.500, 0.850, 202.500);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
 		Abort;
-		"Zone A"
+		"Oasis: Gardens - Zone A"
 		Global.zoneLocations[0] = Vector(101.500, 8, -287);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		"Zone B"
+		"Oasis: Gardens - Zone B"
 		Global.zoneLocations[1] = Vector(121.255, 5.500, -227.480);
 		Global.zoneSizes[1] = 7;
 		Global.zoneHeights[1] = 5;
-		"Zone C"
+		"Oasis: Gardens - Zone C"
 		Global.zoneLocations[2] = Vector(180.850, 8, -207.850);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
 		Abort;
-		"Zone A"
+		"Oasis: University - Zone A"
 		Global.zoneLocations[0] = Vector(-188, 18, 53.500);
 		Global.zoneSizes[0] = 5;
 		Global.zoneHeights[0] = 5;
-		"Zone B"
+		"Oasis: University - Zone B"
 		Global.zoneLocations[1] = Vector(-210, 19, 0);
 		Global.zoneSizes[1] = 5;
 		Global.zoneHeights[1] = 5;
-		"Zone C"
+		"Oasis: University - Zone C"
 		Global.zoneLocations[2] = Vector(-188, 18, -53.500);
 		Global.zoneSizes[2] = 5;
 		Global.zoneHeights[2] = 5;
@@ -414,7 +467,7 @@ rule("Setup Zones: Oasis")
 	}
 }
 
-rule("Once Zones are defined, create visuals")
+rule("Generate initial in-world zone visuals")
 {
 	event
 	{
@@ -428,102 +481,120 @@ rule("Once Zones are defined, create visuals")
 
 	actions
 	{
-		"Zone A Visuals"
+		"Zone A Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null), Ring, White, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
+		"Zone A Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null && !Global.powerPlayActive),
 			Absolute Value(Global.zoneAProgress) > 0 ? (Absolute Value(Global.zoneAProgress) < 10 ? Custom String(" A\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneAProgress), Down)) : Custom String("  A\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down))) : Custom String("A\r\n "), Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, White, Default Visibility);
+		"Zone A Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Null && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone A Visuals"
+		"Zone A Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1), Ring, Team 1, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
+		"Zone A Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1 && !Global.powerPlayActive),
 			Absolute Value(Global.zoneAProgress) > 0 ? (Absolute Value(Global.zoneAProgress) < 10 ? Custom String(" A\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneAProgress), Down)) : Custom String("  A\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down))) : Custom String("A\r\n "), Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, Team 1, Default Visibility);
+		"Zone A Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 1 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone A Visuals"
+		"Zone A Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2), Ring, Team 2, Global.zoneLocations[0],
 			Global.zoneSizes[0], Visible To);
+		"Zone A Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2 && !Global.powerPlayActive),
 			Absolute Value(Global.zoneAProgress) > 0 ? (Absolute Value(Global.zoneAProgress) < 10 ? Custom String(" A\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneAProgress), Down)) : Custom String("  A\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down))) : Custom String("A\r\n "), Global.zoneLocations[0] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, Team 2, Default Visibility);
+		"Zone A Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[0] == Team 2 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[0] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone B Visuals"
+		"Zone B Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null), Ring, White, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
+		"Zone B Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null && !Global.powerPlayActive),
 			Absolute Value(Global.zoneBProgress) > 0 ? (Absolute Value(Global.zoneBProgress) < 10 ? Custom String(" B\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneBProgress), Down)) : Custom String("  B\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down))) : Custom String("B\r\n "), Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, White, Default Visibility);
+		"Zone B Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Null && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone B Visuals"
+		"Zone B Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1), Ring, Team 1, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
+		"Zone B Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1 && !Global.powerPlayActive),
 			Absolute Value(Global.zoneBProgress) > 0 ? (Absolute Value(Global.zoneBProgress) < 10 ? Custom String(" B\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneBProgress), Down)) : Custom String("  B\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down))) : Custom String("B\r\n "), Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, Team 1, Default Visibility);
+		"Zone B Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 1 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone B Visuals"
+		"Zone B Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2), Ring, Team 2, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
+		"Zone B Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2 && !Global.powerPlayActive),
 			Absolute Value(Global.zoneBProgress) > 0 ? (Absolute Value(Global.zoneBProgress) < 10 ? Custom String(" B\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneBProgress), Down)) : Custom String("  B\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down))) : Custom String("B\r\n "), Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, Team 2, Default Visibility);
+		"Zone B Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[1] == Team 2 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone C Visuals"
+		"Zone C Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null), Ring, White, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
+		"Zone C Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null && !Global.powerPlayActive),
 			Absolute Value(Global.zoneCProgress) > 0 ? (Absolute Value(Global.zoneCProgress) < 10 ? Custom String(" C\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneCProgress), Down)) : Custom String("  C\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down))) : Custom String("C\r\n "), Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, White, Default Visibility);
+		"Zone C Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Null && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone C Visuals"
+		"Zone C Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1), Ring, Team 1, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
+		"Zone C Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1 && !Global.powerPlayActive),
 			Absolute Value(Global.zoneCProgress) > 0 ? (Absolute Value(Global.zoneCProgress) < 10 ? Custom String(" C\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneCProgress), Down)) : Custom String("  C\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down))) : Custom String("C\r\n "), Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, Team 1, Default Visibility);
+		"Zone C Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 1 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
-		"Zone C Visuals"
+		"Zone C Visuals - Ring on ground"
 		Create Effect(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2), Ring, Team 2, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
+		"Zone C Visuals - Zone identifier (normal play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2 && !Global.powerPlayActive),
 			Absolute Value(Global.zoneCProgress) > 0 ? (Absolute Value(Global.zoneCProgress) < 10 ? Custom String(" C\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneCProgress), Down)) : Custom String("  C\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down))) : Custom String("C\r\n "), Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, Team 2, Default Visibility);
+		"Zone C Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Filtered Array(All Players(All Teams), Global.zoneControl[2] == Team 2 && Global.powerPlayActive),
 			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
 			Default Visibility);
@@ -555,12 +626,13 @@ rule("Remove respawn buffered marker on respawn (necessary because hero swap res
 	conditions
 	{
 		Is Alive(Event Player) == True;
-		Event Player.respawnBuffered != False;
 	}
 
 	actions
 	{
+		"Reset for next death"
 		Event Player.respawnBuffered = False;
+		Event Player.respawnBlocked = False;
 	}
 }
 
@@ -575,11 +647,17 @@ rule("Disable Self Respawn for 5 seconds")
 
 	actions
 	{
+		"Prevent manual respawn for 5 seconds"
 		Disallow Button(Victim, Jump);
 		Victim.respawnBlocked = True;
+		"Track time until respawn"
+		Victim.timeToRespawn = 5;
+		Chase Player Variable At Rate(Victim, timeToRespawn, 0, 1, None);
 		Wait(5, Ignore Condition);
+		"Allow manual respawn"
 		Allow Button(Victim, Jump);
 		Victim.respawnBlocked = False;
+		"Respawn if they pressed jump while blocked"
 		If(Victim.respawnBuffered);
 			Respawn(Victim);
 			Victim.respawnBuffered = False;
@@ -599,6 +677,7 @@ rule("If player attempts to respawn while blocked, mark them to respawn")
 	{
 		Event Player.respawnBlocked != False;
 		Is Dead(Event Player) == True;
+		Is Button Held(Event Player, Jump) == True;
 	}
 
 	actions
@@ -621,15 +700,18 @@ rule("Reset on Game Start (Waiting for Players)")
 
 	actions
 	{
+		"Stop all zone progress"
 		Stop Chasing Global Variable(zoneAProgress);
 		Stop Chasing Global Variable(zoneBProgress);
 		Stop Chasing Global Variable(zoneCProgress);
+		"Reset Zones"
 		Global.zoneControl[0] = Null;
 		Global.zoneAProgress = 0;
 		Global.zoneControl[1] = Null;
 		Global.zoneBProgress = 0;
 		Global.zoneControl[2] = Null;
 		Global.zoneCProgress = 0;
+		"Reset Scores"
 		Set Team Score(Team 1, 0);
 		Set Team Score(Team 2, 0);
 	}
@@ -651,10 +733,11 @@ rule("Upon earning a kill, award additional points for zones controlled")
 
 	actions
 	{
+		"Award bonus points"
 		Modify Team Score(Team Of(Attacker), Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team Of(Attacker))) - 1);
 		Small Message(Attacker, Custom String("+{0} for Zone Control", Count Of(Filtered Array(Global.zoneControl,
 			Current Array Element == Team Of(Attacker))) - 1));
-		Call Subroutine(playElimSounds);
+		Start Rule(playElimSounds, Do Nothing);
 	}
 }
 
@@ -1116,9 +1199,6 @@ rule("Point A: Listen for Capture")
 			Small Message(All Players(Team 1), Custom String("Zone A Lost"));
 			Small Message(All Players(Team 2), Custom String("Zone A Captured"));
 			Play Effect(All Players(All Teams), Ring Explosion, Team 2, Global.zoneLocations[0], Global.zoneSizes[0] * 2);
-		End;
-		Global.scoreMultipliers[0] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 1)));
-		Global.scoreMultipliers[1] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 2)));
 	}
 }
 
@@ -1515,9 +1595,6 @@ rule("Point B: Listen for Capture")
 			Small Message(All Players(Team 1), Custom String("Zone B Lost"));
 			Small Message(All Players(Team 2), Custom String("Zone B Captured"));
 			Play Effect(All Players(All Teams), Ring Explosion, Team 2, Global.zoneLocations[1], Global.zoneSizes[1] * 2);
-		End;
-		Global.scoreMultipliers[0] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 1)));
-		Global.scoreMultipliers[1] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 2)));
 	}
 }
 
@@ -1914,9 +1991,6 @@ rule("Point C: Listen for Capture")
 			Small Message(All Players(Team 1), Custom String("Zone C Lost"));
 			Small Message(All Players(Team 2), Custom String("Zone C Captured"));
 			Play Effect(All Players(All Teams), Ring Explosion, Team 2, Global.zoneLocations[2], Global.zoneSizes[2] * 2);
-		End;
-		Global.scoreMultipliers[0] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 1)));
-		Global.scoreMultipliers[1] = Max(1, Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team 2)));
 	}
 }
 
@@ -2196,7 +2270,7 @@ rule("If a Team controls all 3 points, activate Power Play")
 	actions
 	{
 		Global.powerPlayActive = True;
-		Global.powerPlayTimer = Global.powerPlayDuration;
+		Global.powerPlayTimer = Min(Global.powerPlayDuration, Match Time);
 		Stop Chasing Global Variable(zoneAProgress);
 		Stop Chasing Global Variable(zoneBProgress);
 		Stop Chasing Global Variable(zoneCProgress);
@@ -2204,41 +2278,40 @@ rule("If a Team controls all 3 points, activate Power Play")
 		Destroy HUD Text(Global.zoneAHudText[1]);
 		Destroy HUD Text(Global.zoneAHudText[2]);
 		If(Is True For All(Global.zoneControl, Current Array Element == Team 1));
-			Create HUD Text(All Players(All Teams), Custom String("Zone A"), Custom String(" "), Custom String("Locked"), Right, -3, Team 1,
-				White, White, Visible To and String, Visible Always);
+			Create HUD Text(All Players(All Teams), Custom String("Zone A"), Custom String("　　　　　　　　　　"), Custom String("{0} Locked",
+				Icon String(No)), Right, -3, Team 1, White, White, Visible To and String, Visible Always);
 		Else;
-			Create HUD Text(All Players(All Teams), Custom String("Zone A"), Custom String(" "), Custom String("Locked"), Right, -3, Team 2,
-				White, White, Visible To and String, Visible Always);
+			Create HUD Text(All Players(All Teams), Custom String("Zone A"), Custom String("　　　　　　　　　　"), Custom String("{0} Locked",
+				Icon String(No)), Right, -3, Team 2, White, White, Visible To and String, Visible Always);
 		End;
 		Global.zoneAHudText[0] = Last Text ID;
 		Destroy HUD Text(Global.zoneBHudText[0]);
 		Destroy HUD Text(Global.zoneBHudText[1]);
 		Destroy HUD Text(Global.zoneBHudText[2]);
 		If(Is True For All(Global.zoneControl, Current Array Element == Team 1));
-			Create HUD Text(All Players(All Teams), Custom String("Zone B"), Custom String(" "), Custom String("Locked"), Right, -2, Team 1,
-				White, White, Visible To and String, Visible Always);
+			Create HUD Text(All Players(All Teams), Custom String("Zone B"), Custom String("　　　　　　　　　　"), Custom String("{0} Locked",
+				Icon String(No)), Right, -2, Team 1, White, White, Visible To and String, Visible Always);
 		Else;
-			Create HUD Text(All Players(All Teams), Custom String("Zone B"), Custom String(" "), Custom String("Locked"), Right, -2, Team 2,
-				White, White, Visible To and String, Visible Always);
+			Create HUD Text(All Players(All Teams), Custom String("Zone B"), Custom String("　　　　　　　　　　"), Custom String("{0} Locked",
+				Icon String(No)), Right, -2, Team 2, White, White, Visible To and String, Visible Always);
 		End;
 		Global.zoneBHudText[0] = Last Text ID;
 		Destroy HUD Text(Global.zoneCHudText[0]);
 		Destroy HUD Text(Global.zoneCHudText[1]);
 		Destroy HUD Text(Global.zoneCHudText[2]);
 		If(Is True For All(Global.zoneControl, Current Array Element == Team 1));
-			Create HUD Text(All Players(All Teams), Custom String("Zone C"), Custom String(" "), Custom String("Locked"), Right, -1, Team 1,
-				White, White, Visible To and String, Visible Always);
+			Create HUD Text(All Players(All Teams), Custom String("Zone C"), Custom String("　　　　　　　　　　"), Custom String("{0} Locked",
+				Icon String(No)), Right, -1, Team 1, White, White, Visible To and String, Visible Always);
 		Else;
-			Create HUD Text(All Players(All Teams), Custom String("Zone C"), Custom String(" "), Custom String("Locked"), Right, -1, Team 2,
-				White, White, Visible To and String, Visible Always);
+			Create HUD Text(All Players(All Teams), Custom String("Zone C"), Custom String("　　　　　　　　　　"), Custom String("{0} Locked",
+				Icon String(No)), Right, -1, Team 2, White, White, Visible To and String, Visible Always);
 		End;
 		Global.zoneCHudText[0] = Last Text ID;
 		Set Slow Motion(10);
 		Set Aim Speed(All Players(All Teams), 50);
 		Set Objective Description(All Players(All Teams), Custom String("Power Play"), Visible To);
-		Global.resumeMatchTime = Max(Match Time - Global.powerPlayDuration, 0);
-		Pause Match Time;
-		Set Match Time(Global.powerPlayDuration);
+		Global.resumeMatchTime = Max(Match Time - Global.powerPlayTimer, 0);
+		Set Match Time(Global.powerPlayDuration + 0.016);
 		Big Message(All Players(All Teams), Custom String("Power Play"));
 		Big Message(All Players(All Teams), Custom String("Zones Locked"));
 		If(Global.powerPlayMarkers);
@@ -2284,12 +2357,36 @@ rule("If a Team controls all 3 points, activate Power Play")
 		End;
 		Global.powerPlaySoundTrigger = True;
 		Set Status(All Players(Opposite Team Of(Global.zoneControl[0])), Null, Burning, Global.powerPlayDuration + 0.500);
-		Wait(0.500, Ignore Condition);
+		Wait(0.016, Ignore Condition);
+		Pause Match Time;
+		Wait(0.484, Ignore Condition);
 		Global.powerPlaySoundTrigger = False;
 		Set Slow Motion(100);
 		Set Aim Speed(All Players(All Teams), 100);
 		Unpause Match Time;
 		Chase Global Variable At Rate(powerPlayTimer, 0, 1, None);
+	}
+}
+
+rule("Reapply burning effect if not burning")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Global.powerPlayActive != False;
+		Team Of(Event Player) == Opposite Team Of(Global.zoneControl[0]);
+		!Has Status(Event Player, Burning) == True;
+	}
+
+	actions
+	{
+		Set Status(Event Player, Null, Burning, Global.powerPlayDuration);
 	}
 }
 
@@ -2333,8 +2430,6 @@ rule("At end of Power Play, reset points")
 		Global.zoneControl[2] = Null;
 		Global.zoneCProgress = 0;
 		Global.powerPlayActive = False;
-		"Reset Score Multipliers"
-		Global.scoreMultipliers = Array(1, 1);
 		Global.powerPlaySoundTrigger = True;
 		Wait(0.016, Ignore Condition);
 		Global.powerPlaySoundTrigger = False;
@@ -2383,11 +2478,11 @@ disabled rule("DEBUG: Show CPU")
 
 	actions
 	{
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Load: {0}", Server Load), Left, 0, White, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Load: {0}", Server Load), Left, -3, White, White, White,
 			Visible To and String, Default Visibility);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Avg: {0}", Server Load Average), Left, 1, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Avg: {0}", Server Load Average), Left, -2, White, White,
 			White, Visible To and String, Default Visibility);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Peak: {0}", Server Load Peak), Left, 2, White, White,
+		Create HUD Text(All Players(All Teams), Null, Null, Custom String("Server Peak: {0}", Server Load Peak), Left, -1, White, White,
 			White, Visible To and String, Default Visibility);
 	}
 }
