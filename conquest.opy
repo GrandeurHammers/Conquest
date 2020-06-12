@@ -59,6 +59,8 @@ playervar playerMessage
 playervar msgTextID
 # Time to available respawn
 playervar timeToRespawn
+# Mark as valid for alerting elims
+playervar validElimTarget
 
 #Subroutines
 subroutine playElimSounds
@@ -182,10 +184,16 @@ rule "Reset on Game Start (Waiting for Players)":
     setTeamScore(Team.2, 0)
 
 rule "Upon earning a kill, award additional points for zones controlled":
-	@Event playerEarnedElimination
+	@Event playerDealtFinalBlow
     @Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
     # Award bonus points
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
+    victim.validElimTarget = true
+
+rule "Provide feedback on valid elimination":
+    @Event playerEarnedElimination
+    @Condition victim.validElimTarget
+    # Provide feedback
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
     async(playElimSounds, AsyncBehavior.NOOP)
 
@@ -198,6 +206,11 @@ def playElimSounds():
         default:
             wait(0.5)
             playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getPosition(), 200)
+
+rule "Remove validElim marker":
+    @Event eachPlayer
+    @Condition eventPlayer.validElimTarget
+    eventPlayer.validElimTarget = false
 
 rule "Declare Winner if a team has requisite number of points":
 	@Event global
