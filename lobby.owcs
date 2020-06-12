@@ -73,6 +73,7 @@ variables
 		1: respawnBuffered
 		3: msgTextID
 		4: timeToRespawn
+		5: validElimTarget
 }
 
 subroutines
@@ -308,7 +309,7 @@ rule("Global Initialization - includes center zone HUD elements")
 			Global.powerPlayTimer, Down)), Null, Null, Top, 3, Yellow, White, White, Visible To and String, Default Visibility);
 		"Push player-specific HUD down to crosshair level"
 		Create HUD Text(All Dead Players(All Teams), Null, Null, Global.powerPlayActive ? Custom String(" \r\n\r\n\r\n\r\n\r\n\r\n\r\n")
-			: Custom String("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"), Top, 4, White, White, White, Visible To and String,
+			: Custom String(" \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"), Top, 4, White, White, White, Visible To and String,
 			Visible Never);
 		Global.powerPlayActive = False;
 	}
@@ -721,7 +722,7 @@ rule("Upon earning a kill, award additional points for zones controlled")
 {
 	event
 	{
-		Player Earned Elimination;
+		Player Dealt Final Blow;
 		All;
 		All;
 	}
@@ -735,6 +736,27 @@ rule("Upon earning a kill, award additional points for zones controlled")
 	{
 		"Award bonus points"
 		Modify Team Score(Team Of(Attacker), Count Of(Filtered Array(Global.zoneControl, Current Array Element == Team Of(Attacker))) - 1);
+		Victim.validElimTarget = True;
+	}
+}
+
+rule("Provide feedback on valid elimination")
+{
+	event
+	{
+		Player Earned Elimination;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Victim.validElimTarget != False;
+	}
+
+	actions
+	{
+		"Provide feedback"
 		Small Message(Attacker, Custom String("+{0} for Zone Control", Count Of(Filtered Array(Global.zoneControl,
 			Current Array Element == Team Of(Attacker))) - 1));
 		Start Rule(playElimSounds, Do Nothing);
@@ -757,6 +779,26 @@ rule("SUB: Play sounds for earning elims with zone advantage")
 		Play Effect(Event Player, Buff Explosion Sound, White, Position Of(Event Player), 200);
 		Wait(0.500, Ignore Condition);
 		Play Effect(Event Player, Buff Explosion Sound, White, Position Of(Event Player), 200);
+	}
+}
+
+rule("Remove validElim marker")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Event Player.validElimTarget != False;
+	}
+
+	actions
+	{
+		Event Player.validElimTarget = False;
 	}
 }
 
@@ -2386,7 +2428,7 @@ rule("Reapply burning effect if not burning")
 
 	actions
 	{
-		Set Status(Event Player, Null, Burning, Global.powerPlayDuration);
+		Set Status(Event Player, Null, Burning, Global.powerPlayTimer);
 	}
 }
 
