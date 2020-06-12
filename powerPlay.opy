@@ -32,7 +32,7 @@ rule "Reapply burning effect if not burning":
     @Condition powerPlayActive
     @Condition eventPlayer.getTeam() == getOppositeTeam(zoneControl[0])
     @Condition not eventPlayer.hasStatusEffect(Status.BURNING)
-    eventPlayer.setStatusEffect(null, Status.BURNING, powerPlayDuration)
+    eventPlayer.setStatusEffect(null, Status.BURNING, powerPlayTimer)
 
 rule "At end of Power Play, reset points":
 	@Event global
