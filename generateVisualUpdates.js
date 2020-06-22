@@ -115,7 +115,7 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
     # Create new zone HUD element(s) and store to zone's HUD text ID array`;
         if ("subtextAll" in subtitle && "subtitleAll" in subtitle) {
             result += `
-    hudText(getAllPlayers(), "Zone ${pointToLetter[point]}", ${subtitle.subtitleAll}, ${subtitle.subtextAll}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtextColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    hudText(getAllPlayers(), "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), ${subtitle.subtitleAll}, ${subtitle.subtextAll}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtextColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
             for (var i = 0; i < visKeys.length; i++) {
                 result += `
     zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
@@ -123,19 +123,19 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
         } else if ("subtextAll" in subtitle) {
             visKeys.forEach(function (visData, index) {
                 result += `
-    hudText(${visData.players}, "Zone ${pointToLetter[point]}", ${subtitle[visData.subtitleKey]}, ${subtitle.subtextAll}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    hudText(${visData.players}, "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), ${subtitle[visData.subtitleKey]}, ${subtitle.subtextAll}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
     zone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
             });
         } else if ("subtitleAll" in subtitle) {
             visKeys.forEach(function (visData, index) {
                 result += `
-    hudText(${visData.players}, "Zone ${pointToLetter[point]}", ${subtitle.subtitleAll}, ${subtitle[visData.textKey]}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    hudText(${visData.players}, "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), ${subtitle.subtitleAll}, ${subtitle[visData.textKey]}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
     zone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
             });
         } else {
             visKeys.forEach(function (visData, index) {
                 result += `
-    hudText(${visData.players}, "Zone ${pointToLetter[point]}", ${subtitle[visData.subtitleKey]}, ${subtitle[visData.textKey]}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    hudText(${visData.players}, "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), ${subtitle[visData.subtitleKey]}, ${subtitle[visData.textKey]}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
     zone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
             });
         }
