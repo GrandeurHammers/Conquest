@@ -10,6 +10,14 @@ globalvar zoneLocations
 globalvar zoneSizes
 # How tall are the zones? (height)
 globalvar zoneHeights
+# Capture rate = ax + b (x = num players)
+# Base Capture Rate = b
+globalvar baseCaptureRate
+# Capture Rate Increase per player = a
+globalvar captureRatePerPlayer
+# Maximum number of players capturing before capture rate hard cap
+globalvar maxPlayerRate
+
 # Who controls the zone?
 globalvar zoneControl
 # How many members of Team 1 are on the zone?
@@ -85,16 +93,24 @@ rule "=====CUSTOMIZATION=====":
     @Disabled
     return
 
-rule "powerPlayEnabled: Set to True to activate Power Play when a team caps all 3 points. Default: True":
-	@Event global
+rule "Capture Rate Customization":
+    @Event global
+    # Capture rate is calculated as follows: percentage per second = captureRatePerPlayer * number of capturing players + baseCaptureRate
+    __skip__(0)
+    # baseCaptureRate - Default: 4
+    baseCaptureRate = 4
+    # captureRatePerPlayer - Default: 2
+    captureRatePerPlayer = 2
+    # Determines the maximum number of capturing players at which adding more capturing players will have no effect. Default: 6
+    maxPlayerRate = 6
+
+rule "Power Play Customization":
+    @Event global
+    # Whether or not Power Play can be triggered when a team caps all 3 zones. Default: True
     powerPlayEnabled = true
-
-rule "powerPlayDuration: How long Power Play lasts for in seconds. Default: 30":
-	@Event global
+    # How long a Power Play lasts for. Default: 30
     powerPlayDuration = 30
-
-rule "powerPlayMarkers: Whether the targeted team have markers above their head during Power Play. Default: True":
-	@Event global
+    # Whether the targeted team has markers above their heads during Power Play. Default: True
     powerPlayMarkers = true
 
 rule "scoreToWin: How many points a team must score to win. Default: 100":
