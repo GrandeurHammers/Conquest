@@ -15,8 +15,8 @@ rule "Zone ${pointToLetter[point]}: Gradual Reset":
 	@Event global
     @Condition powerPlayTimer == 0
     @Condition abs(zone${pointToLetter[point]}Progress) > 0
-    @Condition numTeam1${pointToLetter[point]} == 0
-    @Condition numTeam2${pointToLetter[point]} == 0
+    @Condition zoneControl[${point}] == Team.1 or numTeam1${pointToLetter[point]} == 0
+    @Condition zoneControl[${point}] == Team.2 or numTeam2${pointToLetter[point]} == 0
     wait(3, Wait.ABORT_WHEN_FALSE)
     chase(zone${pointToLetter[point]}Progress, 0, rate=25, ChaseReeval.NONE)
     zone${pointToLetter[point]}HudText[3] = "Capturing"
