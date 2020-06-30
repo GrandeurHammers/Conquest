@@ -97,11 +97,11 @@ rule "=====CUSTOMIZATION=====":
 
 rule "Capture Rate Customization":
     @Event global
-    # Capture rate is calculated as follows: percentage per second = captureRatePerPlayer * number of capturing players + baseCaptureRate
-    __skip__(0)
-    # baseCaptureRate - Default: 4
+    #Capture rate is calculated as follows: 
+    #captureRatePerPlayer * min(# of capturing players, maxPlayerRate) + baseCaptureRate
+    # baseCaptureRate - Default: 4%/s
     baseCaptureRate = 4
-    # captureRatePerPlayer - Default: 2
+    # captureRatePerPlayer - Default: 2%/player/s
     captureRatePerPlayer = 2
     # Determines the maximum number of capturing players at which adding more capturing players will have no effect. Default: 6
     maxPlayerRate = 6
@@ -110,14 +110,15 @@ rule "Power Play Customization":
     @Event global
     # Whether or not Power Play can be triggered when a team caps all 3 zones. Default: True
     powerPlayEnabled = true
-    # How long a Power Play lasts for. Default: 30
+    # How long a Power Play lasts for (seconds). Default: 30
     powerPlayDuration = 30
     # Whether the targeted team has markers above their heads during Power Play. Default: True
     powerPlayMarkers = true
 
-rule "Score To Win: How many points a team must score to win. Default: 100":
+rule "Score To Win":
 	@Event global
-    #This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
+    #How many points a team must score to win. Default: 100
+    #IMPORTANT: This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
     scoreToWin = 100
 
 rule "=====SETUP=====":
