@@ -93,7 +93,7 @@ subroutine declareWinner
 rule "=====CUSTOMIZATION=====":
 	@Event global
     @Disabled
-    asdf = 0
+    asdf = false
 
 rule "Capture Rate Customization":
     @Event global
@@ -124,7 +124,7 @@ rule "Score To Win":
 rule "=====SETUP=====":
 	@Event global
 	@Disabled
-    asdf = 0
+    asdf = false
 
 rule "Global Initialization - includes center zone HUD elements":
     @Event global
@@ -158,7 +158,7 @@ rule "Generate initial in-world zone visuals":
 rule "=====GAMEPLAY=====":
 	@Event global
 	@Disabled
-    asdf = 0
+    asdf = false
 
 rule "Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)":
     @Event eachPlayer
@@ -292,7 +292,7 @@ def declareWinner():
 rule "# Keep track of number of people from one team on one zone per rule":
 	@Event global
     @Disabled
-    asdf = 0
+    asdf = false
 
 generatePointFlags()
 
@@ -301,13 +301,13 @@ generatePointFlags()
 rule "=====POWER PLAY=====":
 	@Event global
 	@Disabled
-    asdf = 0
+    asdf = false
 
 #!include "powerPlay.opy"
 
 rule "=====DEBUG=====":
 	@Event global
 	@Disabled
-	asdf = 0
+	asdf = false
 
 #!include "debug.opy"
