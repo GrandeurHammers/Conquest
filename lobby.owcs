@@ -2368,7 +2368,7 @@ rule("If a Team controls all 3 points, activate Power Play")
 	actions
 	{
 		Global.powerPlayActive = True;
-		Global.powerPlayTimer = Min(Global.powerPlayDuration, Match Time);
+		Global.powerPlayTimer = Global.overtime ? Global.powerPlayDuration : Min(Global.powerPlayDuration, Match Time);
 		Stop Chasing Global Variable(zoneAProgress);
 		Stop Chasing Global Variable(zoneBProgress);
 		Stop Chasing Global Variable(zoneCProgress);
