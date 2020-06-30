@@ -4,7 +4,7 @@ rule "If a Team controls all 3 points, activate Power Play":
 	@Event global
 	@Condition powerPlayEnabled and (all([control == Team.1 for control in zoneControl]) or all([control == Team.2 for control in zoneControl]))
     powerPlayActive = true
-    powerPlayTimer = min(powerPlayDuration, getMatchTime())
+    powerPlayTimer = powerPlayDuration if overtime else min(powerPlayDuration, getMatchTime())
     stopAllProgress()
     generateLockedText()
     setSlowMotion(10)
