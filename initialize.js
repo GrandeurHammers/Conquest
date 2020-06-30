@@ -22,6 +22,7 @@ for (var i = 0;  i < numPoints; i++) {
     ${progressBarHelper(i, visToContested, true)}`;
     // Add Capturing/Contested undertext
     result += `
+    #Subtitle for progress bars
     hudSubtext([${visTo.replace('%CONTEST%', 'true')}], "{0} - {1}%".format(zone${pointToLetter[i]}HudText[3], floor(abs(zone${pointToLetter[i]}Progress))), HudPosition.TOP, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 }
 
@@ -33,9 +34,9 @@ for (var i = 0; i <= 2; i++) {
     hudSubtext(getAllPlayers(), w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`
 }
 
-//
+// Info HUD which explains bonus points
 result += `
-    #Explanation HUDs`;
+    #Explanation HUD`;
 let teams = ['Team.1', 'Team.2'];
 teams.forEach(function (team) {
     let pointsControlled = `len([control for control in zoneControl if control == ${team}])`;

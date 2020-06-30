@@ -1,6 +1,6 @@
 #!mainFile 'conquest.opy'
 
-rule "# Point A":
+rule "# Zone A":
 	@Event global
 	@Disabled
 	return
@@ -8,7 +8,7 @@ rule "# Point A":
 generateChaserRules(0)
 generateVisualUpdates(0)
 
-rule "# Point B":
+rule "# Zone B":
 	@Event global
 	@Disabled
 	return
@@ -16,7 +16,7 @@ rule "# Point B":
 generateChaserRules(1)
 generateVisualUpdates(1)
 
-rule "# Point C":
+rule "# Zone C":
 	@Event global
 	@Disabled
 	return

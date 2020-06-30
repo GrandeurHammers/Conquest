@@ -113,7 +113,7 @@ rule "Power Play Customization":
     # Whether the targeted team has markers above their heads during Power Play. Default: True
     powerPlayMarkers = true
 
-rule "scoreToWin: How many points a team must score to win. Default: 100":
+rule "Score To Win: How many points a team must score to win. Default: 100":
 	@Event global
     #This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
     scoreToWin = 100
@@ -204,13 +204,15 @@ rule "Upon earning a kill, award additional points for zones controlled":
     @Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
     # Award bonus points
     addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
+    # Mark as valid target for feedback
     victim.validElimTarget = true
 
 rule "Provide feedback on valid elimination":
     @Event playerEarnedElimination
     @Condition victim.validElimTarget
-    # Provide feedback
+    # Provide visual feedback for bonus points
     smallMessage(attacker, "+{} for Zone Control".format(len([control for control in zoneControl if control == attacker.getTeam()]) - 1))
+    # Provide audio feedback for bonus points
     async(playElimSounds, AsyncBehavior.NOOP)
 
 def playElimSounds():
@@ -230,15 +232,20 @@ rule "Remove validElim marker":
 
 rule "Declare Winner if a team has requisite number of points":
 	@Event global
-	@Condition isGameInProgress() and not overtime and (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin) and teamScore(Team.1) != teamScore(Team.2)
+    @Condition isGameInProgress()
+    # During overtime, teams do not necessarily need more than scoreToWin points, so we have a separate rule to handle overtime
+    @Condition not overtime
+    @Condition (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin)
+    @Condition teamScore(Team.1) != teamScore(Team.2)
     declareWinner()
 
-rule "Game End Handler: Trigger Overtime or Declare Victory":
+rule "Game End Handler: Trigger Overtime or Declare Victory when regulation time runs out":
 	@Event global
     @Condition isGameInProgress()
     @Condition getMatchTime() == 0
     @Condition not powerPlayActive
     @Condition not overtime
+    # If teams are tied, initiate overtime
     if teamScore(Team.1) == teamScore(Team.2):
         setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
         bigMessage(getAllPlayers(), l"Overtime")
@@ -246,6 +253,7 @@ rule "Game End Handler: Trigger Overtime or Declare Victory":
         overtime = true
         wait(0.016)
         pauseMatchTime()
+    # Otherwise, declare a winner
     else:
         declareWinner()
 
@@ -253,6 +261,7 @@ rule "Maintain Overtime Music":
     @Event global
     @Condition isGameInProgress()
     @Condition overtime
+    # The end-of-round music only lasts 30 seconds, so we must retrigger it every thirty seconds
     while overtime:
         wait(30, Wait.ABORT_WHEN_FALSE)
         setMatchTime(0)
@@ -263,7 +272,8 @@ rule "Maintain Overtime Music":
 
 rule "Overtime End Handler":
 	@Event global
-	@Condition overtime and teamScore(Team.1) != teamScore(Team.2)
+    @Condition overtime
+    @Condition teamScore(Team.1) != teamScore(Team.2)
     declareWinner()
 
 def declareWinner():
@@ -275,9 +285,9 @@ def declareWinner():
     else:
         declareTeamVictory(Team.2)
 
-rule "# Keep track of point flags":
+rule "# Keep track of number of people from one team on one zone per rule":
 	@Event global
-	@Disabled
+    @Disabled
     return
 
 generatePointFlags()
