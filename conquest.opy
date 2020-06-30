@@ -55,6 +55,8 @@ globalvar zoneBProgress
 globalvar zoneCProgress
 # Skull Markers (Power Play)
 globalvar skullIcons
+# Dummy var
+globalvar asdf
 
 #Player variables
 # Whether a respawn input can be buffered
@@ -91,7 +93,7 @@ subroutine declareWinner
 rule "=====CUSTOMIZATION=====":
 	@Event global
     @Disabled
-    return
+    asdf = 0
 
 rule "Capture Rate Customization":
     @Event global
@@ -121,7 +123,7 @@ rule "Score To Win: How many points a team must score to win. Default: 100":
 rule "=====SETUP=====":
 	@Event global
 	@Disabled
-    return
+    asdf = 0
 
 rule "Global Initialization - includes center zone HUD elements":
     @Event global
@@ -155,7 +157,7 @@ rule "Generate initial in-world zone visuals":
 rule "=====GAMEPLAY=====":
 	@Event global
 	@Disabled
-    return
+    asdf = 0
 
 rule "Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)":
     @Event eachPlayer
@@ -289,7 +291,7 @@ def declareWinner():
 rule "# Keep track of number of people from one team on one zone per rule":
 	@Event global
     @Disabled
-    return
+    asdf = 0
 
 generatePointFlags()
 
@@ -298,8 +300,13 @@ generatePointFlags()
 rule "=====POWER PLAY=====":
 	@Event global
 	@Disabled
-    return
+    asdf = 0
 
 #!include "powerPlay.opy"
+
+rule "=====DEBUG=====":
+	@Event global
+	@Disabled
+	asdf = 0
 
 #!include "debug.opy"

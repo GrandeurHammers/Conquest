@@ -1,10 +1,5 @@
 #!mainFile "conquest.opy"
 
-rule "=====DEBUG=====":
-	@Event global
-	@Disabled
-	return
-
 rule "DEBUG: Show CPU":
 	@Event global
 	@Disabled
