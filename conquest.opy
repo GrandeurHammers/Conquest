@@ -228,6 +228,7 @@ def playElimSounds():
 rule "Remove validElim marker":
     @Event eachPlayer
     @Condition eventPlayer.validElimTarget
+    wait(0.016, Wait.ABORT_WHEN_FALSE)
     eventPlayer.validElimTarget = false
 
 rule "Declare Winner if a team has requisite number of points":
