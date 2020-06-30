@@ -94,8 +94,6 @@ const controls = [
         ]
     }
 ];
-// I don't know how or why, but for some reason one progress bar sneaks into result before this line, so we need to reset result.
-result = ``;
 var visInd = -3 + point;
 controls.forEach(function (control) {
     control.subtitles.forEach(function (subtitle) {
@@ -146,7 +144,7 @@ result;
 
 
 function progressBar() {
-    result = `[`;
+    let result = `[`;
 
     for (let bar = 0; bar <= progressBarLen; bar++) {
         result += `"[`;
