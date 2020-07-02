@@ -15,11 +15,10 @@ The `lobby.owcs` contains custom game settings that can be copied and pasted int
 - Click the orange paste icon
 
 Alternatively, the latest Workshop code can be found [at this link](https://workshop.codes/conquest)
+*Note: `lobby.owcs` is the latest compiled version of the branch it is in.*
 
 Local Compilation
 ------
 This project is compiled to Overwatch script by [OverPy](https://github.com/Zezombye/overpy). To compile this project, download Visual Studio Code and install the OverPy extension. Follow [these instructions](https://github.com/Zezombye/overpy/wiki/General-usage#compiling) to compile (main file: `conquest.opy`).
-
-*Note: `lobby.owcs` is the latest compiled version of the branch it is in.*
 
 # Additional details can be found at [workshop.codes/conquest](https://workshop.codes/conquest)
