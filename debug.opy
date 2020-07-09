@@ -28,4 +28,25 @@ rule "DEBUG: Summon Dummy Bot on Player upon Melee + Interact":
 	@Event eachPlayer
 	@Disabled
 	@Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.MELEE)
-    createDummy(Hero.ASHE, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+	createDummy(Hero.ASHE, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+	
+rule "DEBUG: Trigger Power Play after holding Interact for 3 seconds (crouch for enemy, default friendly)":
+	@Event eachPlayer
+	@Disabled
+	@Condition eventPlayer.isHoldingButton(Button.INTERACT)
+	wait(0.5, Wait.ABORT_WHEN_FALSE)
+	smallMessage(getAllPlayers(), "Forcing Power Play in 3")
+	wait(1, Wait.ABORT_WHEN_FALSE)
+	smallMessage(getAllPlayers(), "Forcing Power Play in 2")
+	wait(1, Wait.ABORT_WHEN_FALSE)
+	smallMessage(getAllPlayers(), "Forcing Power Play in 1")
+	wait(1, Wait.ABORT_WHEN_FALSE)
+	smallMessage(getAllPlayers(), "Forcing Power Play!")
+	if eventPlayer.isHoldingButton(Button.CROUCH):
+		zoneControl[0] = getOppositeTeam(eventPlayer.getTeam())
+		zoneControl[1] = getOppositeTeam(eventPlayer.getTeam())
+		zoneControl[2] = getOppositeTeam(eventPlayer.getTeam())
+	else:
+		zoneControl[0] = eventPlayer.getTeam()
+		zoneControl[1] = eventPlayer.getTeam()
+		zoneControl[2] = eventPlayer.getTeam()
