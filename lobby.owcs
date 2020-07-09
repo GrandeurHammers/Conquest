@@ -2,9 +2,7 @@ settings
 {
 	main
 	{
-		Description: "CONQUEST v1.4 - By @Cactus_Puppy                                                       
-		Changelog/Bug Report: https://workshop.codes/conquest                                              
-		Inspired by Destiny 2's Iron Banner. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate a Power Play. First to 100 points wins!"
+		Description: "======== CONQUEST v1.4 ========    By @Cactus_Puppy https://workshop.codes/conquest     Inspired by Destiny 2's Iron Banner. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate a Power Play. First to 100 points wins!"
 	}
 
 	lobby
@@ -302,22 +300,25 @@ rule("Global Initialization - includes center zone HUD elements")
 			Visible To and String, Visible Never);
 		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -1.500, White, White, White,
 			Visible To and String, Visible Never);
-		Create HUD Text(All Players(All Teams), Null, Null, Custom String("－－－－－－－－－－－－－－"), Right, -0.500, White, White, White,
-			Visible To and String, Visible Never);
 		"Explanation HUD"
 		Create HUD Text(All Players(Team 1), Custom String("{0}{1} = +{2}", Count Of(Filtered Array(Global.zoneControl,
-			Current Array Element == Team 1)), Icon String(Flag), Custom String("{0} Bonus/{1}", Max(Count Of(Filtered Array(
-			Global.zoneControl, Current Array Element == Team 1)) - 1, 0), Icon String(Skull))), Null, Null, Right, -0.400, White, White,
-			White, Visible To and String, Visible Never);
+			Current Array Element == Team 1)), Icon String(Flag), Custom String("{0} {1}/{2}", Max(Count Of(Filtered Array(
+			Global.zoneControl, Current Array Element == Team 1)), 1), Max(Count Of(Filtered Array(Global.zoneControl,
+			Current Array Element == Team 1)), 1) == 1 ? String("Point") : String("Points"), String("Kill"))), Null, Null, Top, 0.500,
+			White, White, White, Visible To and String, Visible Never);
 		Create HUD Text(All Players(Team 2), Custom String("{0}{1} = +{2}", Count Of(Filtered Array(Global.zoneControl,
-			Current Array Element == Team 2)), Icon String(Flag), Custom String("{0} Bonus/{1}", Max(Count Of(Filtered Array(
-			Global.zoneControl, Current Array Element == Team 2)) - 1, 0), Icon String(Skull))), Null, Null, Right, -0.400, White, White,
-			White, Visible To and String, Visible Never);
+			Current Array Element == Team 2)), Icon String(Flag), Custom String("{0} {1}/{2}", Max(Count Of(Filtered Array(
+			Global.zoneControl, Current Array Element == Team 2)), 1), Max(Count Of(Filtered Array(Global.zoneControl,
+			Current Array Element == Team 2)), 1) == 1 ? String("Point") : String("Points"), String("Kill"))), Null, Null, Top, 0.500,
+			White, White, White, Visible To and String, Visible Never);
+		"Power Play pushdown (avoid big message)"
+		Create HUD Text(Global.powerPlayActive ? All Players(All Teams) : Empty Array, Null, Null, Custom String(" \r\n"), Top, 2, White,
+			White, White, Visible To and String, Default Visibility);
 		"Power Play Timer - Visible when power play is active"
 		Create HUD Text(Global.powerPlayActive ? All Players(All Teams) : Empty Array, Custom String("Power Play: {0}", Round To Integer(
 			Global.powerPlayTimer, Down)), Null, Null, Top, 3, Yellow, White, White, Visible To and String, Default Visibility);
 		"Push player-specific HUD down to crosshair level"
-		Create HUD Text(All Dead Players(All Teams), Null, Null, Global.powerPlayActive ? Custom String(" \r\n\r\n\r\n\r\n\r\n\r\n\r\n")
+		Create HUD Text(All Dead Players(All Teams), Null, Null, Global.powerPlayActive ? Custom String(" \r\n\r\n\r\n\r\n\r\n\r\n")
 			: Custom String(" \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"), Top, 4, White, White, White, Visible To and String,
 			Visible Never);
 		Global.powerPlayActive = False;
@@ -522,17 +523,17 @@ rule("Generate initial in-world zone visuals")
 	actions
 	{
 		"Zone A Visuals - Ring on ground"
-		Create Effect(!First Of(Global.zoneControl) ? All Players(All Teams) : Empty Array, Ring, White, First Of(Global.zoneLocations),
-			First Of(Global.zoneSizes), Visible To);
+		Create Effect(First Of(Global.zoneControl) == Null ? All Players(All Teams) : Empty Array, Ring, White, First Of(
+			Global.zoneLocations), First Of(Global.zoneSizes), Visible To);
 		"Zone A Visuals - Zone identifier (normal play)"
-		Create In-World Text(!First Of(Global.zoneControl) && !Global.powerPlayActive ? All Players(All Teams) : Empty Array,
+		Create In-World Text(First Of(Global.zoneControl) == Null && !Global.powerPlayActive ? All Players(All Teams) : Empty Array,
 			Absolute Value(Global.zoneAProgress) > 0 ? (Absolute Value(Global.zoneAProgress) < 10 ? Custom String(" A\r\n{0}%",
 			Round To Integer(Absolute Value(Global.zoneAProgress), Down)) : Custom String("  A\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneAProgress), Down))) : Custom String("A\r\n "), First Of(Global.zoneLocations) + 2 * Up, 3, Do Not Clip,
 			Visible To and String, White, Default Visibility);
 		"Zone A Visuals - Locked zone indicator (power play)"
-		Create In-World Text(!First Of(Global.zoneControl) && Global.powerPlayActive ? All Players(All Teams) : Empty Array, Custom String(
-			"{0}", Icon String(No)), First Of(Global.zoneLocations) + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+		Create In-World Text(First Of(Global.zoneControl) == Null && Global.powerPlayActive ? All Players(All Teams) : Empty Array,
+			Custom String("{0}", Icon String(No)), First Of(Global.zoneLocations) + 2 * Up, 2, Do Not Clip, Visible To, White,
 			Default Visibility);
 		"Zone A Visuals - Ring on ground"
 		Create Effect(First Of(Global.zoneControl) == Team 1 ? All Players(All Teams) : Empty Array, Ring, Team 1, First Of(
@@ -545,7 +546,7 @@ rule("Generate initial in-world zone visuals")
 			Visible To and String, Team 1, Default Visibility);
 		"Zone A Visuals - Locked zone indicator (power play)"
 		Create In-World Text(First Of(Global.zoneControl) == Team 1 && Global.powerPlayActive ? All Players(All Teams) : Empty Array,
-			Custom String("{0}", Icon String(No)), First Of(Global.zoneLocations) + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Custom String("{0}", Icon String(No)), First Of(Global.zoneLocations) + 2 * Up, 2, Do Not Clip, Visible To, White,
 			Default Visibility);
 		"Zone A Visuals - Ring on ground"
 		Create Effect(First Of(Global.zoneControl) == Team 2 ? All Players(All Teams) : Empty Array, Ring, Team 2, First Of(
@@ -558,20 +559,20 @@ rule("Generate initial in-world zone visuals")
 			Visible To and String, Team 2, Default Visibility);
 		"Zone A Visuals - Locked zone indicator (power play)"
 		Create In-World Text(First Of(Global.zoneControl) == Team 2 && Global.powerPlayActive ? All Players(All Teams) : Empty Array,
-			Custom String("{0}", Icon String(No)), First Of(Global.zoneLocations) + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Custom String("{0}", Icon String(No)), First Of(Global.zoneLocations) + 2 * Up, 2, Do Not Clip, Visible To, White,
 			Default Visibility);
 		"Zone B Visuals - Ring on ground"
-		Create Effect(!Global.zoneControl[1] ? All Players(All Teams) : Empty Array, Ring, White, Global.zoneLocations[1],
+		Create Effect(Global.zoneControl[1] == Null ? All Players(All Teams) : Empty Array, Ring, White, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
 		"Zone B Visuals - Zone identifier (normal play)"
-		Create In-World Text(!Global.zoneControl[1] && !Global.powerPlayActive ? All Players(All Teams) : Empty Array, Absolute Value(
-			Global.zoneBProgress) > 0 ? (Absolute Value(Global.zoneBProgress) < 10 ? Custom String(" B\r\n{0}%", Round To Integer(
-			Absolute Value(Global.zoneBProgress), Down)) : Custom String("  B\r\n{0}%", Round To Integer(Absolute Value(
+		Create In-World Text(Global.zoneControl[1] == Null && !Global.powerPlayActive ? All Players(All Teams) : Empty Array,
+			Absolute Value(Global.zoneBProgress) > 0 ? (Absolute Value(Global.zoneBProgress) < 10 ? Custom String(" B\r\n{0}%",
+			Round To Integer(Absolute Value(Global.zoneBProgress), Down)) : Custom String("  B\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneBProgress), Down))) : Custom String("B\r\n "), Global.zoneLocations[1] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, White, Default Visibility);
 		"Zone B Visuals - Locked zone indicator (power play)"
-		Create In-World Text(!Global.zoneControl[1] && Global.powerPlayActive ? All Players(All Teams) : Empty Array, Custom String("{0}",
-			Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White, Default Visibility);
+		Create In-World Text(Global.zoneControl[1] == Null && Global.powerPlayActive ? All Players(All Teams) : Empty Array, Custom String(
+			"{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Do Not Clip, Visible To, White, Default Visibility);
 		"Zone B Visuals - Ring on ground"
 		Create Effect(Global.zoneControl[1] == Team 1 ? All Players(All Teams) : Empty Array, Ring, Team 1, Global.zoneLocations[1],
 			Global.zoneSizes[1], Visible To);
@@ -583,7 +584,7 @@ rule("Generate initial in-world zone visuals")
 			Visible To and String, Team 1, Default Visibility);
 		"Zone B Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Global.zoneControl[1] == Team 1 && Global.powerPlayActive ? All Players(All Teams) : Empty Array,
-			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Do Not Clip, Visible To, White,
 			Default Visibility);
 		"Zone B Visuals - Ring on ground"
 		Create Effect(Global.zoneControl[1] == Team 2 ? All Players(All Teams) : Empty Array, Ring, Team 2, Global.zoneLocations[1],
@@ -596,20 +597,20 @@ rule("Generate initial in-world zone visuals")
 			Visible To and String, Team 2, Default Visibility);
 		"Zone B Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Global.zoneControl[1] == Team 2 && Global.powerPlayActive ? All Players(All Teams) : Empty Array,
-			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[1] + 2 * Up, 2, Do Not Clip, Visible To, White,
 			Default Visibility);
 		"Zone C Visuals - Ring on ground"
-		Create Effect(!Global.zoneControl[2] ? All Players(All Teams) : Empty Array, Ring, White, Global.zoneLocations[2],
+		Create Effect(Global.zoneControl[2] == Null ? All Players(All Teams) : Empty Array, Ring, White, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
 		"Zone C Visuals - Zone identifier (normal play)"
-		Create In-World Text(!Global.zoneControl[2] && !Global.powerPlayActive ? All Players(All Teams) : Empty Array, Absolute Value(
-			Global.zoneCProgress) > 0 ? (Absolute Value(Global.zoneCProgress) < 10 ? Custom String(" C\r\n{0}%", Round To Integer(
-			Absolute Value(Global.zoneCProgress), Down)) : Custom String("  C\r\n{0}%", Round To Integer(Absolute Value(
+		Create In-World Text(Global.zoneControl[2] == Null && !Global.powerPlayActive ? All Players(All Teams) : Empty Array,
+			Absolute Value(Global.zoneCProgress) > 0 ? (Absolute Value(Global.zoneCProgress) < 10 ? Custom String(" C\r\n{0}%",
+			Round To Integer(Absolute Value(Global.zoneCProgress), Down)) : Custom String("  C\r\n{0}%", Round To Integer(Absolute Value(
 			Global.zoneCProgress), Down))) : Custom String("C\r\n "), Global.zoneLocations[2] + 2 * Up, 3, Do Not Clip,
 			Visible To and String, White, Default Visibility);
 		"Zone C Visuals - Locked zone indicator (power play)"
-		Create In-World Text(!Global.zoneControl[2] && Global.powerPlayActive ? All Players(All Teams) : Empty Array, Custom String("{0}",
-			Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White, Default Visibility);
+		Create In-World Text(Global.zoneControl[2] == Null && Global.powerPlayActive ? All Players(All Teams) : Empty Array, Custom String(
+			"{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Do Not Clip, Visible To, White, Default Visibility);
 		"Zone C Visuals - Ring on ground"
 		Create Effect(Global.zoneControl[2] == Team 1 ? All Players(All Teams) : Empty Array, Ring, Team 1, Global.zoneLocations[2],
 			Global.zoneSizes[2], Visible To);
@@ -621,7 +622,7 @@ rule("Generate initial in-world zone visuals")
 			Visible To and String, Team 1, Default Visibility);
 		"Zone C Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Global.zoneControl[2] == Team 1 && Global.powerPlayActive ? All Players(All Teams) : Empty Array,
-			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Do Not Clip, Visible To, White,
 			Default Visibility);
 		"Zone C Visuals - Ring on ground"
 		Create Effect(Global.zoneControl[2] == Team 2 ? All Players(All Teams) : Empty Array, Ring, Team 2, Global.zoneLocations[2],
@@ -634,7 +635,7 @@ rule("Generate initial in-world zone visuals")
 			Visible To and String, Team 2, Default Visibility);
 		"Zone C Visuals - Locked zone indicator (power play)"
 		Create In-World Text(Global.zoneControl[2] == Team 2 && Global.powerPlayActive ? All Players(All Teams) : Empty Array,
-			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Clip Against Surfaces, Visible To, White,
+			Custom String("{0}", Icon String(No)), Global.zoneLocations[2] + 2 * Up, 2, Do Not Clip, Visible To, White,
 			Default Visibility);
 	}
 }
@@ -874,7 +875,7 @@ rule("Game End Handler: Trigger Overtime or Declare Victory when regulation time
 	conditions
 	{
 		Is Game In Progress == True;
-		Match Time == False;
+		Match Time == 0;
 		Global.powerPlayActive == False;
 		Global.overtime == False;
 	}
@@ -981,22 +982,23 @@ rule("Zone A: Set numTeam1A")
 
 	conditions
 	{
-		Count Of(Filtered Array(All Players(Team 1), Is Alive(Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra)
-			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
-			Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(Current Array Element))), First Of(
-			Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(
-			Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam1A;
+		Count Of(Filtered Array(All Players(Team 1), Entity Exists(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(
+			Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam1A;
 	}
 
 	actions
 	{
-		Global.numTeam1A = Count Of(Filtered Array(All Players(Team 1), Is Alive(Current Array Element) && !(Hero Of(Current Array Element)
-			== Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(
-			Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(Current Array Element))),
-			First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights)));
+		Global.numTeam1A = Count Of(Filtered Array(All Players(Team 1), Entity Exists(Current Array Element) && Is Alive(
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
+			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)),
+			Z Component Of(Position Of(Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes)
+			&& Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations))
+			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(
+			Global.zoneHeights)));
 	}
 }
 
@@ -1009,22 +1011,23 @@ rule("Zone A: Set numTeam2A")
 
 	conditions
 	{
-		Count Of(Filtered Array(All Players(Team 2), Is Alive(Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra)
-			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
-			Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(Current Array Element))), First Of(
-			Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(
-			Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam2A;
+		Count Of(Filtered Array(All Players(Team 2), Entity Exists(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(
+			Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam2A;
 	}
 
 	actions
 	{
-		Global.numTeam2A = Count Of(Filtered Array(All Players(Team 2), Is Alive(Current Array Element) && !(Hero Of(Current Array Element)
-			== Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(
-			Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(Current Array Element))),
-			First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights)));
+		Global.numTeam2A = Count Of(Filtered Array(All Players(Team 2), Entity Exists(Current Array Element) && Is Alive(
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
+			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)),
+			Z Component Of(Position Of(Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes)
+			&& Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations))
+			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(
+			Global.zoneHeights)));
 	}
 }
 
@@ -1037,22 +1040,22 @@ rule("Zone B: Set numTeam1B")
 
 	conditions
 	{
-		Count Of(Filtered Array(All Players(Team 1), Is Alive(Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra)
-			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
-			Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
-			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
-			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
-			< Global.zoneHeights[1])) != Global.numTeam1B;
+		Count Of(Filtered Array(All Players(Team 1), Entity Exists(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[1]) < Global.zoneHeights[1])) != Global.numTeam1B;
 	}
 
 	actions
 	{
-		Global.numTeam1B = Count Of(Filtered Array(All Players(Team 1), Is Alive(Current Array Element) && !(Hero Of(Current Array Element)
-			== Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(
-			Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))),
-			Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneHeights[1]));
+		Global.numTeam1B = Count Of(Filtered Array(All Players(Team 1), Entity Exists(Current Array Element) && Is Alive(
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
+			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]),
+			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(
+			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(Global.zoneLocations[1]) < Global.zoneHeights[1]));
 	}
 }
 
@@ -1065,22 +1068,22 @@ rule("Zone B: Set numTeam2B")
 
 	conditions
 	{
-		Count Of(Filtered Array(All Players(Team 2), Is Alive(Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra)
-			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
-			Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
-			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
-			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
-			< Global.zoneHeights[1])) != Global.numTeam2B;
+		Count Of(Filtered Array(All Players(Team 2), Entity Exists(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[1]) < Global.zoneHeights[1])) != Global.numTeam2B;
 	}
 
 	actions
 	{
-		Global.numTeam2B = Count Of(Filtered Array(All Players(Team 2), Is Alive(Current Array Element) && !(Hero Of(Current Array Element)
-			== Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(
-			Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))),
-			Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneHeights[1]));
+		Global.numTeam2B = Count Of(Filtered Array(All Players(Team 2), Entity Exists(Current Array Element) && Is Alive(
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
+			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]),
+			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(
+			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(Global.zoneLocations[1]) < Global.zoneHeights[1]));
 	}
 }
 
@@ -1093,22 +1096,22 @@ rule("Zone C: Set numTeam1C")
 
 	conditions
 	{
-		Count Of(Filtered Array(All Players(Team 1), Is Alive(Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra)
-			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
-			Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
-			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
-			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
-			< Global.zoneHeights[2])) != Global.numTeam1C;
+		Count Of(Filtered Array(All Players(Team 1), Entity Exists(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[2]) < Global.zoneHeights[2])) != Global.numTeam1C;
 	}
 
 	actions
 	{
-		Global.numTeam1C = Count Of(Filtered Array(All Players(Team 1), Is Alive(Current Array Element) && !(Hero Of(Current Array Element)
-			== Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(
-			Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))),
-			Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneHeights[2]));
+		Global.numTeam1C = Count Of(Filtered Array(All Players(Team 1), Entity Exists(Current Array Element) && Is Alive(
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
+			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]),
+			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(
+			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(Global.zoneLocations[2]) < Global.zoneHeights[2]));
 	}
 }
 
@@ -1121,22 +1124,22 @@ rule("Zone C: Set numTeam2C")
 
 	conditions
 	{
-		Count Of(Filtered Array(All Players(Team 2), Is Alive(Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra)
-			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
-			Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
-			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
-			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
-			< Global.zoneHeights[2])) != Global.numTeam2C;
+		Count Of(Filtered Array(All Players(Team 2), Entity Exists(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[2]) < Global.zoneHeights[2])) != Global.numTeam2C;
 	}
 
 	actions
 	{
-		Global.numTeam2C = Count Of(Filtered Array(All Players(Team 2), Is Alive(Current Array Element) && !(Hero Of(Current Array Element)
-			== Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(
-			Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))),
-			Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneHeights[2]));
+		Global.numTeam2C = Count Of(Filtered Array(All Players(Team 2), Entity Exists(Current Array Element) && Is Alive(
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
+			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]),
+			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(
+			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(Global.zoneLocations[2]) < Global.zoneHeights[2]));
 	}
 }
 
@@ -1164,8 +1167,8 @@ rule("Zone A: Fast Reset")
 	{
 		Global.powerPlayActive == False;
 		"If the current zone is controlled by a team, and that team is alone on the zone"
-		((First Of(Global.zoneControl) == Team 1 && Global.numTeam1A > 0 && !Global.numTeam2A) || (First Of(Global.zoneControl)
-			== Team 2 && Global.numTeam2A > 0 && !Global.numTeam1A)) == True;
+		((First Of(Global.zoneControl) == Team 1 && Global.numTeam1A > 0 && Global.numTeam2A == 0) || (First Of(Global.zoneControl)
+			== Team 2 && Global.numTeam2A > 0 && Global.numTeam1A == 0)) == True;
 	}
 
 	actions
@@ -1186,10 +1189,10 @@ rule("Zone A: Gradual Reset")
 
 	conditions
 	{
-		Global.powerPlayTimer == False;
+		Global.powerPlayTimer == 0;
 		Absolute Value(Global.zoneAProgress) > 0;
-		(First Of(Global.zoneControl) == Team 1 || !Global.numTeam1A) == True;
-		(First Of(Global.zoneControl) == Team 2 || !Global.numTeam2A) == True;
+		(First Of(Global.zoneControl) == Team 1 || Global.numTeam1A == 0) == True;
+		(First Of(Global.zoneControl) == Team 2 || Global.numTeam2A == 0) == True;
 	}
 
 	actions
@@ -1209,7 +1212,7 @@ rule("Zone A: Contesting")
 
 	conditions
 	{
-		Global.powerPlayTimer == False;
+		Global.powerPlayTimer == 0;
 		Global.numTeam1A > 0;
 		Global.numTeam2A > 0;
 	}
@@ -1235,8 +1238,8 @@ rule("Zone A: Capturing")
 	{
 		Global.powerPlayActive == False;
 		"If Team 1 alone on point or Team 2 alone on point"
-		((First Of(Global.zoneControl) != Team 1 && Global.numTeam1A > 0 && !Global.numTeam2A) || (First Of(Global.zoneControl)
-			!= Team 2 && Global.numTeam2A > 0 && !Global.numTeam1A)) == True;
+		((First Of(Global.zoneControl) != Team 1 && Global.numTeam1A > 0 && Global.numTeam2A == 0) || (First Of(Global.zoneControl)
+			!= Team 2 && Global.numTeam2A > 0 && Global.numTeam1A == 0)) == True;
 	}
 
 	actions
@@ -1303,14 +1306,14 @@ rule("Zone A HUD: Control null | Progress == 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		First Of(Global.zoneControl) == False;
-		Global.zoneAProgress == False;
+		First Of(Global.zoneControl) == Null;
+		Global.zoneAProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneAHudText);
+		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneAHudText));
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
@@ -1332,14 +1335,14 @@ rule("Zone A HUD: Control null | Progress > 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		First Of(Global.zoneControl) == False;
+		First Of(Global.zoneControl) == Null;
 		Global.zoneAProgress > 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneAHudText);
+		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneAHudText));
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
@@ -1371,14 +1374,14 @@ rule("Zone A HUD: Control null | Progress < 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		First Of(Global.zoneControl) == False;
+		First Of(Global.zoneControl) == Null;
 		Global.zoneAProgress < 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneAHudText);
+		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneAHudText));
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
@@ -1411,13 +1414,13 @@ rule("Zone A HUD: Control Team.1 | Progress == 0")
 	{
 		Global.powerPlayActive == False;
 		First Of(Global.zoneControl) == Team 1;
-		Global.zoneAProgress == False;
+		Global.zoneAProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneAHudText);
+		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneAHudText));
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
@@ -1448,7 +1451,7 @@ rule("Zone A HUD: Control Team.1 | Progress < 0")
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneAHudText);
+		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneAHudText));
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
@@ -1481,13 +1484,13 @@ rule("Zone A HUD: Control Team.2 | Progress == 0")
 	{
 		Global.powerPlayActive == False;
 		First Of(Global.zoneControl) == Team 2;
-		Global.zoneAProgress == False;
+		Global.zoneAProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneAHudText);
+		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneAHudText));
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
@@ -1518,7 +1521,7 @@ rule("Zone A HUD: Control Team.2 | Progress > 0")
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneAHudText);
+		If(Global.zoneAHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneAHudText));
 			Destroy HUD Text(Global.zoneAHudText[1]);
 		End;
@@ -1564,8 +1567,8 @@ rule("Zone B: Fast Reset")
 	{
 		Global.powerPlayActive == False;
 		"If the current zone is controlled by a team, and that team is alone on the zone"
-		((Global.zoneControl[1] == Team 1 && Global.numTeam1B > 0 && !Global.numTeam2B) || (
-			Global.zoneControl[1] == Team 2 && Global.numTeam2B > 0 && !Global.numTeam1B)) == True;
+		((Global.zoneControl[1] == Team 1 && Global.numTeam1B > 0 && Global.numTeam2B == 0) || (
+			Global.zoneControl[1] == Team 2 && Global.numTeam2B > 0 && Global.numTeam1B == 0)) == True;
 	}
 
 	actions
@@ -1586,10 +1589,10 @@ rule("Zone B: Gradual Reset")
 
 	conditions
 	{
-		Global.powerPlayTimer == False;
+		Global.powerPlayTimer == 0;
 		Absolute Value(Global.zoneBProgress) > 0;
-		(Global.zoneControl[1] == Team 1 || !Global.numTeam1B) == True;
-		(Global.zoneControl[1] == Team 2 || !Global.numTeam2B) == True;
+		(Global.zoneControl[1] == Team 1 || Global.numTeam1B == 0) == True;
+		(Global.zoneControl[1] == Team 2 || Global.numTeam2B == 0) == True;
 	}
 
 	actions
@@ -1609,7 +1612,7 @@ rule("Zone B: Contesting")
 
 	conditions
 	{
-		Global.powerPlayTimer == False;
+		Global.powerPlayTimer == 0;
 		Global.numTeam1B > 0;
 		Global.numTeam2B > 0;
 	}
@@ -1635,8 +1638,8 @@ rule("Zone B: Capturing")
 	{
 		Global.powerPlayActive == False;
 		"If Team 1 alone on point or Team 2 alone on point"
-		((Global.zoneControl[1] != Team 1 && Global.numTeam1B > 0 && !Global.numTeam2B) || (
-			Global.zoneControl[1] != Team 2 && Global.numTeam2B > 0 && !Global.numTeam1B)) == True;
+		((Global.zoneControl[1] != Team 1 && Global.numTeam1B > 0 && Global.numTeam2B == 0) || (
+			Global.zoneControl[1] != Team 2 && Global.numTeam2B > 0 && Global.numTeam1B == 0)) == True;
 	}
 
 	actions
@@ -1703,14 +1706,14 @@ rule("Zone B HUD: Control null | Progress == 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		Global.zoneControl[1] == False;
-		Global.zoneBProgress == False;
+		Global.zoneControl[1] == Null;
+		Global.zoneBProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneBHudText);
+		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneBHudText));
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
@@ -1732,14 +1735,14 @@ rule("Zone B HUD: Control null | Progress > 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		Global.zoneControl[1] == False;
+		Global.zoneControl[1] == Null;
 		Global.zoneBProgress > 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneBHudText);
+		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneBHudText));
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
@@ -1771,14 +1774,14 @@ rule("Zone B HUD: Control null | Progress < 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		Global.zoneControl[1] == False;
+		Global.zoneControl[1] == Null;
 		Global.zoneBProgress < 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneBHudText);
+		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneBHudText));
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
@@ -1811,13 +1814,13 @@ rule("Zone B HUD: Control Team.1 | Progress == 0")
 	{
 		Global.powerPlayActive == False;
 		Global.zoneControl[1] == Team 1;
-		Global.zoneBProgress == False;
+		Global.zoneBProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneBHudText);
+		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneBHudText));
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
@@ -1848,7 +1851,7 @@ rule("Zone B HUD: Control Team.1 | Progress < 0")
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneBHudText);
+		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneBHudText));
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
@@ -1881,13 +1884,13 @@ rule("Zone B HUD: Control Team.2 | Progress == 0")
 	{
 		Global.powerPlayActive == False;
 		Global.zoneControl[1] == Team 2;
-		Global.zoneBProgress == False;
+		Global.zoneBProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneBHudText);
+		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneBHudText));
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
@@ -1918,7 +1921,7 @@ rule("Zone B HUD: Control Team.2 | Progress > 0")
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneBHudText);
+		If(Global.zoneBHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneBHudText));
 			Destroy HUD Text(Global.zoneBHudText[1]);
 		End;
@@ -1964,8 +1967,8 @@ rule("Zone C: Fast Reset")
 	{
 		Global.powerPlayActive == False;
 		"If the current zone is controlled by a team, and that team is alone on the zone"
-		((Global.zoneControl[2] == Team 1 && Global.numTeam1C > 0 && !Global.numTeam2C) || (
-			Global.zoneControl[2] == Team 2 && Global.numTeam2C > 0 && !Global.numTeam1C)) == True;
+		((Global.zoneControl[2] == Team 1 && Global.numTeam1C > 0 && Global.numTeam2C == 0) || (
+			Global.zoneControl[2] == Team 2 && Global.numTeam2C > 0 && Global.numTeam1C == 0)) == True;
 	}
 
 	actions
@@ -1986,10 +1989,10 @@ rule("Zone C: Gradual Reset")
 
 	conditions
 	{
-		Global.powerPlayTimer == False;
+		Global.powerPlayTimer == 0;
 		Absolute Value(Global.zoneCProgress) > 0;
-		(Global.zoneControl[2] == Team 1 || !Global.numTeam1C) == True;
-		(Global.zoneControl[2] == Team 2 || !Global.numTeam2C) == True;
+		(Global.zoneControl[2] == Team 1 || Global.numTeam1C == 0) == True;
+		(Global.zoneControl[2] == Team 2 || Global.numTeam2C == 0) == True;
 	}
 
 	actions
@@ -2009,7 +2012,7 @@ rule("Zone C: Contesting")
 
 	conditions
 	{
-		Global.powerPlayTimer == False;
+		Global.powerPlayTimer == 0;
 		Global.numTeam1C > 0;
 		Global.numTeam2C > 0;
 	}
@@ -2035,8 +2038,8 @@ rule("Zone C: Capturing")
 	{
 		Global.powerPlayActive == False;
 		"If Team 1 alone on point or Team 2 alone on point"
-		((Global.zoneControl[2] != Team 1 && Global.numTeam1C > 0 && !Global.numTeam2C) || (
-			Global.zoneControl[2] != Team 2 && Global.numTeam2C > 0 && !Global.numTeam1C)) == True;
+		((Global.zoneControl[2] != Team 1 && Global.numTeam1C > 0 && Global.numTeam2C == 0) || (
+			Global.zoneControl[2] != Team 2 && Global.numTeam2C > 0 && Global.numTeam1C == 0)) == True;
 	}
 
 	actions
@@ -2103,14 +2106,14 @@ rule("Zone C HUD: Control null | Progress == 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		Global.zoneControl[2] == False;
-		Global.zoneCProgress == False;
+		Global.zoneControl[2] == Null;
+		Global.zoneCProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneCHudText);
+		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneCHudText));
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
@@ -2132,14 +2135,14 @@ rule("Zone C HUD: Control null | Progress > 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		Global.zoneControl[2] == False;
+		Global.zoneControl[2] == Null;
 		Global.zoneCProgress > 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneCHudText);
+		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneCHudText));
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
@@ -2171,14 +2174,14 @@ rule("Zone C HUD: Control null | Progress < 0")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		Global.zoneControl[2] == False;
+		Global.zoneControl[2] == Null;
 		Global.zoneCProgress < 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneCHudText);
+		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneCHudText));
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
@@ -2211,13 +2214,13 @@ rule("Zone C HUD: Control Team.1 | Progress == 0")
 	{
 		Global.powerPlayActive == False;
 		Global.zoneControl[2] == Team 1;
-		Global.zoneCProgress == False;
+		Global.zoneCProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneCHudText);
+		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneCHudText));
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
@@ -2248,7 +2251,7 @@ rule("Zone C HUD: Control Team.1 | Progress < 0")
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneCHudText);
+		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneCHudText));
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
@@ -2281,13 +2284,13 @@ rule("Zone C HUD: Control Team.2 | Progress == 0")
 	{
 		Global.powerPlayActive == False;
 		Global.zoneControl[2] == Team 2;
-		Global.zoneCProgress == False;
+		Global.zoneCProgress == 0;
 	}
 
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneCHudText);
+		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneCHudText));
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
@@ -2318,7 +2321,7 @@ rule("Zone C HUD: Control Team.2 | Progress > 0")
 	actions
 	{
 		"Remove existing zone huds"
-		If(Global.zoneCHudText);
+		If(Global.zoneCHudText != Empty Array);
 			Destroy HUD Text(First Of(Global.zoneCHudText));
 			Destroy HUD Text(Global.zoneCHudText[1]);
 		End;
@@ -2500,7 +2503,7 @@ rule("At end of Power Play, reset points")
 	conditions
 	{
 		Global.powerPlayActive != False;
-		Global.powerPlayTimer == False;
+		Global.powerPlayTimer == 0;
 	}
 
 	actions
@@ -2658,5 +2661,40 @@ disabled rule("DEBUG: Summon Dummy Bot on Player upon Melee + Interact")
 	actions
 	{
 		Create Dummy Bot(Hero(Ashe), Opposite Team Of(Team Of(Event Player)), -1, Position Of(Event Player), Vector(0, 0, 0));
+	}
+}
+
+disabled rule("DEBUG: Trigger Power Play after holding Interact for 3 seconds (crouch for enemy, default friendly)")
+{
+	event
+	{
+		Ongoing - Each Player;
+		All;
+		All;
+	}
+
+	conditions
+	{
+		Is Button Held(Event Player, Interact) == True;
+	}
+
+	actions
+	{
+		Wait(0.500, Abort When False);
+		Small Message(All Players(All Teams), Custom String("Forcing Power Play in 3"));
+		Wait(1, Abort When False);
+		Small Message(All Players(All Teams), Custom String("Forcing Power Play in 2"));
+		Wait(1, Abort When False);
+		Small Message(All Players(All Teams), Custom String("Forcing Power Play in 1"));
+		Wait(1, Abort When False);
+		Small Message(All Players(All Teams), Custom String("Forcing Power Play!"));
+		If(Is Button Held(Event Player, Crouch));
+			Global.zoneControl[0] = Opposite Team Of(Team Of(Event Player));
+			Global.zoneControl[1] = Opposite Team Of(Team Of(Event Player));
+			Global.zoneControl[2] = Opposite Team Of(Team Of(Event Player));
+		Else;
+			Global.zoneControl[0] = Team Of(Event Player);
+			Global.zoneControl[1] = Team Of(Event Player);
+			Global.zoneControl[2] = Team Of(Event Player);
 	}
 }
