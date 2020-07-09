@@ -29,7 +29,7 @@ for (var i = 0;  i < numPoints; i++) {
 // Separator Lines
 result += `
     #HUD Separator Lines`;
-for (var i = 0; i <= 2; i++) {
+for (var i = 0; i < 2; i++) {
     result += `
     hudSubtext(getAllPlayers(), w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`
 }
@@ -41,10 +41,12 @@ let teams = ['Team.1', 'Team.2'];
 teams.forEach(function (team) {
     let pointsControlled = `len([control for control in zoneControl if control == ${team}])`;
     result += `
-    hudHeader(getPlayers(${team}), "{0}{1} = +{2} Bonus/{3}".format(${pointsControlled}, iconString(Icon.FLAG), max(${pointsControlled} - 1, 0), iconString(Icon.SKULL)), HudPosition.RIGHT, -0.4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    hudHeader(getPlayers(${team}), "{0}{1} = +{2} {3}/{4}".format(${pointsControlled}, iconString(Icon.FLAG), max(${pointsControlled}, 1), l"Point" if max(${pointsControlled}, 1) == 1 else l"Points", l"Kill"), HudPosition.TOP, 0.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 });
 
 result += `
+    #Power Play pushdown (avoid big message)
+    hudSubtext([p for p in getAllPlayers() if powerPlayActive], " \r", HudPosition.TOP, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)
     #Power Play Timer - Visible when power play is active
     hudHeader([p for p in getAllPlayers() if powerPlayActive], "Power Play: {0}".format(floor(powerPlayTimer)), HudPosition.TOP, 3, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
 console.log(result);
