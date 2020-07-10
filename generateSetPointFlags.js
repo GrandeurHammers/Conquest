@@ -14,12 +14,15 @@ var teams = [
 var pointToLetter = ["A", "B", "C"];
 for (var point = 0; point < 3; point++) {
     teams.forEach(function (team) {
-        var numPlayers = `[p for p in getPlayers(${team.constant}) if entityExists(p) and p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1()) and distance(vect(p.getPosition().x, zoneLocations[${point}].y, p.getPosition().z), zoneLocations[${point}]) < zoneSizes[${point}] and p.getPosition().y - zoneLocations[${point}].y >= -0.5 and p.getPosition().y - zoneLocations[${point}].y < zoneHeights[${point}]]`;
+        let varName = `${team.variable}${pointToLetter[point]}`;
+        let numPlayers = `[p for p in getPlayers(${team.constant}) if p.hasSpawned() and p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1()) and distance(vect(p.getPosition().x, zoneLocations[${point}].y, p.getPosition().z), zoneLocations[${point}]) < zoneSizes[${point}] and p.getPosition().y - zoneLocations[${point}].y >= -0.5 and p.getPosition().y - zoneLocations[${point}].y < zoneHeights[${point}]]`;
         result += 
-`rule "Zone ${pointToLetter[point]}: Set ${team.variable}${pointToLetter[point]}":
-	@Event global
-    @Condition len(${numPlayers}) != ${team.variable}${pointToLetter[point]}
-    ${team.variable}${pointToLetter[point]} = len(${numPlayers})
+`rule "Keep track of the number of ${team.name} players on Zone ${pointToLetter[point]}":
+    @Event global
+    # If the number of players from ${team.name} is not equal to the tracker variable...
+    @Condition len(${numPlayers}) != ${varName}
+    # ...update the tracker variable
+    ${varName} = len(${numPlayers})
 `;
     })
 }
