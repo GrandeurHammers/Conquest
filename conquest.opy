@@ -19,6 +19,8 @@ globalvar baseCaptureRate
 globalvar captureRatePerPlayer
 # Maximum number of players capturing before capture rate hard cap
 globalvar maxPlayerRate
+# Will the game use adaptive capture rates for different sized teams?
+globalvar adaptiveCaptureRate
 
 # Who controls the zone?
 globalvar zoneControl

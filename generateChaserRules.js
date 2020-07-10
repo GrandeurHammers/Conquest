@@ -39,12 +39,12 @@ rule "Zone ${pointToLetter[point]}: Capturing":
         if zone${pointToLetter[point]}Progress < 0:
             wait(1, Wait.ABORT_WHEN_FALSE)
             zone${pointToLetter[point]}Progress = 0
-        chase(zone${pointToLetter[point]}Progress, 100, rate=(captureRatePerPlayer*min(numTeam1${pointToLetter[point]}, maxPlayerRate) + baseCaptureRate if numTeam1${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zone${pointToLetter[point]}Progress, 100, rate=(captureRatePerPlayer*min(numTeam1${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.1)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam1${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
     else:
         if zone${pointToLetter[point]}Progress > 0:
             wait(1, Wait.ABORT_WHEN_FALSE)
             zone${pointToLetter[point]}Progress = 0
-        chase(zone${pointToLetter[point]}Progress, -100, rate=(captureRatePerPlayer*min(numTeam2${pointToLetter[point]}, maxPlayerRate) + baseCaptureRate if numTeam2${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
+        chase(zone${pointToLetter[point]}Progress, -100, rate=(captureRatePerPlayer*min(numTeam2${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.2)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam2${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
     zone${pointToLetter[point]}HudText[3] = "Capturing"
 
 rule "Zone ${pointToLetter[point]}: Listen for Capture":
