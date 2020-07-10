@@ -112,3 +112,21 @@ rule "Setup Zones: Blizzard World":
     zoneLocations[2] = vect(-70, 0.6, 124)
     zoneSizes[2] = 5
     zoneHeights[2] = 5
+
+rule "Setup Zones: Ilios":
+    @Event global
+    @Condition getCurrentMap() in [Map.ILIOS_LIGHTHOUSE, Map.ILIOS_RUINS, Map.ILIOS_WELL]
+    switch getCurrentMap():
+        case Map.ILIOS_RUINS:
+            # Ilios Ruins - Zone A
+            zoneLocations[0] = vect(103, 60.37, -165.24)
+            zoneSizes[0] = 5
+            zoneHeights[0] = 5
+            # Ilios Ruins - Zone B
+            zoneLocations[1] = vect(28.39, 57.37, -157.37)
+            zoneSizes[1] = 5
+            zoneHeights[1] = 5
+            # Ilios Ruins - Zone C
+            zoneLocations[2] = vect(-49, 60.37, -165.24)
+            zoneSizes[2] = 5
+            zoneHeights[2] = 5
