@@ -96,6 +96,7 @@ subroutine declareWinner
 #!define generatePlayerHUDSpacer() __script__('generatePlayerHUDSpacer.js')
 #!define generatePlayerHUD() __script__('generatePlayerHUD.js')
 
+#!include "lobbySettings.opy"
 
 rule "=====CUSTOMIZATION=====":
 	@Event global
