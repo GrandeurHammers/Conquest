@@ -10,7 +10,7 @@ rule "DEBUG: Show CPU":
 rule "DEBUG: Show Player Position":
 	@Event eachPlayer
 	@Disabled
-	hudHeader(eventPlayer, "{0}".format(eventPlayer.getPosition()), HudPosition.LEFT, -1, Color.YELLOW, HudReeval.STRING, SpecVisibility.NEVER)
+	hudHeader(eventPlayer, "{0}".format(eventPlayer.getPosition()), HudPosition.LEFT, -0.5, Color.YELLOW, HudReeval.STRING, SpecVisibility.NEVER)
 
 rule "DEBUG: Shorten assemble heroes":
 	@Event global
