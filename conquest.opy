@@ -124,6 +124,8 @@ rule "Global Initialization - includes center zone HUD elements":
 rule "Player Initialization":
     @Event eachPlayer
     generatePlayerHUD()
+    # Stop normal respawn logic
+    eventPlayer.disableRespawn()
     # Store the text ID for destruction on exit
     eventPlayer.msgTextID = getLastCreatedText()
 
@@ -151,29 +153,31 @@ rule "Remove respawn buffered marker on respawn (necessary because hero swap res
     eventPlayer.respawnBuffered = false
     eventPlayer.respawnBlocked = false
 
-rule "Disable Self Respawn for 5 seconds":
+rule "Main Respawn handler":
     @Event playerDied
     # Prevent manual respawn for 5 seconds
-    victim.disallowButton(Button.JUMP)
     victim.respawnBlocked = true
     # Track time until respawn
-    victim.timeToRespawn = 5
+    victim.timeToRespawn = 8
     chase(victim.timeToRespawn, 0, rate=1, ChaseReeval.NONE)
-    wait(5, Wait.IGNORE_CONDITION)
+    wait(8, Wait.RESTART_WHEN_TRUE)
     # Allow manual respawn
-    victim.allowButton(Button.JUMP)
     victim.respawnBlocked = false
     # Respawn if they pressed jump while blocked
     if victim.respawnBuffered:
         victim.respawn()
-        victim.respawnBuffered = false
+    # Wait until max time before respawn
+    wait(8, Wait.RESTART_WHEN_TRUE)
+    victim.respawn()
 
 rule "If player attempts to respawn while blocked, mark them to respawn":
     @Event eachPlayer
-    @Condition eventPlayer.respawnBlocked
     @Condition eventPlayer.isDead()
     @Condition eventPlayer.isHoldingButton(Button.JUMP)
-    eventPlayer.respawnBuffered = true
+    if eventPlayer.respawnBlocked:
+        eventPlayer.respawnBuffered = true
+        return
+    eventPlayer.respawn()
 
 rule "Reset on Game Start (Waiting for Players)":
 	@Event global
