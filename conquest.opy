@@ -157,6 +157,9 @@ rule "Main Respawn handler":
     @Event playerDied
     # Prevent manual respawn for 5 seconds
     victim.respawnBlocked = true
+    # If currently power play, force respawn buffer
+    if powerPlayActive:
+        victim.respawnBuffered = true
     # Track time until respawn
     victim.timeToRespawn = 8
     chase(victim.timeToRespawn, 0, rate=1, ChaseReeval.NONE)
