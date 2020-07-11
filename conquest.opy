@@ -171,7 +171,8 @@ rule "Main Respawn handler":
         victim.respawn()
     # Wait until max time before respawn
     wait(8, Wait.RESTART_WHEN_TRUE)
-    victim.respawn()
+    if victim.isDead():
+        victim.respawn()
 
 rule "If player attempts to respawn while blocked, mark them to respawn":
     @Event eachPlayer
