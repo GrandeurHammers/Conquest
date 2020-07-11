@@ -13,7 +13,9 @@ settings {
             "enabledMaps": [
                 "blizzWorld",
                 "blizzWorldWinter",
+                "iliosLighthouse",
                 "iliosRuins",
+                "iliosWell",
                 "lijiangControlCenter",
                 "lijiangControlCenterLny",
                 "lijiangGarden",
