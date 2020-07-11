@@ -99,9 +99,12 @@ rule ("Game Settings") {
         Ongoing - Global;
     }
     actions {
-        "How many points a team must score to win.\n Default: 100\nIMPORTANT: This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change \"Settings > Modes > Score to Win\" to match this value."
+        "How many points a team must score to win.
+\n Default: 100
+\nIMPORTANT: This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change \"Settings > Modes > Score to Win\" to match this value."
         Set Global Variable(scoreToWin, 100);
-        "Will Overtime be triggered if regulation time runs out with both teams at the same score?\n Default: True"
+        "Will Overtime be triggered if regulation time runs out with both teams at the same score?
+\n Default: True"
         Set Global Variable(overtimeEnabled, True);
     }
 }
@@ -111,13 +114,20 @@ rule ("Capture Rate Customization") {
         Ongoing - Global;
     }
     actions {
-        "Capture rate is calculated as follows: \ncaptureRatePerPlayer * min(# of capturing players, maxPlayerRate) + baseCaptureRate\n\nThe base capture rate of a zone, which does not vary based on the number of players\n Default: 4%/s"
+        "Capture rate is calculated as follows: 
+\ncaptureRatePerPlayer * min(# of capturing players, maxPlayerRate) + baseCaptureRate
+\n
+\nThe base capture rate of a zone, which does not vary based on the number of players
+\n Default: 4%/s"
         Set Global Variable(baseCaptureRate, 4);
-        "The amount of capture progress per second contributed by each capturing player\n Default: 2%/player/s"
+        "The amount of capture progress per second contributed by each capturing player
+\n Default: 2%/player/s"
         Set Global Variable(captureRatePerPlayer, 2);
-        "Determines the maximum number of capturing players at which adding more capturing players will have no effect\n Default: 6"
+        "Determines the maximum number of capturing players at which adding more capturing players will have no effect
+\n Default: 6"
         Set Global Variable(maxPlayerRate, 6);
-        "Determines if capture rate scales with team size\n Default: False"
+        "Determines if capture rate scales with team size
+\n Default: False"
         Set Global Variable(adaptiveCaptureRate, False);
     }
 }
@@ -127,11 +137,14 @@ rule ("Power Play Customization") {
         Ongoing - Global;
     }
     actions {
-        "Whether or not Power Play can be triggered when a team caps all 3 zones\n Default: True"
+        "Whether or not Power Play can be triggered when a team caps all 3 zones
+\n Default: True"
         Set Global Variable(powerPlayEnabled, True);
-        "How long a Power Play should last for at most (seconds)\n Default: 30"
+        "How long a Power Play should last for at most (seconds)
+\n Default: 30"
         Set Global Variable(powerPlayDuration, 30);
-        "Whether the targeted team has markers above their heads during Power Play\n Default: True"
+        "Whether the targeted team has markers above their heads during Power Play
+\n Default: True"
         Set Global Variable(powerPlayMarkers, True);
     }
 }
@@ -553,6 +566,10 @@ rule ("Main Respawn handler") {
     actions {
         "Prevent manual respawn for 5 seconds"
         Set Player Variable(Victim, respawnBlocked, True);
+        "If currently power play, force respawn buffer"
+        If(Global Variable(powerPlayActive));
+            Set Player Variable(Victim, respawnBuffered, True);
+        End;
         "Track time until respawn"
         Set Player Variable(Victim, timeToRespawn, 8);
         Chase Player Variable At Rate(Victim, timeToRespawn, 0, 1, None);
