@@ -30,21 +30,30 @@ rule "Zone ${pointToLetter[point]}: Contesting":
     zone${pointToLetter[point]}HudText[3] = "Contested"
     smallMessage([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.ALL, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())], "Contested!")
 
-rule "Zone ${pointToLetter[point]}: Capturing":
+rule "Zone ${pointToLetter[point]}: Capturing for Team 1":
 	@Event global
     @Condition not powerPlayActive
-    #If Team 1 alone on point or Team 2 alone on point
-    @Condition ((zoneControl[${point}] != Team.1 and numTeam1${pointToLetter[point]} > 0 and numTeam2${pointToLetter[point]} == 0) or (zoneControl[${point}] != Team.2 and numTeam2${pointToLetter[point]} > 0 and numTeam1${pointToLetter[point]} == 0))
-    if numTeam1${pointToLetter[point]} > 0:
-        if zone${pointToLetter[point]}Progress < 0:
-            wait(1, Wait.ABORT_WHEN_FALSE)
-            zone${pointToLetter[point]}Progress = 0
-        chase(zone${pointToLetter[point]}Progress, 100, rate=(captureRatePerPlayer*min(numTeam1${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.1)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam1${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
-    else:
-        if zone${pointToLetter[point]}Progress > 0:
-            wait(1, Wait.ABORT_WHEN_FALSE)
-            zone${pointToLetter[point]}Progress = 0
-        chase(zone${pointToLetter[point]}Progress, -100, rate=(captureRatePerPlayer*min(numTeam2${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.2)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam2${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
+    #If Team 1 alone on zone and does not own zone
+    @Condition zoneControl[${point}] != Team.1
+    @Condition numTeam1${pointToLetter[point]} > 0
+    @Condition numTeam2${pointToLetter[point]} == 0
+    if zone${pointToLetter[point]}Progress < 0:
+        wait(1, Wait.ABORT_WHEN_FALSE)
+        zone${pointToLetter[point]}Progress = 0
+    chase(zone${pointToLetter[point]}Progress, 100, rate=(captureRatePerPlayer*min(numTeam1${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.1)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam1${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
+    zone${pointToLetter[point]}HudText[3] = "Capturing"
+
+rule "Zone ${pointToLetter[point]}: Capturing for Team 2":
+	@Event global
+    @Condition not powerPlayActive
+    #If Team 2 alone on zone and does not own zone
+    @Condition zoneControl[${point}] != Team.2
+    @Condition numTeam2${pointToLetter[point]} > 0
+    @Condition numTeam1${pointToLetter[point]} == 0
+    if zone${pointToLetter[point]}Progress > 0:
+        wait(1, Wait.ABORT_WHEN_FALSE)
+        zone${pointToLetter[point]}Progress = 0
+    chase(zone${pointToLetter[point]}Progress, -100, rate=(captureRatePerPlayer*min(numTeam2${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.2)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam2${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
     zone${pointToLetter[point]}HudText[3] = "Capturing"
 
 rule "Zone ${pointToLetter[point]}: Listen for Capture":
