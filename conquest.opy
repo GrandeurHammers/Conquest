@@ -4,6 +4,10 @@
 # In-game settings must be adjusted to properly display this value
 # See CUSTOMIZAION rule
 globalvar scoreToWin
+# Minimum respawn time (secs)
+globalvar minRespawnTime
+# Maximum respawn time (secs)
+globalvar maxRespawnTime
 
 # Where are the zones?
 globalvar zoneLocations
@@ -161,16 +165,16 @@ rule "Main Respawn handler":
     if powerPlayActive:
         victim.respawnBuffered = true
     # Track time until respawn
-    victim.timeToRespawn = 8
+    victim.timeToRespawn = minRespawnTime
     chase(victim.timeToRespawn, 0, rate=1, ChaseReeval.NONE)
-    wait(8, Wait.RESTART_WHEN_TRUE)
+    wait(minRespawnTime, Wait.RESTART_WHEN_TRUE)
     # Allow manual respawn
     victim.respawnBlocked = false
     # Respawn if they pressed jump while blocked
     if victim.respawnBuffered:
         victim.respawn()
     # Wait until max time before respawn
-    wait(8, Wait.RESTART_WHEN_TRUE)
+    wait(maxRespawnTime - minRespawnTime, Wait.RESTART_WHEN_TRUE)
     if victim.isDead():
         victim.respawn()
 

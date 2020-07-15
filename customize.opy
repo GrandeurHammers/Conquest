@@ -10,6 +10,12 @@ rule "Game Settings":
     #Will Overtime be triggered if regulation time runs out with both teams at the same score?
     # Default: True
     overtimeEnabled = true
+    # The minimum amount of time a player will remain dead, in seconds.
+    # Default: 8
+    minRespawnTime = 8
+    # The maximum amount of time a player can remain dead, in seconds.
+    # Default: 16
+    maxRespawnTime = 16
 
 rule "Capture Rate Customization":
     @Event global
