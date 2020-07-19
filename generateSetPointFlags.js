@@ -23,6 +23,11 @@ for (var point = 0; point < 3; point++) {
     @Condition len(${numPlayers}) != ${varName}
     # ...update the tracker variable
     ${varName} = len(${numPlayers})
+    # Sleep until next tick
+    wait()
+    # Sometimes we must loop because the updated value is no longer accurate, but the condition will not refire the rule for us
+    if RULE_CONDITION:
+        goto RULE_START
 `;
     })
 }
