@@ -2,7 +2,7 @@ settings
 {
 	main
 	{
-		Description: "======== CONQUEST v1.5 ========    By @Cactus_Puppy https://workshop.codes/conquest     Inspired by Destiny 2's Iron Banner. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate a Power Play. First to 100 points wins!"
+		Description: "======== CONQUEST v1.5.2 ========    By @Cactus_Puppy https://workshop.codes/conquest     Inspired by Destiny 2's Iron Banner. Two teams fight for control over 3 zones. The more zones a team controls, the more points they earn per kill. If a team gets all 3 zones, they activate a Power Play. First to 100 points wins!"
 	}
 
 	lobby
@@ -47,37 +47,39 @@ variables
 {
 	global:
 		0: scoreToWin
-		1: zoneLocations
-		2: zoneSizes
-		3: zoneHeights
-		4: baseCaptureRate
-		5: captureRatePerPlayer
-		6: maxPlayerRate
-		7: adaptiveCaptureRate
-		8: zoneControl
-		9: numTeam1A
-		10: numTeam1B
-		11: numTeam1C
-		12: numTeam2A
-		13: numTeam2B
-		14: numTeam2C
-		15: powerPlayActive
-		16: powerPlayTimer
-		17: powerPlaySoundTrigger
-		18: powerPlayEnabled
-		19: powerPlayDuration
-		20: powerPlayMarkers
-		21: resumeMatchTime
-		22: overtimeEnabled
-		23: overtime
-		24: zoneAHudText
-		25: zoneBHudText
-		26: zoneCHudText
-		27: zoneAProgress
-		28: zoneBProgress
-		29: zoneCProgress
-		30: skullIcons
-		31: asdf
+		1: minRespawnTime
+		2: maxRespawnTime
+		3: zoneLocations
+		4: zoneSizes
+		5: zoneHeights
+		6: baseCaptureRate
+		7: captureRatePerPlayer
+		8: maxPlayerRate
+		9: adaptiveCaptureRate
+		10: zoneControl
+		11: numTeam1A
+		12: numTeam1B
+		13: numTeam1C
+		14: numTeam2A
+		15: numTeam2B
+		16: numTeam2C
+		17: powerPlayActive
+		18: powerPlayTimer
+		19: powerPlaySoundTrigger
+		20: powerPlayEnabled
+		21: powerPlayDuration
+		22: powerPlayMarkers
+		23: resumeMatchTime
+		24: overtimeEnabled
+		25: overtime
+		26: zoneAHudText
+		27: zoneBHudText
+		28: zoneCHudText
+		29: zoneAProgress
+		30: zoneBProgress
+		31: zoneCProgress
+		32: skullIcons
+		33: asdf
 
 	player:
 		0: respawnBlocked
@@ -119,6 +121,10 @@ rule("Game Settings")
 		Global.scoreToWin = 100;
 		"Will Overtime be triggered if regulation time runs out with both teams at the same score?\r\n\n Default: True"
 		Global.overtimeEnabled = True;
+		"The minimum amount of time a player will remain dead, in seconds.\r\n\n Default: 8"
+		Global.minRespawnTime = 8;
+		"The maximum amount of time a player can remain dead, in seconds.\r\n\n Default: 16"
+		Global.maxRespawnTime = 16;
 	}
 }
 
@@ -761,9 +767,9 @@ rule("Main Respawn handler")
 			Victim.respawnBuffered = True;
 		End;
 		"Track time until respawn"
-		Victim.timeToRespawn = 8;
+		Victim.timeToRespawn = Global.minRespawnTime;
 		Chase Player Variable At Rate(Victim, timeToRespawn, 0, 1, None);
-		Wait(8, Restart When True);
+		Wait(Global.minRespawnTime, Restart When True);
 		"Allow manual respawn"
 		Victim.respawnBlocked = False;
 		"Respawn if they pressed jump while blocked"
@@ -771,7 +777,7 @@ rule("Main Respawn handler")
 			Respawn(Victim);
 		End;
 		"Wait until max time before respawn"
-		Wait(8, Restart When True);
+		Wait(Global.maxRespawnTime - Global.minRespawnTime, Restart When True);
 		If(Is Dead(Victim));
 			Respawn(Victim);
 	}
@@ -1065,23 +1071,30 @@ rule("Keep track of the number of Team 1 players on Zone A")
 	{
 		"If the number of players from Team 1 is not equal to the tracker variable..."
 		Count Of(Filtered Array(All Players(Team 1), Has Spawned(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
-			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
-			Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(
-			Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam1A;
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(Hero Of(Current Array Element)
+			== Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(Current Array Element) == Hero(Mei)
+			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
+			Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(Current Array Element))), First Of(
+			Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(
+			Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam1A;
 	}
 
 	actions
 	{
 		"...update the tracker variable"
 		Global.numTeam1A = Count Of(Filtered Array(All Players(Team 1), Has Spawned(Current Array Element) && Is Alive(
-			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
-			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)),
-			Z Component Of(Position Of(Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes)
-			&& Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations))
-			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(
-			Global.zoneHeights)));
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(
+			Hero Of(Current Array Element) == Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(
+			Current Array Element) == Hero(Mei) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(
+			Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights)));
+		"Sleep until next tick"
+		Wait(0.016, Ignore Condition);
+		"Sometimes we must loop because the updated value is no longer accurate, but the condition will not refire the rule for us"
+		Loop If Condition Is True;
 	}
 }
 
@@ -1096,23 +1109,30 @@ rule("Keep track of the number of Team 2 players on Zone A")
 	{
 		"If the number of players from Team 2 is not equal to the tracker variable..."
 		Count Of(Filtered Array(All Players(Team 2), Has Spawned(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
-			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
-			Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(
-			Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam2A;
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(Hero Of(Current Array Element)
+			== Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(Current Array Element) == Hero(Mei)
+			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
+			Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(Current Array Element))), First Of(
+			Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(
+			Global.zoneLocations)) < First Of(Global.zoneHeights))) != Global.numTeam2A;
 	}
 
 	actions
 	{
 		"...update the tracker variable"
 		Global.numTeam2A = Count Of(Filtered Array(All Players(Team 2), Has Spawned(Current Array Element) && Is Alive(
-			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
-			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)),
-			Z Component Of(Position Of(Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes)
-			&& Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations))
-			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(
-			Global.zoneHeights)));
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(
+			Hero Of(Current Array Element) == Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(
+			Current Array Element) == Hero(Mei) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(First Of(Global.zoneLocations)), Z Component Of(Position Of(
+			Current Array Element))), First Of(Global.zoneLocations)) < First Of(Global.zoneSizes) && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) >= -0.500 && Y Component Of(Position Of(
+			Current Array Element)) - Y Component Of(First Of(Global.zoneLocations)) < First Of(Global.zoneHeights)));
+		"Sleep until next tick"
+		Wait(0.016, Ignore Condition);
+		"Sometimes we must loop because the updated value is no longer accurate, but the condition will not refire the rule for us"
+		Loop If Condition Is True;
 	}
 }
 
@@ -1127,22 +1147,30 @@ rule("Keep track of the number of Team 1 players on Zone B")
 	{
 		"If the number of players from Team 1 is not equal to the tracker variable..."
 		Count Of(Filtered Array(All Players(Team 1), Has Spawned(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
-			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
-			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(
-			Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneHeights[1])) != Global.numTeam1B;
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(Hero Of(Current Array Element)
+			== Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(Current Array Element) == Hero(Mei)
+			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
+			Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
+			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
+			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
+			< Global.zoneHeights[1])) != Global.numTeam1B;
 	}
 
 	actions
 	{
 		"...update the tracker variable"
 		Global.numTeam1B = Count Of(Filtered Array(All Players(Team 1), Has Spawned(Current Array Element) && Is Alive(
-			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
-			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]),
-			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(
-			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(Global.zoneLocations[1]) < Global.zoneHeights[1]));
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(
+			Hero Of(Current Array Element) == Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(
+			Current Array Element) == Hero(Mei) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[1]) < Global.zoneHeights[1]));
+		"Sleep until next tick"
+		Wait(0.016, Ignore Condition);
+		"Sometimes we must loop because the updated value is no longer accurate, but the condition will not refire the rule for us"
+		Loop If Condition Is True;
 	}
 }
 
@@ -1157,22 +1185,30 @@ rule("Keep track of the number of Team 2 players on Zone B")
 	{
 		"If the number of players from Team 2 is not equal to the tracker variable..."
 		Count Of(Filtered Array(All Players(Team 2), Has Spawned(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
-			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
-			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(
-			Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[1]) < Global.zoneHeights[1])) != Global.numTeam2B;
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(Hero Of(Current Array Element)
+			== Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(Current Array Element) == Hero(Mei)
+			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
+			Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1])
+			< Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
+			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1])
+			< Global.zoneHeights[1])) != Global.numTeam2B;
 	}
 
 	actions
 	{
 		"...update the tracker variable"
 		Global.numTeam2B = Count Of(Filtered Array(All Players(Team 2), Has Spawned(Current Array Element) && Is Alive(
-			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
-			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]),
-			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(
-			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(Global.zoneLocations[1]) < Global.zoneHeights[1]));
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(
+			Hero Of(Current Array Element) == Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(
+			Current Array Element) == Hero(Mei) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[1]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[1]) < Global.zoneSizes[1] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[1]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[1]) < Global.zoneHeights[1]));
+		"Sleep until next tick"
+		Wait(0.016, Ignore Condition);
+		"Sometimes we must loop because the updated value is no longer accurate, but the condition will not refire the rule for us"
+		Loop If Condition Is True;
 	}
 }
 
@@ -1187,22 +1223,30 @@ rule("Keep track of the number of Team 1 players on Zone C")
 	{
 		"If the number of players from Team 1 is not equal to the tracker variable..."
 		Count Of(Filtered Array(All Players(Team 1), Has Spawned(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
-			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
-			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(
-			Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneHeights[2])) != Global.numTeam1C;
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(Hero Of(Current Array Element)
+			== Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(Current Array Element) == Hero(Mei)
+			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
+			Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
+			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
+			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
+			< Global.zoneHeights[2])) != Global.numTeam1C;
 	}
 
 	actions
 	{
 		"...update the tracker variable"
 		Global.numTeam1C = Count Of(Filtered Array(All Players(Team 1), Has Spawned(Current Array Element) && Is Alive(
-			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
-			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]),
-			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(
-			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(Global.zoneLocations[2]) < Global.zoneHeights[2]));
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(
+			Hero Of(Current Array Element) == Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(
+			Current Array Element) == Hero(Mei) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[2]) < Global.zoneHeights[2]));
+		"Sleep until next tick"
+		Wait(0.016, Ignore Condition);
+		"Sometimes we must loop because the updated value is no longer accurate, but the condition will not refire the rule for us"
+		Loop If Condition Is True;
 	}
 }
 
@@ -1217,22 +1261,30 @@ rule("Keep track of the number of Team 2 players on Zone C")
 	{
 		"If the number of players from Team 2 is not equal to the tracker variable..."
 		Count Of(Filtered Array(All Players(Team 2), Has Spawned(Current Array Element) && Is Alive(Current Array Element) && !(Hero Of(
-			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
-			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(
-			Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element))
-			- Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
-			Global.zoneLocations[2]) < Global.zoneHeights[2])) != Global.numTeam2C;
+			Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(Hero Of(Current Array Element)
+			== Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(Current Array Element) == Hero(Mei)
+			&& Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(Position Of(Current Array Element)),
+			Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2])
+			< Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
+			>= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2])
+			< Global.zoneHeights[2])) != Global.numTeam2C;
 	}
 
 	actions
 	{
 		"...update the tracker variable"
 		Global.numTeam2C = Count Of(Filtered Array(All Players(Team 2), Has Spawned(Current Array Element) && Is Alive(
-			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element))
-			&& Distance Between(Vector(X Component Of(Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]),
-			Z Component Of(Position Of(Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(
-			Position Of(Current Array Element)) - Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(
-			Current Array Element)) - Y Component Of(Global.zoneLocations[2]) < Global.zoneHeights[2]));
+			Current Array Element) && !(Hero Of(Current Array Element) == Hero(Sombra) && Is Using Ability 1(Current Array Element)) && !(
+			Hero Of(Current Array Element) == Hero(Doomfist) && Is Using Ultimate(Current Array Element)) && !(Hero Of(
+			Current Array Element) == Hero(Mei) && Is Using Ability 1(Current Array Element)) && Distance Between(Vector(X Component Of(
+			Position Of(Current Array Element)), Y Component Of(Global.zoneLocations[2]), Z Component Of(Position Of(
+			Current Array Element))), Global.zoneLocations[2]) < Global.zoneSizes[2] && Y Component Of(Position Of(Current Array Element))
+			- Y Component Of(Global.zoneLocations[2]) >= -0.500 && Y Component Of(Position Of(Current Array Element)) - Y Component Of(
+			Global.zoneLocations[2]) < Global.zoneHeights[2]));
+		"Sleep until next tick"
+		Wait(0.016, Ignore Condition);
+		"Sometimes we must loop because the updated value is no longer accurate, but the condition will not refire the rule for us"
+		Loop If Condition Is True;
 	}
 }
 
@@ -1320,7 +1372,7 @@ rule("Zone A: Contesting")
 	}
 }
 
-rule("Zone A: Capturing")
+rule("Zone A: Capturing for Team 1")
 {
 	event
 	{
@@ -1330,30 +1382,50 @@ rule("Zone A: Capturing")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		"If Team 1 alone on point or Team 2 alone on point"
-		((First Of(Global.zoneControl) != Team 1 && Global.numTeam1A > 0 && Global.numTeam2A == 0) || (First Of(Global.zoneControl)
-			!= Team 2 && Global.numTeam2A > 0 && Global.numTeam1A == 0)) == True;
+		"If Team 1 alone on zone and does not own zone"
+		First Of(Global.zoneControl) != Team 1;
+		Global.numTeam1A > 0;
+		Global.numTeam2A == 0;
 	}
 
 	actions
 	{
-		If(Global.numTeam1A > 0);
-			If(Global.zoneAProgress < 0);
-				Wait(1, Abort When False);
-				Global.zoneAProgress = 0;
-			End;
-			Chase Global Variable At Rate(zoneAProgress, 100, Global.numTeam1A > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam1A,
-				Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 1)) : 1) + Global.baseCaptureRate : 0,
-				Destination and Rate);
-		Else;
-			If(Global.zoneAProgress > 0);
-				Wait(1, Abort When False);
-				Global.zoneAProgress = 0;
-			End;
-			Chase Global Variable At Rate(zoneAProgress, -100, Global.numTeam2A > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam2A,
-				Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 2)) : 1) + Global.baseCaptureRate : 0,
-				Destination and Rate);
+		If(Global.zoneAProgress < 0);
+			Wait(1, Abort When False);
+			Global.zoneAProgress = 0;
 		End;
+		Chase Global Variable At Rate(zoneAProgress, 100, Global.numTeam1A > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam1A,
+			Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 1)) : 1) + Global.baseCaptureRate : 0,
+			Destination and Rate);
+		Global.zoneAHudText[3] = Custom String("Capturing");
+	}
+}
+
+rule("Zone A: Capturing for Team 2")
+{
+	event
+	{
+		Ongoing - Global;
+	}
+
+	conditions
+	{
+		Global.powerPlayActive == False;
+		"If Team 2 alone on zone and does not own zone"
+		First Of(Global.zoneControl) != Team 2;
+		Global.numTeam2A > 0;
+		Global.numTeam1A == 0;
+	}
+
+	actions
+	{
+		If(Global.zoneAProgress > 0);
+			Wait(1, Abort When False);
+			Global.zoneAProgress = 0;
+		End;
+		Chase Global Variable At Rate(zoneAProgress, -100, Global.numTeam2A > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam2A,
+			Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 2)) : 1) + Global.baseCaptureRate : 0,
+			Destination and Rate);
 		Global.zoneAHudText[3] = Custom String("Capturing");
 	}
 }
@@ -1722,7 +1794,7 @@ rule("Zone B: Contesting")
 	}
 }
 
-rule("Zone B: Capturing")
+rule("Zone B: Capturing for Team 1")
 {
 	event
 	{
@@ -1732,30 +1804,50 @@ rule("Zone B: Capturing")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		"If Team 1 alone on point or Team 2 alone on point"
-		((Global.zoneControl[1] != Team 1 && Global.numTeam1B > 0 && Global.numTeam2B == 0) || (
-			Global.zoneControl[1] != Team 2 && Global.numTeam2B > 0 && Global.numTeam1B == 0)) == True;
+		"If Team 1 alone on zone and does not own zone"
+		Global.zoneControl[1] != Team 1;
+		Global.numTeam1B > 0;
+		Global.numTeam2B == 0;
 	}
 
 	actions
 	{
-		If(Global.numTeam1B > 0);
-			If(Global.zoneBProgress < 0);
-				Wait(1, Abort When False);
-				Global.zoneBProgress = 0;
-			End;
-			Chase Global Variable At Rate(zoneBProgress, 100, Global.numTeam1B > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam1B,
-				Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 1)) : 1) + Global.baseCaptureRate : 0,
-				Destination and Rate);
-		Else;
-			If(Global.zoneBProgress > 0);
-				Wait(1, Abort When False);
-				Global.zoneBProgress = 0;
-			End;
-			Chase Global Variable At Rate(zoneBProgress, -100, Global.numTeam2B > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam2B,
-				Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 2)) : 1) + Global.baseCaptureRate : 0,
-				Destination and Rate);
+		If(Global.zoneBProgress < 0);
+			Wait(1, Abort When False);
+			Global.zoneBProgress = 0;
 		End;
+		Chase Global Variable At Rate(zoneBProgress, 100, Global.numTeam1B > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam1B,
+			Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 1)) : 1) + Global.baseCaptureRate : 0,
+			Destination and Rate);
+		Global.zoneBHudText[3] = Custom String("Capturing");
+	}
+}
+
+rule("Zone B: Capturing for Team 2")
+{
+	event
+	{
+		Ongoing - Global;
+	}
+
+	conditions
+	{
+		Global.powerPlayActive == False;
+		"If Team 2 alone on zone and does not own zone"
+		Global.zoneControl[1] != Team 2;
+		Global.numTeam2B > 0;
+		Global.numTeam1B == 0;
+	}
+
+	actions
+	{
+		If(Global.zoneBProgress > 0);
+			Wait(1, Abort When False);
+			Global.zoneBProgress = 0;
+		End;
+		Chase Global Variable At Rate(zoneBProgress, -100, Global.numTeam2B > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam2B,
+			Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 2)) : 1) + Global.baseCaptureRate : 0,
+			Destination and Rate);
 		Global.zoneBHudText[3] = Custom String("Capturing");
 	}
 }
@@ -2124,7 +2216,7 @@ rule("Zone C: Contesting")
 	}
 }
 
-rule("Zone C: Capturing")
+rule("Zone C: Capturing for Team 1")
 {
 	event
 	{
@@ -2134,30 +2226,50 @@ rule("Zone C: Capturing")
 	conditions
 	{
 		Global.powerPlayActive == False;
-		"If Team 1 alone on point or Team 2 alone on point"
-		((Global.zoneControl[2] != Team 1 && Global.numTeam1C > 0 && Global.numTeam2C == 0) || (
-			Global.zoneControl[2] != Team 2 && Global.numTeam2C > 0 && Global.numTeam1C == 0)) == True;
+		"If Team 1 alone on zone and does not own zone"
+		Global.zoneControl[2] != Team 1;
+		Global.numTeam1C > 0;
+		Global.numTeam2C == 0;
 	}
 
 	actions
 	{
-		If(Global.numTeam1C > 0);
-			If(Global.zoneCProgress < 0);
-				Wait(1, Abort When False);
-				Global.zoneCProgress = 0;
-			End;
-			Chase Global Variable At Rate(zoneCProgress, 100, Global.numTeam1C > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam1C,
-				Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 1)) : 1) + Global.baseCaptureRate : 0,
-				Destination and Rate);
-		Else;
-			If(Global.zoneCProgress > 0);
-				Wait(1, Abort When False);
-				Global.zoneCProgress = 0;
-			End;
-			Chase Global Variable At Rate(zoneCProgress, -100, Global.numTeam2C > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam2C,
-				Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 2)) : 1) + Global.baseCaptureRate : 0,
-				Destination and Rate);
+		If(Global.zoneCProgress < 0);
+			Wait(1, Abort When False);
+			Global.zoneCProgress = 0;
 		End;
+		Chase Global Variable At Rate(zoneCProgress, 100, Global.numTeam1C > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam1C,
+			Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 1)) : 1) + Global.baseCaptureRate : 0,
+			Destination and Rate);
+		Global.zoneCHudText[3] = Custom String("Capturing");
+	}
+}
+
+rule("Zone C: Capturing for Team 2")
+{
+	event
+	{
+		Ongoing - Global;
+	}
+
+	conditions
+	{
+		Global.powerPlayActive == False;
+		"If Team 2 alone on zone and does not own zone"
+		Global.zoneControl[2] != Team 2;
+		Global.numTeam2C > 0;
+		Global.numTeam1C == 0;
+	}
+
+	actions
+	{
+		If(Global.zoneCProgress > 0);
+			Wait(1, Abort When False);
+			Global.zoneCProgress = 0;
+		End;
+		Chase Global Variable At Rate(zoneCProgress, -100, Global.numTeam2C > 0 ? Global.captureRatePerPlayer * Min(Global.numTeam2C,
+			Global.maxPlayerRate) * (Global.adaptiveCaptureRate ? 6 / Count Of(All Players(Team 2)) : 1) + Global.baseCaptureRate : 0,
+			Destination and Rate);
 		Global.zoneCHudText[3] = Custom String("Capturing");
 	}
 }
