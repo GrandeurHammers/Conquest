@@ -29,6 +29,17 @@ rule "DEBUG: Summon Dummy Bot on Player upon Melee + Interact":
 	@Disabled
 	@Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.MELEE)
 	createDummy(Hero.ASHE, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+
+rule "DEBUG: Summon Dummy Bot from each team in a zone 3 seconds after start":
+	@Disabled
+	@Condition isGameInProgress()
+	wait(3)
+	createDummy(random.choice(getAllHeroes()), Team.1, -1, zoneLocations[0], vect(0,0,0))
+	getLastCreatedEntity().startForcingPosition(zoneLocations[0], true)
+	createDummy(random.choice(getAllHeroes()), Team.2, -1, zoneLocations[1], vect(0,0,0))
+	getLastCreatedEntity().startForcingPosition(zoneLocations[1], true)
+	createDummy(random.choice(getAllHeroes()), Team.1, -1, zoneLocations[2], vect(0,0,0))
+	getLastCreatedEntity().startForcingPosition(zoneLocations[2], true)
 	
 rule "DEBUG: Trigger Power Play after holding Interact for 3 seconds (crouch for enemy, default friendly)":
 	@Event eachPlayer
