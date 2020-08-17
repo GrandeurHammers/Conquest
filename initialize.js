@@ -43,6 +43,15 @@ teams.forEach(function (team) {
     result += `
     hudHeader(getPlayers(${team}), "{0}{1} = +{2} {3}/{4}".format(${pointsControlled}, iconString(Icon.FLAG), max(${pointsControlled}, 1), l"Point" if max(${pointsControlled}, 1) == 1 else l"Points", l"Kill"), HudPosition.TOP, 0.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 });
+// Spectator HUD: show zones controlled by both teams
+let specFormatArgs = [];
+teams.forEach(function (team) {
+    for (let point = 0; point < 3; point++) {
+        specFormatArgs.push(`"${pointToLetter[point]}" if zoneControl[${point}] == ${team} else "-"`);
+    }
+});
+result += `
+hudSubtext(hostPlayer, "{0}  {1}  {2} | Zones Controlled | {3}  {4}  {5}".format(${specFormatArgs.join(",")}), HudPosition.TOP, 0.4, Color.WHITE, HudReeval.STRING, SpecVisibility.ALWAYS)`;
 
 result += `
     #Power Play pushdown (avoid big message)
