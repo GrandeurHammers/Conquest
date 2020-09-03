@@ -13,9 +13,12 @@ settings {
             "enabledMaps": [
                 "blizzWorld",
                 "blizzWorldWinter",
+                "dorado",
                 "iliosLighthouse",
                 "iliosRuins",
                 "iliosWell",
+                "kingsRow",
+                "kingsRowWinter",
                 "lijiangControlCenter",
                 "lijiangControlCenterLny",
                 "lijiangGarden",
