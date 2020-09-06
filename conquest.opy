@@ -257,12 +257,12 @@ rule "Regulation Time End Handler: Trigger Overtime or Declare Victory when regu
         if not overtimeEnabled:
             declareDraw()
             return
-        setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
         bigMessage(getAllPlayers(), l"Overtime")
         setMatchTime(0.032)
         overtime = true
         wait(0.016)
         pauseMatchTime()
+        setObjectiveDescription(getAllPlayers(), l"Overtime", HudReeval.VISIBILITY_AND_STRING)
     # Otherwise, declare a winner
     else:
         declareWinner()
