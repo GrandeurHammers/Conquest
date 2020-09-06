@@ -242,7 +242,7 @@ rule "Declare Winner if a team has requisite number of points":
     currScoreComp = teamScore(Team.1) - teamScore(Team.2)
     declareWinner()
 
-rule "Game End Handler: Trigger Overtime or Declare Victory when regulation time runs out":
+rule "Regulation Time End Handler: Trigger Overtime or Declare Victory when regulation time runs out":
 	@Event global
     @Condition isGameInProgress()
     @Condition getMatchTime() == 0
