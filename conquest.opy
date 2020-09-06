@@ -66,8 +66,9 @@ globalvar zoneBProgress
 globalvar zoneCProgress
 # Skull Markers (Power Play)
 globalvar skullIcons
-# Dummy var
-globalvar asdf
+# Current score comparison (<0 if team 1 < team 2, 0 if team 1 == team 2, >0 if team 1 > team 2)
+globalvar currScoreComp
+# TODO: add disable scoring switch to aid in buffer time
 
 #Player variables
 # Whether a respawn input can be buffered
@@ -105,14 +106,14 @@ subroutine declareWinner
 rule "=====CUSTOMIZATION=====":
 	@Event global
     @Disabled
-    asdf = false
+    currScoreComp = false
 
 #!include "customize.opy"
 
 rule "=====SETUP=====":
 	@Event global
 	@Disabled
-    asdf = false
+    currScoreComp = false
 
 rule "Global Initialization - includes center zone HUD elements":
     @Event global
@@ -148,7 +149,7 @@ rule "Generate initial in-world zone visuals":
 rule "=====GAMEPLAY=====":
 	@Event global
 	@Disabled
-    asdf = false
+    currScoreComp = false
 
 rule "Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)":
     @Event eachPlayer
@@ -237,6 +238,7 @@ rule "Declare Winner if a team has requisite number of points":
     @Condition not overtime
     @Condition (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin)
     @Condition teamScore(Team.1) != teamScore(Team.2)
+    currScoreComp = teamScore(Team.1) - teamScore(Team.2)
     declareWinner()
 
 rule "Game End Handler: Trigger Overtime or Declare Victory when regulation time runs out":
@@ -245,8 +247,12 @@ rule "Game End Handler: Trigger Overtime or Declare Victory when regulation time
     @Condition getMatchTime() == 0
     @Condition not powerPlayActive
     @Condition not overtime
+    # Cache result before buffer wait
+    currScoreComp = teamScore(Team.1) - teamScore(Team.2)
+    # Wait for two frames to alleviate potential race conditions
+    wait(0.032, Wait.ABORT_WHEN_FALSE)
     # If teams are tied, initiate overtime (or declare draw if overtime not enabled)
-    if teamScore(Team.1) == teamScore(Team.2):
+    if currScoreComp == 0:
         if not overtimeEnabled:
             declareDraw()
             return
@@ -280,18 +286,22 @@ rule "Overtime End Handler":
     declareWinner()
 
 def declareWinner():
-    @Name "SUB: Declare Winner"
-    if teamScore(Team.1) == teamScore(Team.2):
+    @Name "SUB: Declare Winner | UPDATE currScoreComp BEFORE CALLING THIS SUBROUTINE"
+    if currScoreComp == 0:
         return
-    if teamScore(Team.1) > teamScore(Team.2):
+    if currScoreComp > 0:
+        # Allow adequate time to process end of game
+        wait(0.5)
         declareTeamVictory(Team.1)
     else:
+        # Allow adequate time to process end of game
+        wait(0.5)
         declareTeamVictory(Team.2)
 
 rule "# Keep track of number of people from one team on one zone per rule":
 	@Event global
     @Disabled
-    asdf = false
+    currScoreComp = false
 
 generatePointFlags()
 
@@ -300,13 +310,13 @@ generatePointFlags()
 rule "=====POWER PLAY=====":
 	@Event global
 	@Disabled
-    asdf = false
+    currScoreComp = false
 
 #!include "powerPlay.opy"
 
 rule "=====DEBUG=====":
 	@Event global
 	@Disabled
-	asdf = false
+	currScoreComp = false
 
 #!include "debug.opy"
