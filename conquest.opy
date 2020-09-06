@@ -118,7 +118,8 @@ rule "=====SETUP=====":
 rule "Global Initialization - includes center zone HUD elements":
     @Event global
     # Mostly for debugging purposes
-    disableInspector()
+    if not createWorkshopSetting(bool, "Debug", "Inspector Enabled", false):
+        disableInspector()
     # We use our own custom gamemode completion
     disableGamemodeCompletion()
     initializeHelper()
