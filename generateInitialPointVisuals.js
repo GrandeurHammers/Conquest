@@ -2,17 +2,22 @@ var result = "";
 var conditions = [
     {
         "control": "null",
-        "color": "WHITE"
+        "color": "WHITE",
+        "team1altcolor": "TEAM_1",
+        "team2altcolor": "TEAM_2"
     },
     {
         "control": "Team.1",
-        "color": "TEAM_1"
+        "color": "TEAM_1",
+        "altcolor": "WHITE"
     },
     {
         "control": "Team.2",
-        "color": "TEAM_2"
+        "color": "TEAM_2",
+        "altcolor": "WHITE"
     }
 ];
+// FIXME
 var pointToLetter = ['A', 'B', 'C'];
 for (var i = 0; i < pointToLetter.length; i++) {
     conditions.forEach(function (condition) {
