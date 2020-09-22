@@ -9,14 +9,9 @@ Two teams fight to control 3 zones and earn kills. Fully capturing a zone yields
 
 Installation
 ----------
-The `lobby.owcs` contains custom game settings that can be copied and pasted into a Custom Game by the host by doing the following:
-- Copy the contents of `lobby.owcs`
-- Open the Settings of the custom game
-- Click the orange paste icon
+The latest lobby import code can be found [at this link](https://workshop.codes/conquest).
 
-Alternatively, the latest Workshop code can be found [at this link](https://workshop.codes/conquest)
-
-*Note: `lobby.owcs` is the latest compiled version of the branch it is in.*
+*Note: `lobby.owcs` is deprecated and is not guaranteed to be up to date.*
 
 Local Compilation
 ------
