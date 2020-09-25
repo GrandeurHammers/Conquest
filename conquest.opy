@@ -68,7 +68,10 @@ globalvar zoneCProgress
 globalvar skullIcons
 # Current score comparison (<0 if team 1 < team 2, 0 if team 1 == team 2, >0 if team 1 > team 2)
 globalvar currScoreComp
-# TODO: add disable scoring switch to aid in buffer time
+# Array of booleans that control whether the main or alternate color is shown
+globalvar altColorControl
+# Array of booleans that determine whether a zone should flash alt colors
+globalvar altColorLoop
 
 #Player variables
 # Whether a respawn input can be buffered
@@ -100,6 +103,7 @@ subroutine declareWinner
 #!define toggleSkulls(create) __script__('toggleSkullIcons.js')
 #!define generatePlayerHUDSpacer() __script__('generatePlayerHUDSpacer.js')
 #!define generatePlayerHUD() __script__('generatePlayerHUD.js')
+#!define colorFlashControl(point) __script__('colorFlashControl.js')
 
 #!include "lobbySettings.opy"
 
