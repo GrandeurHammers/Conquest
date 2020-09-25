@@ -3,8 +3,12 @@ var numPoints = 3;
 const pointToLetter = ['A', 'B', 'C'];
 // Initialize vars
 result += `
-    #Set up all points to have neither team controlling
+    #Set up all zones to have neither team controlling
     zoneControl = [null, null, null]
+    #Set up all zones to start on non-alt colors
+    altColorControl = [false, false, false]
+    #Set up all zones to not loop alt colors
+    altColorLoop = [false, false, false]
     #Initialize HUD IDs for each point`;
 for (var i = 0; i < numPoints; i++) {
     result += `
