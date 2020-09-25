@@ -60,7 +60,7 @@ globalvar overtime
 globalvar zoneAHudText
 globalvar zoneBHudText
 globalvar zoneCHudText
-# Zone Progress
+# Zone Progress (100 = full cap for Team 1, -100 = full cap for Team 2)
 globalvar zoneAProgress
 globalvar zoneBProgress
 globalvar zoneCProgress
