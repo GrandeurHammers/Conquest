@@ -9,12 +9,12 @@ var conditions = [
     {
         "control": "Team.1",
         "color": "TEAM_1",
-        "altcolor": "WHITE"
+        "capturealtcolor": "TEAM_2"
     },
     {
         "control": "Team.2",
         "color": "TEAM_2",
-        "altcolor": "WHITE"
+        "capturealtcolor": "TEAM_1"
     }
 ];
 // FIXME
