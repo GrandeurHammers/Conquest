@@ -9,14 +9,25 @@ var emptyChar = "　";
 var fullChar = "▒";
 var visKeys = [
     {
+        "textKey": "subtextSpec",
+        "subtitleKey": "subtitleSpec",
+        "players": "null",
+        "position": "LEFT",
+        "specvis": "ALWAYS"
+    },
+    {
         "textKey": "subtextTeam1",
         "subtitleKey": "subtitleTeam1",
-        "players": "getPlayers(Team.1)"
+        "players": "getPlayers(Team.1)",
+        "position": "RIGHT",
+        "specvis": "NEVER"
     },
     {
         "textKey": "subtextTeam2",
         "subtitleKey": "subtitleTeam2",
-        "players": "getPlayers(Team.2)"
+        "players": "getPlayers(Team.2)",
+        "position": "RIGHT",
+        "specvis": "NEVER"
     }
 ];
 const controls = [
