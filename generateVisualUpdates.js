@@ -47,6 +47,7 @@ const controls = [
                 "subtitleColor": "TEAM_1",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_1",
+                "subtextSpec": `"{0}: {1}%".format(Team.1, floor(abs(${zoneProgress})))`,
                 "subtextTeam1": `"{0}: {1}%".format(l"Ally", floor(abs(${zoneProgress})))`,
                 "subtextTeam2": `"{0}: {1}%".format(l"Enemy", floor(abs(${zoneProgress})))`
             },
@@ -55,6 +56,7 @@ const controls = [
                 "subtitleColor": "TEAM_2",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_2",
+                "subtextSpec": `"{0}: {1}%".format(Team.2, floor(abs(${zoneProgress})))`,
                 "subtextTeam1": `"{0}: {1}%".format(l"Enemy", floor(abs(${zoneProgress})))`,
                 "subtextTeam2": `"{0}: {1}%".format(l"Ally", floor(abs(${zoneProgress})))`
             }
@@ -69,6 +71,7 @@ const controls = [
                 "subtitleColor": "WHITE",
                 "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
+                "subtextSpec": `"{0}".format(Team.1)`,
                 "subtextTeam1": `"Defend Zone"`,
                 "subtextTeam2": `"Attack Zone"`
             },
@@ -77,6 +80,7 @@ const controls = [
                 "subtitleColor": "TEAM_2",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_2",
+                "subtextSpec": `"{0}: {1}%".format(Team.2, floor(abs(${zoneProgress})))`,
                 "subtextTeam1": `"{0}: {1}%".format(l"Enemy", floor(abs(${zoneProgress})))`,
                 "subtextTeam2": `"{0}: {1}%".format(l"Ally", floor(abs(${zoneProgress})))`
             }
@@ -91,6 +95,7 @@ const controls = [
                 "subtitleColor": "WHITE",
                 "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
+                "subtextSpec": `"{0}".format(Team.2)`,
                 "subtextTeam1": `"Attack Zone"`,
                 "subtextTeam2": `"Defend Zone"`
             },
@@ -99,6 +104,7 @@ const controls = [
                 "subtitleColor": "TEAM_1",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_1",
+                "subtextSpec": `"{0}: {1}%".format(Team.1, floor(abs(${zoneProgress})))`,
                 "subtextTeam1": `"{0}: {1}%".format(l"Ally", floor(abs(${zoneProgress})))`,
                 "subtextTeam2": `"{0}: {1}%".format(l"Enemy", floor(abs(${zoneProgress})))`
             }
