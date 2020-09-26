@@ -159,9 +159,8 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
             });
         } else {
             visKeys.forEach(function (visData, index) {
-                result += `
-    hudText(${visData.players}, "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), ${subtitle[visData.subtitleKey]}, ${subtitle[visData.textKey]}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtitleColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-    zone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
+                result += "\n\t" + templateAction.replace("%VIS%", visData.players).replace("%SUBTITLE%", subtitle[visData.subtitleKey]).replace("%SUBTEXT%", subtitle[visData.textKey]).replace("%HUDPOS%", visData.position).replace("%SPECVIS%", visData.specvis);
+                result += `\n\tzone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
             });
         }
     });
