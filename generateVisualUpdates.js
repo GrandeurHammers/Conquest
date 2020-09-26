@@ -123,9 +123,12 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
         result += `
     # Create new zone HUD element(s) and store to zone's HUD text ID array`;
         if ("subtextAll" in subtitle && "subtitleAll" in subtitle) {
-            result += `
-    hudText(getAllPlayers(), "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), ${subtitle.subtitleAll}, ${subtitle.subtextAll}, HudPosition.RIGHT, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtextColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
-            for (var i = 0; i < visKeys.length; i++) {
+            let templateAction = `
+     hudText(%VIS%, "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), ${subtitle.subtitleAll}, ${subtitle.subtextAll}, HudPosition.%HUDPOS%, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtextColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.%SPECVIS%)`;
+            result += templateAction.replace("%VIS%", "null").replace("%HUDPOS%", "LEFT").replace("%SPECVIS%", "ALWAYS");
+            result += `\n\tzone${pointToLetter[point]}HudText[0] = getLastCreatedText()`;
+            result += templateAction.replace("%VIS%", "getAllPlayers()").replace("%HUDPOS%", "RIGHT").replace("%SPECVIS%", "NEVER");
+            for (var i = 1; i < visKeys.length; i++) {
                 result += `
     zone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
             }
