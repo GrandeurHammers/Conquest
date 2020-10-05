@@ -3,9 +3,9 @@
 rule "DEBUG: Show CPU":
 	@Event global
 	@Disabled
-	hudSubtext(getAllPlayers(), "Server Load: {0}".format(getServerLoad()), HudPosition.LEFT, -3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-	hudSubtext(getAllPlayers(), "Server Avg: {0}".format(getAverageServerLoad()), HudPosition.LEFT, -2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-	hudSubtext(getAllPlayers(), "Server Peak: {0}".format(getPeakServerLoad()), HudPosition.LEFT, -1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+	hudSubtext(getAllPlayers(), "Server Load: {0}".format(getServerLoad()), HudPosition.LEFT, -100, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+	hudSubtext(getAllPlayers(), "Server Avg: {0}".format(getAverageServerLoad()), HudPosition.LEFT, -99, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+	hudSubtext(getAllPlayers(), "Server Peak: {0}".format(getPeakServerLoad()), HudPosition.LEFT, -98, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
 rule "DEBUG: Show Player Position":
 	@Event eachPlayer
