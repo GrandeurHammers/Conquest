@@ -110,14 +110,14 @@ subroutine declareWinner
 rule "=====CUSTOMIZATION=====":
 	@Event global
     @Disabled
-    currScoreComp = false
+    @Delimiter
 
 #!include "customize.opy"
 
 rule "=====SETUP=====":
 	@Event global
 	@Disabled
-    currScoreComp = false
+    @Delimiter
 
 rule "Global Initialization - includes center zone HUD elements":
     @Event global
@@ -154,14 +154,14 @@ rule "Generate initial in-world zone visuals":
 rule "=====GAMEPLAY=====":
 	@Event global
 	@Disabled
-    currScoreComp = false
+    @Delimiter
 
 #!include "businessLogic.opy"
 
 rule "# Keep track of number of people from one team on one zone per rule":
 	@Event global
     @Disabled
-    currScoreComp = false
+    @Delimiter
 
 generatePointFlags()
 
@@ -170,13 +170,13 @@ generatePointFlags()
 rule "=====POWER PLAY=====":
 	@Event global
 	@Disabled
-    currScoreComp = false
+    @Delimiter
 
 #!include "powerPlay.opy"
 
 rule "=====DEBUG=====":
 	@Event global
 	@Disabled
-	currScoreComp = false
+	@Delimiter
 
 #!include "debug.opy"
