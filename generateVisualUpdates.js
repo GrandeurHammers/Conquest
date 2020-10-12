@@ -37,6 +37,7 @@ const controls = [
         "subtitles": [
             {
                 "progressCond": "== 0",
+                "prefixAll": "iconString(Icon.EXCLAMATION_MARK)",
                 "subtextAll": `"Unlocked"`,
                 "subtextColor": "WHITE",
                 "subtitleColor": "WHITE",
@@ -44,6 +45,8 @@ const controls = [
             },
             {
                 "progressCond": "> 0",
+                "prefixTeam1": "iconString(Icon.CHECKMARK)",
+                "prefixTeam2": "iconString(Icon.CROSS)",
                 "subtitleColor": "TEAM_1",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_1",
@@ -53,6 +56,8 @@ const controls = [
             },
             {
                 "progressCond": "< 0",
+                "prefixTeam1": "iconString(Icon.CROSS)",
+                "prefixTeam2": "iconString(Icon.CHECKMARK)",
                 "subtitleColor": "TEAM_2",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_2",
@@ -68,6 +73,8 @@ const controls = [
         "subtitles": [
             {
                 "progressCond": "== 0",
+                "prefixTeam1": "iconString(Icon.FLAG)",
+                "prefixTeam2": "iconString(Icon.SKULL)",
                 "subtitleColor": "WHITE",
                 "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
@@ -77,6 +84,8 @@ const controls = [
             },
             {
                 "progressCond": "< 0",
+                "prefixTeam1": "iconString(Icon.WARNING)",
+                "prefixTeam2": "iconString(Icon.ASTERISK)",
                 "subtitleColor": "TEAM_2",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_2",
@@ -92,6 +101,8 @@ const controls = [
         "subtitles": [
             {
                 "progressCond": "== 0",
+                "prefixTeam1": "iconString(Icon.SKULL)",
+                "prefixTeam2": "iconString(Icon.FLAG)",
                 "subtitleColor": "WHITE",
                 "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
@@ -101,6 +112,8 @@ const controls = [
             },
             {
                 "progressCond": "> 0",
+                "prefixTeam1": "iconString(Icon.ASTERISK)",
+                "prefixTeam2": "iconString(Icon.WARNING)",
                 "subtitleColor": "TEAM_1",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_1",
