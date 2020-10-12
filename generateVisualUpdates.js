@@ -141,39 +141,37 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
         destroyHudText(zone${pointToLetter[point]}HudText[${i}])`;
         }
 
-        let templateAction = `\n\thudText(%VIS%, "{0}Zone ${pointToLetter[point]}".format(iconString(Icon.FLAG)), %SUBTITLE%, %SUBTEXT%, HudPosition.%HUDPOS%, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtextColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.%SPECVIS%)`;
+        let templateAction = `\n\thudText(%VIS%, "{0}Zone ${pointToLetter[point]}".format(%PREFIX%), %SUBTITLE%, %SUBTEXT%, HudPosition.%HUDPOS%, ${visInd}, Color.${control.headerColor}, Color.${subtitle.subtextColor}, Color.${subtitle.subtextColor}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.%SPECVIS%)`;
 
         result += `\n\t# Create new zone HUD element(s) and store to zone's HUD text ID array`;
-        if ("subtextAll" in subtitle && "subtitleAll" in subtitle) {
-            templateAction = templateAction.replace("%SUBTITLE%", subtitle.subtitleAll).replace("%SUBTEXT%", subtitle.subtextAll);
-
-            result += templateAction.replace("%VIS%", "null").replace("%HUDPOS%", "LEFT").replace("%SPECVIS%", "ALWAYS");
-            result += `\n\tzone${pointToLetter[point]}HudText[0] = getLastCreatedText()`;
-
-            result += templateAction.replace("%VIS%", "getAllPlayers()").replace("%HUDPOS%", "RIGHT").replace("%SPECVIS%", "NEVER");
-            for (var i = 1; i < visKeys.length; i++) {
-                result += `\n\tzone${pointToLetter[point]}HudText[${i}] = getLastCreatedText()`;
-            }
-        } else if ("subtextAll" in subtitle) {
-            templateAction = templateAction.replace("%SUBTEXT%", subtitle.subtextAll);
-
-            visKeys.forEach(function (visData, index) {
-                result += "\n\t" + templateAction.replace("%VIS%", visData.players).replace("%SUBTITLE%", subtitle[visData.subtitleKey]).replace("%HUDPOS%", visData.position).replace("%SPECVIS%", visData.specvis);
-                result += `\n\tzone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
-            });
-        } else if ("subtitleAll" in subtitle) {
+        if ("subtitleAll" in subtitle) {
             templateAction = templateAction.replace("%SUBTITLE%", subtitle.subtitleAll);
-
-            visKeys.forEach(function (visData, index) {
-                result += "\n\t" + templateAction.replace("%VIS%", visData.players).replace("%SUBTEXT%", subtitle[visData.textKey]).replace("%HUDPOS%", visData.position).replace("%SPECVIS%", visData.specvis);
-                result += `\n\tzone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
-            });
-        } else {
-            visKeys.forEach(function (visData, index) {
-                result += "\n\t" + templateAction.replace("%VIS%", visData.players).replace("%SUBTITLE%", subtitle[visData.subtitleKey]).replace("%SUBTEXT%", subtitle[visData.textKey]).replace("%HUDPOS%", visData.position).replace("%SPECVIS%", visData.specvis);
-                result += `\n\tzone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
-            });
         }
+        if ("subtextAll" in subtitle) {
+            templateAction = templateAction.replace("%SUBTEXT%", subtitle.subtextAll);
+        }
+
+        visKeys.forEach(function (visData, index) {
+            let finalAction = templateAction.replace("%VIS%", visData.players).replace("%HUDPOS%", visData.position).replace("%SPECVIS%", visData.specvis);
+            // Set prefix
+            if ("prefixKey" in visData) {
+                finalAction = finalAction.replace("%PREFIX%", subtitle[visData.prefixKey]);
+            } else if ("prefixValue" in visData) {
+                finalAction = finalAction.replace("%PREFIX%", visData.prefixValue);
+            } else {
+                finalAction = finalAction.replace("%PREFIX%", "iconString(Icon.FLAG)");
+            }
+            // Set subtitle
+            if (!("subtitleAll" in subtitle)) {
+                finalAction = finalAction.replace("%SUBTITLE%", subtitle[visData.subtitleKey]);
+            }
+            // Set subtext
+            if (!("subtextAll" in subtitle)) {
+                finalAction = finalAction.replace("%SUBTEXT%", subtitle[visData.textKey]);
+            }
+            result += finalAction;
+            result += `\n\tzone${pointToLetter[point]}HudText[${index}] = getLastCreatedText()`;
+        });
     });
 });
 console.log(result);
