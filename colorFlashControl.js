@@ -1,6 +1,6 @@
 let pointToLetter = ['A', 'B', 'C'];
-let defaultLingerTime = 0.6;
-let altLingerTime = 0.2;
+let defaultLingerTime = 0.25;
+let altLingerTime = 0.5;
 var result = `
 rule "Zone ${pointToLetter[point]}: Disable Flashing Colors when Zone Progress becomes 0":
     @Condition abs(zone${pointToLetter[point]}Progress) == 0
