@@ -37,11 +37,11 @@ const controls = [
     {
         "zoneControl": "null",
         "headerColor": "WHITE",
+        "prefixTeam1": `"{0}{1}".format(iconString(Icon.HALO), " ")`,
+        "prefixTeam2": `"{0}{1}".format(iconString(Icon.HALO), " ")`,
         "subtitles": [
             {
                 "progressCond": "== 0",
-                "prefixTeam1": "iconString(Icon.EXCLAMATION_MARK)",
-                "prefixTeam2": "iconString(Icon.EXCLAMATION_MARK)",
                 "subtextAll": `"Unlocked"`,
                 "subtextColor": "WHITE",
                 "subtitleColor": "WHITE",
@@ -49,8 +49,6 @@ const controls = [
             },
             {
                 "progressCond": "> 0",
-                "prefixTeam1": "iconString(Icon.CHECKMARK)",
-                "prefixTeam2": "iconString(Icon.CROSS)",
                 "subtitleColor": "TEAM_1",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_1",
@@ -60,8 +58,6 @@ const controls = [
             },
             {
                 "progressCond": "< 0",
-                "prefixTeam1": "iconString(Icon.CROSS)",
-                "prefixTeam2": "iconString(Icon.CHECKMARK)",
                 "subtitleColor": "TEAM_2",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_2",
@@ -74,11 +70,11 @@ const controls = [
     {
         "zoneControl": "Team.1",
         "headerColor": "TEAM_1",
+        "prefixTeam1": `"{0}{1}".format(" ", iconString(Icon.FLAG))`,
+        "prefixTeam2": `"{0}{1}".format(iconString(Icon.SKULL), " ")`,
         "subtitles": [
             {
                 "progressCond": "== 0",
-                "prefixTeam1": "iconString(Icon.FLAG)",
-                "prefixTeam2": "iconString(Icon.SKULL)",
                 "subtitleColor": "WHITE",
                 "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
@@ -88,8 +84,6 @@ const controls = [
             },
             {
                 "progressCond": "< 0",
-                "prefixTeam1": "iconString(Icon.WARNING)",
-                "prefixTeam2": "iconString(Icon.ASTERISK)",
                 "subtitleColor": "TEAM_2",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_2",
@@ -102,11 +96,11 @@ const controls = [
     {
         "zoneControl": "Team.2",
         "headerColor": "TEAM_2",
+        "prefixTeam1": `"{0}{1}".format(iconString(Icon.SKULL), " ")`,
+        "prefixTeam2": `"{0}{1}".format(" ", iconString(Icon.FLAG))`,
         "subtitles": [
             {
                 "progressCond": "== 0",
-                "prefixTeam1": "iconString(Icon.SKULL)",
-                "prefixTeam2": "iconString(Icon.FLAG)",
                 "subtitleColor": "WHITE",
                 "subtitleAll": `"${emptyChar.repeat(progressBarLen + 1)}"`,
                 "subtextColor": "WHITE",
@@ -116,8 +110,6 @@ const controls = [
             },
             {
                 "progressCond": "> 0",
-                "prefixTeam1": "iconString(Icon.ASTERISK)",
-                "prefixTeam2": "iconString(Icon.WARNING)",
                 "subtitleColor": "TEAM_1",
                 "subtitleAll": `${progressBar()}`,
                 "subtextColor": "TEAM_1",
@@ -159,7 +151,7 @@ rule "Zone ${pointToLetter[point]} HUD: Control ${control.zoneControl} | Progres
             let finalAction = templateAction.replace("%VIS%", visData.players).replace("%HUDPOS%", visData.position).replace("%SPECVIS%", visData.specvis);
             // Set prefix
             if ("prefixKey" in visData) {
-                finalAction = finalAction.replace("%PREFIX%", subtitle[visData.prefixKey]);
+                finalAction = finalAction.replace("%PREFIX%", control[visData.prefixKey]);
             } else if ("prefixValue" in visData) {
                 finalAction = finalAction.replace("%PREFIX%", visData.prefixValue);
             } else {
