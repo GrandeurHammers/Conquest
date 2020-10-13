@@ -10,6 +10,7 @@ var fullChar = "▒";
 var visKeys = [
     {
         "textKey": "subtextSpec",
+        "prefixValue": "iconString(Icon.FLAG)",
         "subtitleKey": "subtitleSpec",
         "players": "null",
         "position": "LEFT",
@@ -17,6 +18,7 @@ var visKeys = [
     },
     {
         "textKey": "subtextTeam1",
+        "prefixKey": "prefixTeam1",
         "subtitleKey": "subtitleTeam1",
         "players": "getPlayers(Team.1)",
         "position": "RIGHT",
@@ -24,6 +26,7 @@ var visKeys = [
     },
     {
         "textKey": "subtextTeam2",
+        "prefixKey": "prefixTeam2",
         "subtitleKey": "subtitleTeam2",
         "players": "getPlayers(Team.2)",
         "position": "RIGHT",
@@ -37,7 +40,8 @@ const controls = [
         "subtitles": [
             {
                 "progressCond": "== 0",
-                "prefixAll": "iconString(Icon.EXCLAMATION_MARK)",
+                "prefixTeam1": "iconString(Icon.EXCLAMATION_MARK)",
+                "prefixTeam2": "iconString(Icon.EXCLAMATION_MARK)",
                 "subtextAll": `"Unlocked"`,
                 "subtextColor": "WHITE",
                 "subtitleColor": "WHITE",
