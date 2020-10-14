@@ -54,6 +54,10 @@ for (var i = 0; i < pointToLetter.length; i++) {
     ${templateWorldText1.replace("%COND%", "true").replace("%COLOR%", `${condition.color}`)}
     ${templateWorldText2.replace("%COND%", "true").replace("%COLOR%", `${condition.color}`)}`;
         }
+        result += `\n\t# Team 1 specific prompts`;
+        result += `\n\tcreateInWorldText(getPlayers(Team.1), "{0}\r\r\r".format(iconString(Icon.WARNING)) if zone${pointToLetter[i]}Progress < 0 and not powerPlayActive else " \r\r\r", zoneLocations[${i}] + 2 * Vector.UP, 2, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.RED, SpecVisibility.NEVER)`;
+        result += `\n\t# Team 2 specific prompts`;
+        result += `\n\tcreateInWorldText(getPlayers(Team.2), "{0}\r\r\r".format(iconString(Icon.WARNING)) if zone${pointToLetter[i]}Progress > 0 and not powerPlayActive else " \r\r\r", zoneLocations[${i}] + 2 * Vector.UP, 2, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.RED, SpecVisibility.NEVER)`;
     });
 }
 console.log(result);
