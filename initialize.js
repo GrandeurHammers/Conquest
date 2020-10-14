@@ -55,7 +55,7 @@ teams.forEach(function (team) {
     }
 });
 result += `
-hudSubtext(getAllPlayers(), "{0}  {1}  {2} | Zones Controlled | {3}  {4}  {5}".format(${specFormatArgs.join(",")}), HudPosition.TOP, 0.4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
+hudSubtext(hostPlayer, "{0}  {1}  {2} | Zones Controlled | {3}  {4}  {5}".format(${specFormatArgs.join(",")}), HudPosition.TOP, 0.4, Color.WHITE, HudReeval.STRING, SpecVisibility.ALWAYS)`;
 
 result += `
     #Power Play pushdown (avoid big message)
