@@ -105,7 +105,7 @@ subroutine declareWinner
 #!define generatePlayerHUD() __script__('generatePlayerHUD.js')
 #!define colorFlashControl(point) __script__('colorFlashControl.js')
 
-#!include "lobbySettings.opy"
+settings "settings.opy.json"
 
 rule "=====CUSTOMIZATION=====":
 	@Event global
