@@ -1,11 +1,25 @@
 #!mainFile "conquest.opy"
 
-rule "Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)":
+subroutine customRespawn
+
+def customRespawn():
+    @Name "SUB: Custom Respawn Logic"
+    eventPlayer.respawn()
+    eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 2)
+    wait()
+    eventPlayer.teleport(nearestWalkablePosition(zoneSpawns[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]] + vect(random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]), 0, random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]))))
+    eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]) * vect(1,0,1), Relativity.TO_WORLD)
+    wait(0.25)
+
+rule "Remove respawn buffered marker on respawn and trigger custom respawn":
     @Event eachPlayer
+    @Condition eventPlayer.hasSpawned()
     @Condition eventPlayer.isAlive()
     # Reset for next death
     eventPlayer.respawnBuffered = false
     eventPlayer.respawnBlocked = false
+    if not eventPlayer.isDummy():
+        customRespawn()
 
 rule "Main Respawn handler":
     @Event playerDied
@@ -22,11 +36,11 @@ rule "Main Respawn handler":
     victim.respawnBlocked = false
     # Respawn if they pressed jump while blocked
     if victim.respawnBuffered:
-        victim.respawn()
+        customRespawn()
     # Wait until max time before respawn
     wait(maxRespawnTime - minRespawnTime, Wait.RESTART_WHEN_TRUE)
     if victim.isDead():
-        victim.respawn()
+        customRespawn()
 
 rule "If player attempts to respawn while blocked, mark them to respawn":
     @Event eachPlayer
@@ -35,7 +49,7 @@ rule "If player attempts to respawn while blocked, mark them to respawn":
     if eventPlayer.respawnBlocked:
         eventPlayer.respawnBuffered = true
         return
-    eventPlayer.respawn()
+    customRespawn()
 
 rule "Reset on Game Start (Waiting for Players)":
 	@Event global
