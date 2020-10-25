@@ -132,6 +132,8 @@ rule "Overtime End Handler":
 	@Event global
     @Condition overtime
     @Condition teamScore(Team.1) != teamScore(Team.2)
+    # Update currScoreComp as needed by declare winner
+    currScoreComp = teamScore(Team.1) - teamScore(Team.2)
     declareWinner()
 
 def declareWinner():
