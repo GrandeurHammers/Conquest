@@ -5,6 +5,8 @@ const pointToLetter = ['A', 'B', 'C'];
 result += `
     #Set up all zones to have neither team controlling
     zoneControl = [null, null, null]
+    #Start Team 1 at Zone A and Team 2 at Zone C
+    currTeamSpawns = [0,2]
     #Set up all zones to start on non-alt colors
     altColorControl = [false, false, false]
     #Set up all zones to not loop alt colors
