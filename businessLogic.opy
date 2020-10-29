@@ -4,14 +4,15 @@ subroutine customRespawn
 
 def customRespawn():
     @Name "SUB: Custom Respawn Logic"
-    eventPlayer.respawn()
-    eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 2)
-    wait()
+    if eventPlayer.isDead():
+        eventPlayer.respawn()
+        eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 2)
+        wait()
     eventPlayer.teleport(nearestWalkablePosition(zoneSpawns[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]] + vect(random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]), 0, random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]))))
     eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]) * vect(1,0,1), Relativity.TO_WORLD)
     wait(0.25)
 
-rule "Remove respawn buffered marker on respawn and trigger custom respawn":
+rule "Remove respawn buffered marker on respawn and trigger custom respawn logic":
     @Event eachPlayer
     @Condition eventPlayer.hasSpawned()
     @Condition eventPlayer.isAlive()
@@ -36,11 +37,11 @@ rule "Main Respawn handler":
     victim.respawnBlocked = false
     # Respawn if they pressed jump while blocked
     if victim.respawnBuffered:
-        customRespawn()
+        victim.respawn()
     # Wait until max time before respawn
     wait(maxRespawnTime - minRespawnTime, Wait.RESTART_WHEN_TRUE)
     if victim.isDead():
-        customRespawn()
+        victim.respawn()
 
 rule "If player attempts to respawn while blocked, mark them to respawn":
     @Event eachPlayer
@@ -49,7 +50,7 @@ rule "If player attempts to respawn while blocked, mark them to respawn":
     if eventPlayer.respawnBlocked:
         eventPlayer.respawnBuffered = true
         return
-    customRespawn()
+    eventPlayer.respawn()
 
 rule "Reset on Game Start (Waiting for Players)":
 	@Event global
