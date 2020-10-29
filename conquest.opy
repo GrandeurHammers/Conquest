@@ -158,6 +158,13 @@ rule "=====GAMEPLAY=====":
 
 #!include "businessLogic.opy"
 
+rule "Prevent assemble heroes from getting out of sync":
+    @Condition isAssemblingHeroes()
+    do:
+        setMatchTime(getMatchTime())
+        waitUntil(not isAssemblingHeroes(), 1)
+    while RULE_CONDITION
+
 rule "# Keep track of number of people from one team on one zone per rule":
 	@Event global
     @Disabled
