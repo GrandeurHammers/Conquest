@@ -66,7 +66,7 @@ rule "Provide feedback on valid elimination":
 
 def playElimSounds():
     @Name "SUB: Play sounds for earning elims with zone advantage"
-    switch len([control for control in zoneControl if control == attacker.getTeam()]):
+    switch len([control for control in zoneControl if control == eventPlayer.getTeam()]):
         case 3:
             wait(0.5)
             playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getPosition(), 200)
