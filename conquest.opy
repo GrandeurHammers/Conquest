@@ -42,6 +42,8 @@ globalvar numTeam2B
 globalvar numTeam2C
 # Where does each team spawn? Index 0 for Team 1, Index 1 for Team 2 (0 = Zone A, 1 = Zone B, 2 = Zone C)
 globalvar currTeamSpawns
+# Whether shifting spawns are enabled
+globalvar shiftSpawns
 # Is Power Play active?
 globalvar powerPlayActive
 # How much time is left in Power Play?
@@ -110,6 +112,8 @@ subroutine declareWinner
 #!define generatePlayerHUDSpacer() __script__('generatePlayerHUDSpacer.js')
 #!define generatePlayerHUD() __script__('generatePlayerHUD.js')
 #!define colorFlashControl(point) __script__('colorFlashControl.js')
+
+#!define getUnusedSpawn() 3 - currTeamSpawns[0] - currTeamSpawns[1]
 
 settings "settings.opy.json"
 

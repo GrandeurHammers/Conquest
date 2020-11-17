@@ -3,11 +3,11 @@
 
 rule "Game Settings":
 	@Event global
-    #How many points a team must score to win.
+    # How many points a team must score to win.
     # Default: 100
     #IMPORTANT: This does not automatically update the in-game scoreboard. In order for the scoreboard to display properly, the host must change "Settings > Modes > Score to Win" to match this value.
     scoreToWin = createWorkshopSetting(int<1:200>, "Game Settings", "Score To Win - should match \"Modes > TDM > Score to Win\" value", 100, 0)
-    #Will Overtime be triggered if regulation time runs out with both teams at the same score?
+    # Will Overtime be triggered if regulation time runs out with both teams at the same score?
     # Default: True
     overtimeEnabled = createWorkshopSetting(bool, "Game Settings", "Overtime Enabled", true, 1)
     # The minimum amount of time a player will remain dead, in seconds.
@@ -16,6 +16,9 @@ rule "Game Settings":
     # The maximum amount of time a player can remain dead, in seconds.
     # Default: 16
     maxRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Maximum Respawn Time", 16, 3)
+    # Do spawns shift as teams capture zones?
+    # Default: True
+    shiftSpawns = createWorkshopSetting(bool, "Game Settings", "Shifting Spawns", true, 3)
 
 rule "Capture Rate Customization":
     @Event global

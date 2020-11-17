@@ -1,6 +1,7 @@
 #!mainFile "conquest.opy"
 
 subroutine customRespawn
+subroutine shiftTeamSpawns
 
 def customRespawn():
     @Name "SUB: Custom Respawn Logic"
@@ -163,3 +164,19 @@ def declareWinner():
         # Allow adequate time to process end of game
         wait(0.5)
         declareTeamVictory(Team.2)
+
+def shiftTeamSpawns():
+    @Name "SUB: Shift where teams spawn if necessary"
+    # Don't shift spawns if shifting spawns are disabled
+    if not shiftSpawns:
+        return
+    # Team 1 spawn shifts under any of the following conditions:
+    # - Current Team 1 spawn controlled by Team 2 and the unused spawn is not controlled by Team 2
+    # - Current Team 1 spawn is Neutral and the unused spawn is controlled by Team 1
+    if (zoneControl[currTeamSpawns[0]] == Team.2 and zoneControl[getUnusedSpawn()] != Team.2) or (zoneControl[currTeamSpawns[0]] == null and zoneControl[getUnusedSpawn()] == Team.1):
+        currTeamSpawns[0] = getUnusedSpawn()
+    # Team 2 spawn shifts under any of the following conditions:
+    # - Current Team 2 spawn controlled by Team 1 and the unused spawn is not controlled by Team 1
+    # - Current Team 2 spawn is Neutral and the unused spawn is controlled by Team 2
+    if (zoneControl[currTeamSpawns[1]] == Team.1 and zoneControl[getUnusedSpawn()] != Team.1) or (zoneControl[currTeamSpawns[1]] == null and zoneControl[getUnusedSpawn()] == Team.2):
+        currTeamSpawns[1] = getUnusedSpawn()
