@@ -170,13 +170,20 @@ def shiftTeamSpawns():
     # Don't shift spawns if shifting spawns are disabled
     if not shiftSpawns:
         return
-    # Team 1 spawn shifts under any of the following conditions:
+    # Team spawns swap if the swap would result in a more favorable zone control spawn for both teams
+    if (zoneControl[currTeamSpawns[0]] == Team.2 and zoneControl[currTeamSpawns[1]] != Team.2) or (zoneControl[currTeamSpawns[0]] == null and zoneControl[currTeamSpawns[1]] == Team.1):
+        # These three actions swap the team spawns by moving Team 1 spawn to the open zone, moving Team 2 to the zone Team 1 just vacated, and moving Team 1 to the zone Team 2 just vacated.
+        currTeamSpawns[0] = getUnusedSpawn()
+        currTeamSpawns[1] = getUnusedSpawn()
+        currTeamSpawns[0] = getUnusedSpawn()
+    # Team 1 spawn shifts to the unused spawn under any of the following conditions:
     # - Current Team 1 spawn controlled by Team 2 and the unused spawn is not controlled by Team 2
     # - Current Team 1 spawn is Neutral and the unused spawn is controlled by Team 1
     if (zoneControl[currTeamSpawns[0]] == Team.2 and zoneControl[getUnusedSpawn()] != Team.2) or (zoneControl[currTeamSpawns[0]] == null and zoneControl[getUnusedSpawn()] == Team.1):
         currTeamSpawns[0] = getUnusedSpawn()
-    # Team 2 spawn shifts under any of the following conditions:
+    # Team 2 spawn shifts to the unused spawn under any of the following conditions:
     # - Current Team 2 spawn controlled by Team 1 and the unused spawn is not controlled by Team 1
     # - Current Team 2 spawn is Neutral and the unused spawn is controlled by Team 2
-    if (zoneControl[currTeamSpawns[1]] == Team.1 and zoneControl[getUnusedSpawn()] != Team.1) or (zoneControl[currTeamSpawns[1]] == null and zoneControl[getUnusedSpawn()] == Team.2):
+    # Note that we only want Team 1 or Team 2 spawns to shift at any one time, never both.
+    elif (zoneControl[currTeamSpawns[1]] == Team.1 and zoneControl[getUnusedSpawn()] != Team.1) or (zoneControl[currTeamSpawns[1]] == null and zoneControl[getUnusedSpawn()] == Team.2):
         currTeamSpawns[1] = getUnusedSpawn()
