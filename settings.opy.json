@@ -9,23 +9,23 @@
     "gamemodes": {
         "tdm": {
             "enabledMaps": [
-                "blizzWorld",
-                "blizzWorldWinter",
-                "dorado",
-                "iliosLighthouse",
-                "iliosRuins",
-                "iliosWell",
-                "kingsRow",
-                "kingsRowWinter",
+                // "blizzWorld",
+                // "blizzWorldWinter",
+                // "dorado",
+                // "iliosLighthouse",
+                // "iliosRuins",
+                // "iliosWell",
+                // "kingsRow",
+                // "kingsRowWinter",
                 "lijiangControlCenter",
                 "lijiangControlCenterLny",
                 "lijiangGarden",
                 "lijiangGardenLny",
                 "lijiangNightMarket",
                 "lijiangNightMarketLny",
-                "oasisCityCenter",
-                "oasisGardens",
-                "oasisUniversity"
+                // "oasisCityCenter",
+                // "oasisGardens",
+                // "oasisUniversity"
             ],
             "scoreToWin": 100
         },
