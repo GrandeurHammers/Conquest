@@ -114,6 +114,7 @@ subroutine declareWinner
 #!define colorFlashControl(point) __script__('macros/colorFlashControl.js')
 
 #!define getUnusedSpawn() 3 - currTeamSpawns[0] - currTeamSpawns[1]
+#!define isMapInitialized() len(zoneLocations) == 3 and len(zoneSizes) == 3
 
 settings "settings.opy.json"
 
@@ -158,7 +159,7 @@ rule "Player Cleanup":
 
 rule "Generate initial in-world zone visuals":
 	@Event global
-	@Condition len(zoneLocations) == 3 and len(zoneSizes) == 3
+	@Condition isMapInitialized()
     generateInitPointVisuals()
 
 rule "=====GAMEPLAY=====":

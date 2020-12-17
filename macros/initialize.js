@@ -5,6 +5,8 @@ const pointToLetter = ['A', 'B', 'C'];
 result += `
     #Set up all zones to have neither team controlling
     zoneControl = [null, null, null]
+    #Allow detection of unset zone spawn radii
+    zoneSpawnRadii = [-1, -1, -1]
     #Start Team 1 at Zone A and Team 2 at Zone C
     currTeamSpawns = [0,2]
     #Set up all zones to start on non-alt colors
