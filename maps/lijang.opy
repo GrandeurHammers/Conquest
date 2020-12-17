@@ -14,8 +14,8 @@ rule "Setup Zones: Lijang Tower":
             zoneLocations[1] = vect(0, 267.33, 280)
             zoneSizes[1] = 7
             zoneHeights[1] = 7
-            zoneSpawns[1] = vect(0,270,265)
-            zoneSpawnRadii[1] = 2
+            zoneSpawns[1] = vect(0,278,301)
+            zoneSpawnRadii[1] = 4
             # Lijang Tower: Control Center - Zone C
             zoneLocations[2] = vect(-48, 265, 329.15)
             zoneSizes[2] = 6
