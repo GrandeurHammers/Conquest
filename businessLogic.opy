@@ -8,7 +8,8 @@ def customRespawn():
     if eventPlayer.isDead():
         eventPlayer.respawn()
         eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 2)
-        wait()
+    # Wait so we can actually affect the player
+    wait()
     eventPlayer.teleport(nearestWalkablePosition(zoneSpawns[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]] + vect(random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]), 0, random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]))))
     eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]) * vect(1,0,1), Relativity.TO_WORLD)
     wait(0.25)
