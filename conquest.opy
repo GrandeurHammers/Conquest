@@ -100,18 +100,18 @@ subroutine playElimSounds
 subroutine declareWinner
 
 # Helper pregen macros (thanks Zez)
-#!define generatePointFlags() __script__('generateSetPointFlags.js')
-#!define generateInitPointVisuals() __script__('generateInitialPointVisuals.js')
-#!define generateChaserRules(point) __script__('generateChaserRules.js')
-#!define generateVisualUpdates(point) __script__('generateVisualUpdates.js')
-#!define initializeHelper() __script__('initialize.js')
-#!define stopAllProgress() __script__('stopAllProgress.js')
-#!define generateLockedText() __script__('generateLockedText.js')
-#!define triggerPointReset(destroyText) __script__('triggerPointReset.js')
-#!define toggleSkulls(create) __script__('toggleSkullIcons.js')
-#!define generatePlayerHUDSpacer() __script__('generatePlayerHUDSpacer.js')
-#!define generatePlayerHUD() __script__('generatePlayerHUD.js')
-#!define colorFlashControl(point) __script__('colorFlashControl.js')
+#!define generatePointFlags() __script__('macros/generateSetPointFlags.js')
+#!define generateInitPointVisuals() __script__('macros/generateInitialPointVisuals.js')
+#!define generateChaserRules(point) __script__('macros/generateChaserRules.js')
+#!define generateVisualUpdates(point) __script__('macros/generateVisualUpdates.js')
+#!define initializeHelper() __script__('macros/initialize.js')
+#!define stopAllProgress() __script__('macros/stopAllProgress.js')
+#!define generateLockedText() __script__('macros/generateLockedText.js')
+#!define triggerPointReset(destroyText) __script__('macros/triggerPointReset.js')
+#!define toggleSkulls(create) __script__('macros/toggleSkullIcons.js')
+#!define generatePlayerHUDSpacer() __script__('macros/generatePlayerHUDSpacer.js')
+#!define generatePlayerHUD() __script__('macros/generatePlayerHUD.js')
+#!define colorFlashControl(point) __script__('macros/colorFlashControl.js')
 
 #!define getUnusedSpawn() 3 - currTeamSpawns[0] - currTeamSpawns[1]
 
