@@ -21,6 +21,6 @@ rule "Spawn point failsafe: use zone position and radius if not set":
         zoneSpawns = zoneLocations
 
     # Set spawn radii to be the zone radii as a backup
-    if not len([r for r in zoneSpawns if r != -1]) == 3:
+    if not len([r for r in zoneSpawnRadii if r != -1]) == 3:
         printLog("[WARNING] Not all zone spawn radii have been set. Using zone radii.")
         zoneSpawnRadii = zoneSizes
