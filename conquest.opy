@@ -154,7 +154,7 @@ rule "Player Cleanup":
     # Cleanup the player-specific HUD
     destroyHudText(eventPlayer.msgTextID)
 
-#!include "maps.opy"
+#!include "maps/maps.opy"
 
 rule "Generate initial in-world zone visuals":
 	@Event global
