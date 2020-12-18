@@ -23,9 +23,9 @@
                 "lijiangGardenLny",
                 "lijiangNightMarket",
                 "lijiangNightMarketLny",
-                // "oasisCityCenter",
-                // "oasisGardens",
-                // "oasisUniversity"
+                "oasisCityCenter",
+                "oasisGardens",
+                "oasisUniversity"
             ],
             "scoreToWin": 100
         },
