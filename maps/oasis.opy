@@ -10,7 +10,7 @@ rule "Setup Zones: Oasis":
             zoneSpawns[0] = vect(98.43, 1, 318.33)
             zoneSpawnRadii[0] = 3
             # Oasis: City Center - Zone B
-            zoneLocations[1] = vect(136.89, 2, 240.92)
+            zoneLocations[1] = vect(143.5, 2.15, 247.5)
             zoneSizes[1] = 4.5
             zoneHeights[1] = 5
             zoneSpawns[1] = vect(168.7, 4, 272.74)
