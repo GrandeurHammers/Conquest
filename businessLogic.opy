@@ -3,6 +3,11 @@
 subroutine customRespawn
 subroutine shiftTeamSpawns
 
+playervar selectedSpawnLocation
+
+#!define currSpawn(player) currTeamSpawns[0 if player.getTeam() == Team.1 else 1]
+#!define randomSpotWithinSpawn() zoneSpawns[currSpawn(eventPlayer)] + sqrt(random.uniform(0,1)) * zoneSpawnRadii[currSpawn(eventPlayer)] * angleToDirection(random.uniform(0,360), 0)
+
 def customRespawn():
     @Name "SUB: Custom Respawn Logic"
     if eventPlayer.isDead():
@@ -10,8 +15,9 @@ def customRespawn():
         eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 2)
     # Wait so we can actually affect the player
     wait()
-    eventPlayer.teleport(nearestWalkablePosition(zoneSpawns[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]] + vect(random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]), 0, random.uniform(0,zoneSpawnRadii[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]))))
-    eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currTeamSpawns[0 if eventPlayer.getTeam() == Team.1 else 1]]) * vect(1,0,1), Relativity.TO_WORLD)
+    eventPlayer.selectedSpawnLocation = randomSpotWithinSpawn()
+    eventPlayer.teleport(raycast(eventPlayer.selectedSpawnLocation + vect(0,0.5*zoneSpawnRadii[currSpawn(eventPlayer)],0), eventPlayer.selectedSpawnLocation, null, null, false).getHitPosition())
+    eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currSpawn(eventPlayer)]) * vect(1,0,1), Relativity.TO_WORLD)
     wait(0.25)
 
 rule "Remove respawn buffered marker on respawn and trigger custom respawn logic":
