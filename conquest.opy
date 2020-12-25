@@ -135,6 +135,8 @@ rule "Global Initialization - includes center zone HUD elements":
     # Mostly for debugging purposes
     if not createWorkshopSetting(bool, "Debug", "Inspector Enabled", false):
         disableInspector()
+    # Log which map is being played
+    printLog("Current Map: {0}".format(getCurrentMap()))
     # We use our own custom gamemode completion
     disableGamemodeCompletion()
     initializeHelper()
