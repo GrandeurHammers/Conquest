@@ -26,22 +26,22 @@ rule "Setup Zones: Lijang Tower":
         case Map.LIJIANG_GARDEN:
         case Map.LIJIANG_GARDEN_LNY:
             # Lijang Tower: Garden - Zone A
-            zoneLocations[0] = vect(43, 95, 150)
+            zoneLocations[0] = vect(31.69, 94, 170)
             zoneSizes[0] = 5
             zoneHeights[0] = 5
-            zoneSpawns[0] = vect(65, 94, 150)
+            zoneSpawns[0] = vect(43, 95, 150)
             zoneSpawnRadii[0] = 5
             # Lijang Tower: Garden - Zone B
-            zoneLocations[1] = vect(0, 94, 130)
+            zoneLocations[1] = vect(0, 94.15, 135.95)
             zoneSizes[1] = 7
             zoneHeights[1] = 7
-            zoneSpawns[1] = vect(0, 96, 116)
+            zoneSpawns[1] = vect(0, 96, 109)
             zoneSpawnRadii[1] = 5
             # Lijang Tower: Garden - Zone C
-            zoneLocations[2] = vect(-43, 95, 150)
+            zoneLocations[2] = vect(-31.69, 94, 170)
             zoneSizes[2] = 5
             zoneHeights[2] = 5
-            zoneSpawns[2] = vect(-65, 94, 150)
+            zoneSpawns[2] = vect(-43, 95, 150)
             zoneSpawnRadii[2] = 5
             return
         case Map.LIJIANG_NIGHT_MARKET:
