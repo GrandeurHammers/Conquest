@@ -64,3 +64,17 @@ rule "DEBUG: Trigger Power Play after holding Interact for 3 seconds (crouch for
 		zoneControl[0] = eventPlayer.getTeam()
 		zoneControl[1] = eventPlayer.getTeam()
 		zoneControl[2] = eventPlayer.getTeam()
+
+rule "DEBUG: On Interact, place a marker down in similar manner to spawning":
+	@Event eachPlayer
+	@Condition createWorkshopSetting(bool, "Debug", "Simulate Spawn", false, 8)
+	@Condition eventPlayer.isHoldingButton(Button.INTERACT)
+	eventPlayer.selectedSpawnLocation = randomSpotWithinSpawn()
+	createEffect(getAllPlayers(), Effect.SPHERE, Color.WHITE, raycast(eventPlayer.selectedSpawnLocation + vect(0,0.5*zoneSpawnRadii[currSpawn(eventPlayer)],0), eventPlayer.selectedSpawnLocation, null, null, false).getHitPosition(), 0.1, EffectReeval.VISIBILITY)
+	wait(0.5)
+	destroyEffect(getLastCreatedEntity())
+
+rule "DEBUG: Prevent time from running out":
+	@Condition createWorkshopSetting(bool, "Debug", "Stop Match Time", false, 9)
+	@Condition isGameInProgress()
+	pauseMatchTime()
