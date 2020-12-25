@@ -10,7 +10,7 @@ rule "DEBUG: Show CPU":
 rule "DEBUG: Show Player Position":
 	@Event eachPlayer
 	@Condition createWorkshopSetting(bool, "Debug", "Show Player Position", false, 2)
-	hudHeader(eventPlayer, "{0}".format(eventPlayer.getPosition()), HudPosition.LEFT, -0.5, Color.YELLOW, HudReeval.STRING, SpecVisibility.NEVER)
+	hudText(eventPlayer, eventPlayer.getPosition(), eventPlayer.getVerticalFacingAngle(), eventPlayer.getHorizontalFacingAngle(), HudPosition.LEFT, -0.5, Color.YELLOW, Color.WHITE, Color.AQUA, HudReeval.STRING, SpecVisibility.NEVER)
 
 rule "DEBUG: Shorten assemble heroes":
 	@Event global
