@@ -4,17 +4,23 @@ rule "Setup Zones: Ilios":
     switch getCurrentMap():
         case Map.ILIOS_LIGHTHOUSE:
             # Ilios Lighthouse - Zone A
-            zoneLocations[0] = vect(290.2, -25.48, -88.77)
+            zoneLocations[0] = vect(300.34, -24.64, -66.94)
             zoneSizes[0] = 5
             zoneHeights[0] = 5
+            zoneSpawns[0] = vect(290.2, -25.48, -88.77)
+            zoneSpawnRadii[0] = 5
             # Ilios Lighthouse- Zone B
             zoneLocations[1] = vect(358.15, -25.64, -51.54)
             zoneSizes[1] = 5
             zoneHeights[1] = 5
+            zoneSpawns[1] = vect(367.83, -28.64, -55.95)
+            zoneSpawnRadii[1] = 3.5
             # Ilios Lighthouse- Zone C
-            zoneLocations[2] = vect(336.43, -25.48, 22.89)
+            zoneLocations[2] = vect(328, -24.64, 0.38)
             zoneSizes[2] = 5
             zoneHeights[2] = 5
+            zoneSpawns[2] = vect(336.43, -25.48, 22.89)
+            zoneSpawnRadii[2] = 5
             return
         case Map.ILIOS_RUINS:
             # Ilios Ruins - Zone A
