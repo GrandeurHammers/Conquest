@@ -20,7 +20,7 @@ for (var i = 0; i < numPoints; i++) {
 }
 for (var i = 0;  i < numPoints; i++) {
     // Generate Zone Progress Headers
-    var visTo = `p for p in getLivingPlayers(Team.ALL) if (abs(zone${pointToLetter[i]}Progress) > 0 and %CONTEST%) and not powerPlayActive and distance(vect(p.getPosition().x, zoneLocations[${i}].y, p.getPosition().z), zoneLocations[${i}]) < zoneSizes[${i}] and p.getPosition().y - zoneLocations[${i}].y >= -0.5 and p.getPosition().y - zoneLocations[${i}].y < zoneHeights[${i}]`;
+    var visTo = `p for p in getLivingPlayers(Team.ALL) if (abs(zone${pointToLetter[i]}Progress) > 0 and %CONTEST%) and not powerPlayActive and isWithinZoneBounds(p, ${i})`;
     var visToProgress = visTo.replace('%CONTEST%', `not (numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0)`);
     var visToContested = visTo.replace('%CONTEST%', `(numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0)`);
     // Generate Progress Bar
