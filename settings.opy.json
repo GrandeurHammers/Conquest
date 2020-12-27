@@ -9,8 +9,8 @@
     "gamemodes": {
         "tdm": {
             "enabledMaps": [
-                // "blizzWorld",
-                // "blizzWorldWinter",
+                "blizzWorld",
+                "blizzWorldWinter",
                 "dorado",
                 "iliosLighthouse",
                 "iliosRuins",
