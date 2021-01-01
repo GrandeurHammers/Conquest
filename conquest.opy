@@ -17,8 +17,6 @@ globalvar zoneSizes
 globalvar zoneHeights
 # Where are the spawns corresponding to each zone?
 globalvar zoneSpawns
-# What is the radius of each spawn area?
-globalvar zoneSpawnRadii
 
 # Capture rate = ax + b (x = num players)
 # Base Capture Rate = b

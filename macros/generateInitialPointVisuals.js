@@ -20,8 +20,6 @@ var conditions = [
 var pointToLetter = ['A', 'B', 'C'];
 for (var i = 0; i < pointToLetter.length; i++) {
     conditions.forEach(function (condition) {
-        result += `\n\t# Zone ${pointToLetter[i]} Spawn Visual`;
-        result += `\n\tcreateEffect(getAllPlayers() if getUnusedSpawn() != ${i} else null, Effect.SPHERE, Color.TEAM_1 if currTeamSpawns[0] == ${i} else Color.TEAM_2, zoneSpawns[${i}], zoneSpawnRadii[${i}], EffectReeval.VISIBILITY_AND_COLOR)`;
         result += `\n\t# Zone ${pointToLetter[i]} Visuals - Ring on ground`;
         result += `\n\tcreateEffect([p for p in getAllPlayers() if zoneControl[${i}] == ${condition.control}], Effect.RING, Color.${condition.color}, zoneLocations[${i}], zoneSizes[${i}], EffectReeval.VISIBILITY)
     # Zone ${pointToLetter[i]} Visuals - Locked zone indicator (power play)

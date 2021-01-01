@@ -6,7 +6,7 @@ subroutine shiftTeamSpawns
 playervar selectedSpawnLocation
 
 #!define currSpawn(player) currTeamSpawns[0 if player.getTeam() == Team.1 else 1]
-#!define randomSpotWithinSpawn() zoneSpawns[currSpawn(eventPlayer)] + sqrt(random.uniform(0,1)) * zoneSpawnRadii[currSpawn(eventPlayer)] * angleToDirection(random.uniform(0,360), 0)
+#!define randomSpotWithinSpawn() random.choice(zoneSpawns[currSpawn(eventPlayer)])
 
 def customRespawn():
     @Name "SUB: Custom Respawn Logic"
