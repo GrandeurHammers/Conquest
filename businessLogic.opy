@@ -12,7 +12,6 @@ def customRespawn():
     @Name "SUB: Custom Respawn Logic"
     if eventPlayer.isDead():
         eventPlayer.respawn()
-        eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 2)
     # Wait so we can actually affect the player
     wait()
     eventPlayer.selectedSpawnLocation = randomSpotWithinSpawn()
