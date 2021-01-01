@@ -65,14 +65,17 @@ rule "DEBUG: Trigger Power Play after holding Interact for 3 seconds (crouch for
 		zoneControl[1] = eventPlayer.getTeam()
 		zoneControl[2] = eventPlayer.getTeam()
 
-rule "DEBUG: On Interact, place a marker down in similar manner to spawning":
+globalvar i
+globalvar j
+
+rule "DEBUG: Show spawn points":
 	@Event eachPlayer
-	@Condition createWorkshopSetting(bool, "Debug", "Simulate Spawn", false, 8)
-	@Condition eventPlayer.isHoldingButton(Button.INTERACT)
-	eventPlayer.selectedSpawnLocation = randomSpotWithinSpawn()
-	createEffect(getAllPlayers(), Effect.SPHERE, Color.WHITE, raycast(eventPlayer.selectedSpawnLocation + vect(0,0.5*zoneSpawnRadii[currSpawn(eventPlayer)],0), eventPlayer.selectedSpawnLocation, null, null, false).getHitPosition(), 0.1, EffectReeval.VISIBILITY)
-	wait(0.5)
-	destroyEffect(getLastCreatedEntity())
+	@Condition createWorkshopSetting(bool, "Debug", "Show Spawn Points", false, 8)
+
+	for i in range(0,3):
+		for j in range(0,len(zoneSpawns[i])):
+			createEffect(getAllPlayers(), Effect.SPHERE, Color.WHITE if getUnusedSpawn() == evalOnce(i) else Color.TEAM_1 if currTeamSpawns[0] == evalOnce(i) else Color.TEAM_2, zoneSpawns[evalOnce(i)][evalOnce(j)], 0.5, EffectReeval.VISIBILITY_AND_COLOR)
+			createInWorldText(getAllPlayers(), "{0} {1}".format(evalOnce(i), evalOnce(j)), zoneSpawns[evalOnce(i)][evalOnce(j)], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.WHITE, SpecVisibility.DEFAULT)
 
 rule "DEBUG: Prevent time from running out":
 	@Condition createWorkshopSetting(bool, "Debug", "Stop Match Time", false, 9)
