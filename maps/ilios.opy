@@ -7,20 +7,17 @@ rule "Setup Zones: Ilios":
             zoneLocations[0] = vect(300.34, -24.64, -66.94)
             zoneSizes[0] = 5
             zoneHeights[0] = 5
-            zoneSpawns[0] = vect(290.2, -25.48, -88.77)
-            zoneSpawnRadii[0] = 5
+            zoneSpawns[0] = [vect(298.35, -25.47, -92.08), vect(295.09, -25.47, -90.756), vect(291.83, -25.47, -89.432), vect(288.57, -25.47, -88.108), vect(285.31, -25.47, -86.784), vect(282.05, -25.47, -85.46)]
             # Ilios Lighthouse- Zone B
             zoneLocations[1] = vect(358.15, -25.64, -51.54)
             zoneSizes[1] = 5
             zoneHeights[1] = 5
-            zoneSpawns[1] = vect(367.83, -28.64, -55.95)
-            zoneSpawnRadii[1] = 3.5
+            zoneSpawns[1] = [vect(360.85, -27.64, -18.02), vect(358.66, -27.64, -17.115), vect(356.47, -27.64, -16.21), vect(336.41, -27.64, -77.1), vect(334.229, -27.64, -76.174), vect(332.048, -27.64, -75.248)]
             # Ilios Lighthouse- Zone C
             zoneLocations[2] = vect(328, -24.64, 0.38)
             zoneSizes[2] = 5
             zoneHeights[2] = 5
-            zoneSpawns[2] = vect(336.43, -25.48, 22.89)
-            zoneSpawnRadii[2] = 5
+            zoneSpawns[2] = [vect(344.614, -25.47, 19.665), vect(341.34, -25.47, 20.955), vect(338.067, -25.47, 22.245), vect(334.793, -25.47, 23.535), vect(331.520, -25.47, 24.824), vect(328.246, -25.47, 26.115)]
             return
         case Map.ILIOS_RUINS:
             # Ilios Ruins - Zone A
