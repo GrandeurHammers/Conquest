@@ -75,7 +75,7 @@ rule "DEBUG: Show spawn points":
 	for i in range(0,3):
 		for j in range(0,len(zoneSpawns[i])):
 			createEffect(getAllPlayers(), Effect.SPHERE, Color.WHITE if getUnusedSpawn() == evalOnce(i) else Color.TEAM_1 if currTeamSpawns[0] == evalOnce(i) else Color.TEAM_2, zoneSpawns[evalOnce(i)][evalOnce(j)], 0.5, EffectReeval.VISIBILITY_AND_COLOR)
-			createInWorldText(getAllPlayers(), "{0} {1}".format(evalOnce(i), evalOnce(j)), zoneSpawns[evalOnce(i)][evalOnce(j)], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.WHITE, SpecVisibility.DEFAULT)
+			createInWorldText(getAllPlayers(), "{0} {1}".format(evalOnce(i), evalOnce(j)), zoneSpawns[evalOnce(i)][evalOnce(j)], 1, Clip.NONE, WorldTextReeval.VISIBILITY, Color.WHITE, SpecVisibility.DEFAULT)
 
 rule "DEBUG: Prevent time from running out":
 	@Condition createWorkshopSetting(bool, "Debug", "Stop Match Time", false, 9)
