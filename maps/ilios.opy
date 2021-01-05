@@ -43,19 +43,16 @@ rule "Setup Zones: Ilios":
             zoneSizes[0] = 5
             zoneHeights[0] = 5
             zoneLocations[0] = vect(-258, -5, 12.73)
-            zoneSpawns[0] = vect(-280.88, -3.3, 38.45)
-            zoneSpawnRadii[0] = 5
+            zoneSpawns[0] = [vect(-275.88, -3.3, 38.45), vect(-278.38, -3.3, 42.780127018922194), vect(-283.38, -3.3, 42.780127018922194), vect(-285.88, -3.3, 38.45), vect(-283.38, -3.3, 34.11987298107781), vect(-278.38, -3.3, 34.119872981077805)]
             # Ilios Well - Zone B
             zoneLocations[1] = vect(-196.3, 1, -4.28)
             zoneSizes[1] = 5
             zoneHeights[1] = 5
-            zoneSpawns[1] = vect(-219.01, 0, -27.06)
-            zoneSpawnRadii[1] = 4
+            zoneSpawns[1] = [vect(-187.0, 5.01, -27.52), vect(-189.275, 5.01, -25.205), vect(-191.55, 5.01, -22.89), vect(-219.45, 5.01, 5.18), vect(-217.31, 5.01, 2.74), vect(-215.17, 5.01, 0.299)]
             # Ilios Well - Zone C
             zoneLocations[2] = vect(-154.25, -3.41, -88.82)
             zoneSizes[2] = 5
             zoneHeights[2] = 5
             zoneLocations[2] = vect(-179.37, -5, -66.05)
-            zoneSpawns[2] = vect(-154.25, -3.41, -88.82)
-            zoneSpawnRadii[2] = 5
+            zoneSpawns[2] = [vect(-149.25, -3.3, -88.82), vect(-151.75, -3.3, -84.4898729810778), vect(-156.75, -3.3, -84.4898729810778), vect(-159.25, -3.3, -88.82), vect(-156.75, -3.3, -93.15012701892219), vect(-151.75, -3.3, -93.15012701892219)]
             return
