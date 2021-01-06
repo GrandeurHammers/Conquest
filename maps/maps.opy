@@ -19,3 +19,8 @@ rule "Spawn point failsafe: use zone position and radius if not set":
     if not len([s for s in zoneSpawns if s != 0]) == 3:
         printLog("[WARNING] Not all zone spawns have been set. Using zone locations.")
         zoneSpawns = zoneLocations
+
+    # Ensure that singular spawn points are converted to arrays
+    for i in range(0, len(zoneSpawns)):
+        if len(zoneSpawns[i]) == 0:
+            zoneSpawns[i] = [zoneSpawns[i]]
