@@ -65,8 +65,6 @@ rule "DEBUG: Trigger Power Play after holding Interact for 3 seconds (crouch for
 		zoneControl[1] = eventPlayer.getTeam()
 		zoneControl[2] = eventPlayer.getTeam()
 
-globalvar i
-globalvar j
 
 rule "DEBUG: Show spawn points":
 	@Event eachPlayer

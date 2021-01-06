@@ -79,6 +79,9 @@ globalvar altColorControl
 # Array of booleans that determine whether a zone should flash alt colors
 globalvar altColorLoop
 
+globalvar i
+globalvar j
+
 #Player variables
 # Whether a respawn input can be buffered
 playervar respawnBlocked
