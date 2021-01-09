@@ -12,7 +12,7 @@ rule "Game Settings":
     overtimeEnabled = createWorkshopSetting(bool, "Game Settings", "Overtime Enabled", true, 1)
     # The minimum amount of time a player will remain dead, in seconds.
     # Default: 3
-    minRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Minimum Respawn Time", 3, 2)
+    minRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Minimum Respawn Time", 5, 2)
     # The maximum amount of time a player can remain dead, in seconds.
     # Default: 12
     maxRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Maximum Respawn Time", 12, 3)
