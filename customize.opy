@@ -11,11 +11,11 @@ rule "Game Settings":
     # Default: True
     overtimeEnabled = createWorkshopSetting(bool, "Game Settings", "Overtime Enabled", true, 1)
     # The minimum amount of time a player will remain dead, in seconds.
-    # Default: 8
-    minRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Minimum Respawn Time", 8, 2)
+    # Default: 3
+    minRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Minimum Respawn Time", 3, 2)
     # The maximum amount of time a player can remain dead, in seconds.
-    # Default: 16
-    maxRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Maximum Respawn Time", 16, 3)
+    # Default: 12
+    maxRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Maximum Respawn Time", 12, 3)
     # Do spawns shift as teams capture zones?
     # Default: True
     shiftSpawns = createWorkshopSetting(bool, "Game Settings", "Shifting Spawns", true, 3)

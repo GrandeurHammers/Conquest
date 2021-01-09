@@ -31,22 +31,22 @@ rule "Remove respawn buffered marker on respawn and trigger custom respawn logic
 
 rule "Main Respawn handler":
     @Event playerDied
-    # Prevent manual respawn for 5 seconds
+    # Block respawn until minimum respawn time
     victim.respawnBlocked = true
     # If currently power play, force respawn buffer
     if powerPlayActive:
         victim.respawnBuffered = true
-    # Track time until respawn
-    victim.timeToRespawn = minRespawnTime
+    # Track time until respawn. Player will match lowest respawn timer on their team while still being above minRespawnTime, but if no other players are dead, they will take maxRespawnTime to respawn.
+    victim.timeToRespawn = max(sorted([p.timeToRespawn for p in getPlayers(victim.getTeam()).exclude(victim) if p.hasSpawned() and p.isDead()])[0] if any([p.isDead() and p.hasSpawned() for p in getPlayers(victim.getTeam()).exclude(victim)]) else maxRespawnTime, minRespawnTime)
     chase(victim.timeToRespawn, 0, rate=1, ChaseReeval.NONE)
-    wait(minRespawnTime, Wait.RESTART_WHEN_TRUE)
+    wait(victim.timeToRespawn, Wait.RESTART_WHEN_TRUE)
     # Allow manual respawn
     victim.respawnBlocked = false
     # Respawn if they pressed jump while blocked
     if victim.respawnBuffered:
         victim.respawn()
     # Wait until max time before respawn
-    wait(maxRespawnTime - minRespawnTime, Wait.RESTART_WHEN_TRUE)
+    waitUntil(victim.isAlive() or victim.isHoldingButton(Button.JUMP), 10)
     if victim.isDead():
         victim.respawn()
 
