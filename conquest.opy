@@ -17,6 +17,9 @@ globalvar zoneSizes
 globalvar zoneHeights
 # Where are the spawns corresponding to each zone?
 globalvar zoneSpawns
+# Remaining ticket spots for each area
+globalvar team1SpawnTix
+globalvar team2SpawnTix
 
 # Capture rate = ax + b (x = num players)
 # Base Capture Rate = b
