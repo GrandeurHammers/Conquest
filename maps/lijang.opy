@@ -41,21 +41,18 @@ rule "Setup Zones: Lijang Tower":
         case Map.LIJIANG_NIGHT_MARKET:
         case Map.LIJIANG_NIGHT_MARKET_LNY:
             # Lijang Tower: Night Market - Zone A
-            zoneLocations[0] = vect(62, 2, -29)
+            zoneLocations[0] = vect(36.5, -0.14, -28)
             zoneSizes[0] = 5
             zoneHeights[0] = 5
-            zoneSpawns[0] = vect(78.5, 3.5, -32)
-            zoneSpawnRadii[0] = 5
+            zoneSpawns[0] = [vect(77.0, 3.5, -34.57), vect(77.0, 3.5, -31.148), vect(77.0, 3.5, -27.726), vect(77.0, 3.5, -24.304), vect(77.0, 3.5, -20.882), vect(77.0, 3.5, -17.46)]
             # Lijang Tower: Night Market - Zone B
             zoneLocations[1] = vect(1, -1, -61)
             zoneSizes[1] = 7
             zoneHeights[1] = 7
-            zoneSpawns[1] = vect(0, -1, -74)
-            zoneSpawnRadii[1] = 2
+            zoneSpawns[1] = [vect(7.0, -2, -81.42), vect(4.6, -2, -81.42), vect(2.2, -2, -81.42), vect(-0.2, -2, -81.42), vect(-2.6, -2, -81.42), vect(-5.0, -2, -81.42)]
             # Lijang Tower: Night Market - Zone C
-            zoneLocations[2] = vect(-60, 2, -29)
+            zoneLocations[2] = vect(-34.5, -0.14, -28)
             zoneSizes[2] = 5
             zoneHeights[2] = 5
-            zoneSpawns[2] = vect(-76, 3.5, -31.5)
-            zoneSpawnRadii[2] = 5
+            zoneSpawns[2] = [vect(-75, 3.5, -16.72), vect(-75, 3.5, -20.412), vect(-75, 3.5, -24.104), vect(-75, 3.5, -27.796), vect(-75, 3.5, -31.488), vect(-75, 3.5, -35.18)]
             return
