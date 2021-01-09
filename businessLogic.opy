@@ -25,7 +25,7 @@ def customRespawn():
     else:
         team2SpawnTix.remove(eventPlayer.selectedSpawnTix)
     # Place the player facing the zone for their spawn
-    eventPlayer.teleport(raycast(eventPlayer.selectedSpawnLocation + vect(0,0.5*zoneSpawnRadii[currSpawn(eventPlayer)],0), eventPlayer.selectedSpawnLocation, null, null, false).getHitPosition())
+    eventPlayer.teleport(eventPlayer.selectedSpawnLocation)
     eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currSpawn(eventPlayer)]) * vect(1,0,1), Relativity.TO_WORLD)
     wait(0.25)
 
