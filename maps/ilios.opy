@@ -30,7 +30,6 @@ rule "Setup Zones: Ilios":
             zoneSizes[1] = 5
             zoneHeights[1] = 3
             zoneSpawns[1] = [vect(46.33, 60.37, -140.9), vect(46.33, 60.37, -143.78), vect(46.33, 60.37, -146.6), vect(10.67, 60.37, -140.9), vect(10.67, 60.37, -143.78), vect(10.67, 60.37, -146.6)]
-            zoneSpawnRadii[1] = 4
             # Ilios Ruins - Zone C
             zoneLocations[2] = vect(61.8, 60.37, -174.63)
             zoneSizes[2] = 5
