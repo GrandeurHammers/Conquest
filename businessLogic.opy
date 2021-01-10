@@ -14,6 +14,9 @@ def customRespawn():
     @Name "SUB: Custom Respawn Logic"
     if eventPlayer.isDead():
         eventPlayer.respawn()
+    # If we're using random spawns (aka built-in spawn system), stop here.
+    if spawnBehavior == RespawnLocations.RANDOM:
+        return
     # Wait so we can actually affect the player
     wait()
     # Select a spot to respawn at
@@ -58,8 +61,13 @@ rule "Main Respawn handler":
     # If currently power play, force respawn buffer
     if powerPlayActive:
         victim.respawnBuffered = true
-    # Track time until respawn. Player will match lowest respawn timer on their team while still being above minRespawnTime, but if no other players are dead, they will take maxRespawnTime to respawn.
-    victim.timeToRespawn = max(sorted([p.timeToRespawn for p in getPlayers(victim.getTeam()).exclude(victim) if p.hasSpawned() and p.isDead()])[0] if any([p.isDead() and p.hasSpawned() for p in getPlayers(victim.getTeam()).exclude(victim)]) else maxRespawnTime, minRespawnTime)
+    if spawnTimings == RespawnTimings.WAVES:
+        # Track time until respawn. Player will match lowest respawn timer on their team while still being above minRespawnTime, but if no other players are dead, they will take maxRespawnTime to respawn.
+        victim.timeToRespawn = max(sorted([p.timeToRespawn for p in getPlayers(victim.getTeam()).exclude(victim) if p.hasSpawned() and p.isDead()])[0] if any([p.isDead() and p.hasSpawned() for p in getPlayers(victim.getTeam()).exclude(victim)]) else maxRespawnTime, minRespawnTime)
+    else:
+        # Set time until first possible respawn to minRespawnTime
+        victim.timeToRespawn = minRespawnTime
+    # Begin respawn timer and wait until the timer is done
     chase(victim.timeToRespawn, 0, rate=1, ChaseReeval.NONE)
     wait(victim.timeToRespawn, Wait.RESTART_WHEN_TRUE)
     # Allow manual respawn
@@ -196,7 +204,7 @@ def declareWinner():
 def shiftTeamSpawns():
     @Name "SUB: Shift where teams spawn if necessary"
     # Don't shift spawns if shifting spawns are disabled
-    if not shiftSpawns:
+    if spawnBehavior != RespawnLocations.DYNAMIC:
         return
     # Team spawns swap if the swap would result in a more favorable zone control spawn for both teams
     if (zoneControl[currTeamSpawns[0]] == Team.2 and zoneControl[currTeamSpawns[1]] != Team.2) or (zoneControl[currTeamSpawns[0]] == null and zoneControl[currTeamSpawns[1]] == Team.1):

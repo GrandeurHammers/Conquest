@@ -17,8 +17,9 @@ rule "Game Settings":
     # Default: 12
     maxRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Maximum Respawn Time", 12, 3)
     # Do spawns shift as teams capture zones?
-    # Default: True
-    shiftSpawns = createWorkshopSetting(bool, "Game Settings", "Shifting Spawns", true, 3)
+    # Default: Dynamic
+    spawnBehavior = createWorkshopSetting(enum["Random", "Static", "Dynamic"], "Game Settings", "Respawn Locations", RespawnLocations.DYNAMIC, 4)
+    spawnTimings = createWorkshopSetting(enum["Static", "Waves"], "Game Settings", "Respawn Timings", RespawnTimings.WAVES, 5)
 
 rule "Capture Rate Customization":
     @Event global
