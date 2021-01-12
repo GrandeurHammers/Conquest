@@ -28,7 +28,10 @@ rule "DEBUG: Summon Dummy Bot on Player upon Melee + Interact":
 	@Event eachPlayer
 	@Disabled
 	@Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.MELEE)
-	createDummy(Hero.ASHE, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+	if eventPlayer.isHoldingButton(Button.CROUCH):
+		createDummy(Hero.ASHE, getOppositeTeam(eventPlayer.getTeam()), -1, eventPlayer.getPosition(), vect(0,0,0))
+	else:
+		createDummy(Hero.ASHE, eventPlayer.getTeam(), -1, eventPlayer.getPosition(), vect(0,0,0))
 
 rule "DEBUG: Summon Dummy Bot from each team in a zone 3 seconds after start":
 	@Disabled
