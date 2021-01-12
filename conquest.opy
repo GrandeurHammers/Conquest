@@ -49,6 +49,11 @@ globalvar swapSides
 globalvar spawnBehavior
 # How should respawn timings behave? Options: STATIC, WAVES
 globalvar spawnTimings
+# Team 1's respawn wave timer
+globalvar team1RespawnTimer
+# Team 2's respawn wave timer
+globalvar team2RespawnTimer
+
 # Is Power Play active?
 globalvar powerPlayActive
 # How much time is left in Power Play?
