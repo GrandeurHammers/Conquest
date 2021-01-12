@@ -43,6 +43,8 @@ globalvar numTeam2B
 globalvar numTeam2C
 # Where does each team spawn? Index 0 for Team 1, Index 1 for Team 2 (0 = Zone A, 1 = Zone B, 2 = Zone C)
 globalvar currTeamSpawns
+# Whether teams should swap sides after the next power play
+globalvar swapSides
 # How should player respawning behave? Options: Random, Static, Dynamic
 globalvar spawnBehavior
 # How should respawn timings behave? Options: STATIC, WAVES
