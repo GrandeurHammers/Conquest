@@ -34,7 +34,7 @@ let pointToLetter = ["A", "B", "C"];
 for (let point = 0; point < 3; point++) {
     teams.forEach(function (team) {
         let varName = `${team.variable}${pointToLetter[point]}`;
-        let numPlayers = `[p for p in getPlayers(${team.constant}) if p.hasSpawned() and p.isAlive() and ${heroCondition} and distance(vect(p.getPosition().x, zoneLocations[${point}].y, p.getPosition().z), zoneLocations[${point}]) < zoneSizes[${point}] and p.getPosition().y - zoneLocations[${point}].y >= -0.5 and p.getPosition().y - zoneLocations[${point}].y < zoneHeights[${point}]]`;
+        let numPlayers = `[p for p in getPlayers(${team.constant}) if p.hasSpawned() and p.isAlive() and not p.hasStatusEffect(Status.PHASED_OUT) and ${heroCondition} and isWithinZoneBounds(p, ${point})]`;
         result += 
 `rule "Keep track of the number of ${team.name} players on Zone ${pointToLetter[point]}":
     @Event global

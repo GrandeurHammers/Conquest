@@ -77,5 +77,7 @@ rule "Zone ${pointToLetter[point]}: Listen for Capture":
         addToTeamScore(Team.2, 1)
         smallMessage(getPlayers(Team.1), "Zone ${pointToLetter[point]} Lost")
         smallMessage(getPlayers(Team.2), "Zone ${pointToLetter[point]} Captured")
-        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)`;
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.TEAM_2, zoneLocations[${point}], zoneSizes[${point}] * 2)
+    printLog("{0} has captured Zone {1}".format(zoneControl[${point}], "${pointToLetter[point]}"))
+    shiftTeamSpawns()`;
 result;

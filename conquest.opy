@@ -15,6 +15,11 @@ globalvar zoneLocations
 globalvar zoneSizes
 # How tall are the zones? (height)
 globalvar zoneHeights
+# Where are the spawns corresponding to each zone?
+globalvar zoneSpawns
+# Remaining ticket spots for each area
+globalvar team1SpawnTix
+globalvar team2SpawnTix
 
 # Capture rate = ax + b (x = num players)
 # Base Capture Rate = b
@@ -36,6 +41,19 @@ globalvar numTeam1C
 globalvar numTeam2A
 globalvar numTeam2B
 globalvar numTeam2C
+# Where does each team spawn? Index 0 for Team 1, Index 1 for Team 2 (0 = Zone A, 1 = Zone B, 2 = Zone C)
+globalvar currTeamSpawns
+# Whether teams should swap sides after the next power play
+globalvar swapSides
+# How should player respawning behave? Options: Random, Static, Dynamic
+globalvar spawnBehavior
+# How should respawn timings behave? Options: STATIC, WAVES
+globalvar spawnTimings
+# Team 1's respawn wave timer
+globalvar team1RespawnTimer
+# Team 2's respawn wave timer
+globalvar team2RespawnTimer
+
 # Is Power Play active?
 globalvar powerPlayActive
 # How much time is left in Power Play?
@@ -73,6 +91,9 @@ globalvar altColorControl
 # Array of booleans that determine whether a zone should flash alt colors
 globalvar altColorLoop
 
+globalvar i
+globalvar j
+
 #Player variables
 # Whether a respawn input can be buffered
 playervar respawnBlocked
@@ -92,20 +113,33 @@ subroutine playElimSounds
 subroutine declareWinner
 
 # Helper pregen macros (thanks Zez)
-#!define generatePointFlags() __script__('generateSetPointFlags.js')
-#!define generateInitPointVisuals() __script__('generateInitialPointVisuals.js')
-#!define generateChaserRules(point) __script__('generateChaserRules.js')
-#!define generateVisualUpdates(point) __script__('generateVisualUpdates.js')
-#!define initializeHelper() __script__('initialize.js')
-#!define stopAllProgress() __script__('stopAllProgress.js')
-#!define generateLockedText() __script__('generateLockedText.js')
-#!define triggerPointReset(destroyText) __script__('triggerPointReset.js')
-#!define toggleSkulls(create) __script__('toggleSkullIcons.js')
-#!define generatePlayerHUDSpacer() __script__('generatePlayerHUDSpacer.js')
-#!define generatePlayerHUD() __script__('generatePlayerHUD.js')
-#!define colorFlashControl(point) __script__('colorFlashControl.js')
+#!define generatePointFlags() __script__('macros/generateSetPointFlags.js')
+#!define generateInitPointVisuals() __script__('macros/generateInitialPointVisuals.js')
+#!define generateChaserRules(point) __script__('macros/generateChaserRules.js')
+#!define generateVisualUpdates(point) __script__('macros/generateVisualUpdates.js')
+#!define initializeHelper() __script__('macros/initialize.js')
+#!define stopAllProgress() __script__('macros/stopAllProgress.js')
+#!define generateLockedText() __script__('macros/generateLockedText.js')
+#!define triggerPointReset(destroyText) __script__('macros/triggerPointReset.js')
+#!define toggleSkulls(create) __script__('macros/toggleSkullIcons.js')
+#!define generatePlayerHUDSpacer() __script__('macros/generatePlayerHUDSpacer.js')
+#!define generatePlayerHUD() __script__('macros/generatePlayerHUD.js')
+#!define colorFlashControl(point) __script__('macros/colorFlashControl.js')
+
+#!define getUnusedSpawn() 3 - currTeamSpawns[0] - currTeamSpawns[1]
+#!define isMapInitialized() len(zoneLocations) == 3 and len(zoneSizes) == 3
+#!define isWithinZoneBounds(player, zoneIndex) distance(vect(player.getPosition().x, zoneLocations[zoneIndex].y, player.getPosition().z), zoneLocations[zoneIndex]) < zoneSizes[zoneIndex] and player.getPosition().y - zoneLocations[zoneIndex].y >= -1 and player.getPosition().y - zoneLocations[zoneIndex].y < zoneHeights[zoneIndex]
 
 settings "settings.opy.json"
+
+enum RespawnLocations:
+    RANDOM,
+    STATIC,
+    DYNAMIC
+
+enum RespawnTimings:
+    STATIC,
+    WAVES
 
 rule "=====CUSTOMIZATION=====":
 	@Event global
@@ -124,6 +158,8 @@ rule "Global Initialization - includes center zone HUD elements":
     # Mostly for debugging purposes
     if not createWorkshopSetting(bool, "Debug", "Inspector Enabled", false):
         disableInspector()
+    # Log which map is being played
+    printLog("Current Map: {0}".format(getCurrentMap()))
     # We use our own custom gamemode completion
     disableGamemodeCompletion()
     initializeHelper()
@@ -144,11 +180,11 @@ rule "Player Cleanup":
     # Cleanup the player-specific HUD
     destroyHudText(eventPlayer.msgTextID)
 
-#!include "maps.opy"
+#!include "maps/maps.opy"
 
 rule "Generate initial in-world zone visuals":
 	@Event global
-	@Condition len(zoneLocations) == 3 and len(zoneSizes) == 3
+	@Condition isMapInitialized()
     generateInitPointVisuals()
 
 rule "=====GAMEPLAY=====":

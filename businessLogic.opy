@@ -1,30 +1,100 @@
 #!mainFile "conquest.opy"
 
-rule "Remove respawn buffered marker on respawn (necessary because hero swap respawn is faster)":
+subroutine customRespawn
+subroutine shiftTeamSpawns
+subroutine refillTeam1SpawnTix
+subroutine refillTeam2SpawnTix
+
+playervar selectedSpawnTix
+playervar selectedSpawnLocation
+
+#!define currSpawn(player) currTeamSpawns[0 if player.getTeam() == Team.1 else 1]
+
+def customRespawn():
+    @Name "SUB: Custom Respawn Logic"
+    if eventPlayer.isDead():
+        eventPlayer.respawn()
+    # If we're using random spawns (aka built-in spawn system), stop here.
+    if spawnBehavior == RespawnLocations.RANDOM:
+        return
+    # Wait so we can actually affect the player
+    wait()
+    # Select a spot to respawn at
+    eventPlayer.selectedSpawnTix = random.choice(team1SpawnTix if eventPlayer.getTeam() == Team.1 else team2SpawnTix)
+    eventPlayer.selectedSpawnLocation = zoneSpawns[currSpawn(eventPlayer)][eventPlayer.selectedSpawnTix]
+    # Remove ticket from pool
+    if eventPlayer.getTeam() == Team.1:
+        team1SpawnTix.remove(eventPlayer.selectedSpawnTix)
+    else:
+        team2SpawnTix.remove(eventPlayer.selectedSpawnTix)
+    # Place the player facing the zone for their spawn
+    eventPlayer.teleport(eventPlayer.selectedSpawnLocation)
+    eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currSpawn(eventPlayer)]) * vect(1,0,1), Relativity.TO_WORLD)
+    wait(0.25)
+
+rule "If Team 1 has no more spawn tickets, refill them":
+    @Condition isMapInitialized()
+    @Condition len(team1SpawnTix) == 0
+
+    refillTeam1SpawnTix()
+
+rule "If Team 2 has no more spawn tickets, refill them":
+    @Condition isMapInitialized()
+    @Condition len(team2SpawnTix) == 0
+
+    refillTeam2SpawnTix()
+
+rule "Trigger Team 1 respawn wave":
+    @Condition spawnTimings == RespawnTimings.WAVES
+    @Condition getNumberOfDeadPlayers(Team.1) > 0
+
+    team1RespawnTimer = maxRespawnTime
+    chase(team1RespawnTimer, 0, rate=1, ChaseReeval.NONE)
+    wait(maxRespawnTime, Wait.IGNORE_CONDITION)
+    stopChasingVariable(team1RespawnTimer)
+
+rule "Trigger Team 2 respawn wave":
+    @Condition spawnTimings == RespawnTimings.WAVES
+    @Condition getNumberOfDeadPlayers(Team.2) > 0
+
+    team2RespawnTimer = maxRespawnTime
+    chase(team2RespawnTimer, 0, rate=1, ChaseReeval.NONE)
+    wait(maxRespawnTime, Wait.IGNORE_CONDITION)
+    stopChasingVariable(team2RespawnTimer)
+
+rule "Remove respawn buffered marker on respawn and trigger custom respawn logic":
     @Event eachPlayer
+    @Condition eventPlayer.hasSpawned()
     @Condition eventPlayer.isAlive()
     # Reset for next death
     eventPlayer.respawnBuffered = false
     eventPlayer.respawnBlocked = false
+    if not eventPlayer.isDummy():
+        customRespawn()
 
 rule "Main Respawn handler":
     @Event playerDied
-    # Prevent manual respawn for 5 seconds
+    # Block respawn until minimum respawn time
     victim.respawnBlocked = true
     # If currently power play, force respawn buffer
     if powerPlayActive:
         victim.respawnBuffered = true
-    # Track time until respawn
-    victim.timeToRespawn = minRespawnTime
+    if spawnTimings == RespawnTimings.WAVES:
+        # Track time until respawn. Player will match lowest respawn timer on their team while still being above minRespawnTime, but if no other players are dead, they will take maxRespawnTime to respawn.
+        victim.timeToRespawn = max(team1RespawnTimer if victim.getTeam() == Team.1 else team2RespawnTimer, minRespawnTime)
+    else:
+        # Set time until first possible respawn to minRespawnTime
+        victim.timeToRespawn = minRespawnTime
+    # Begin respawn timer and wait until the timer is done
     chase(victim.timeToRespawn, 0, rate=1, ChaseReeval.NONE)
-    wait(minRespawnTime, Wait.RESTART_WHEN_TRUE)
+    wait(victim.timeToRespawn, Wait.RESTART_WHEN_TRUE)
     # Allow manual respawn
     victim.respawnBlocked = false
     # Respawn if they pressed jump while blocked
     if victim.respawnBuffered:
         victim.respawn()
     # Wait until max time before respawn
-    wait(maxRespawnTime - minRespawnTime, Wait.RESTART_WHEN_TRUE)
+    waitUntil(victim.isAlive() or victim.isHoldingButton(Button.JUMP), 10)
     if victim.isDead():
         victim.respawn()
 
@@ -148,3 +218,50 @@ def declareWinner():
         # Allow adequate time to process end of game
         wait(0.5)
         declareTeamVictory(Team.2)
+
+def shiftTeamSpawns():
+    @Name "SUB: Shift where teams spawn if necessary"
+    # Don't shift spawns if shifting spawns are disabled
+    if spawnBehavior != RespawnLocations.DYNAMIC:
+        return
+    # Team spawns swap if the swap would result in a more favorable zone control spawn for both teams
+    if (zoneControl[currTeamSpawns[0]] == Team.2 and zoneControl[currTeamSpawns[1]] != Team.2) or (zoneControl[currTeamSpawns[0]] == null and zoneControl[currTeamSpawns[1]] == Team.1):
+        # These three actions swap the team spawns by moving Team 1 spawn to the open zone, moving Team 2 to the zone Team 1 just vacated, and moving Team 1 to the zone Team 2 just vacated.
+        currTeamSpawns[0] = getUnusedSpawn()
+        currTeamSpawns[1] = getUnusedSpawn()
+        currTeamSpawns[0] = getUnusedSpawn()
+        # Refill spawn tickets for teams (new zone spawns)
+        refillTeam1SpawnTix()
+        refillTeam2SpawnTix()
+        return
+    # Team 1 spawn shifts to the unused spawn under any of the following conditions:
+    # - Current Team 1 spawn controlled by Team 2 and the unused spawn is not controlled by Team 2
+    # - Current Team 1 spawn is Neutral and the unused spawn is controlled by Team 1
+    if (zoneControl[currTeamSpawns[0]] == Team.2 and zoneControl[getUnusedSpawn()] != Team.2) or (zoneControl[currTeamSpawns[0]] == null and zoneControl[getUnusedSpawn()] == Team.1):
+        currTeamSpawns[0] = getUnusedSpawn()
+        # Refill Team 1 spawn tickets due to new zone spawn
+        refillTeam1SpawnTix()
+    # Team 2 spawn shifts to the unused spawn under any of the following conditions:
+    # - Current Team 2 spawn controlled by Team 1 and the unused spawn is not controlled by Team 1
+    # - Current Team 2 spawn is Neutral and the unused spawn is controlled by Team 2
+    # Note that we only want Team 1 or Team 2 spawns to shift at any one time, never both.
+    elif (zoneControl[currTeamSpawns[1]] == Team.1 and zoneControl[getUnusedSpawn()] != Team.1) or (zoneControl[currTeamSpawns[1]] == null and zoneControl[getUnusedSpawn()] == Team.2):
+        currTeamSpawns[1] = getUnusedSpawn()
+        # Refill Team 2 spawn tickets due to new zone spawn
+        refillTeam2SpawnTix()
+
+def refillTeam1SpawnTix():
+    @Name "SUB: Refill Team 1 Spawn Tickets"
+
+    # Set to an empty array first, to avoid doubling up on initialization
+    team1SpawnTix = []
+    for i in range(0, len(zoneSpawns[currTeamSpawns[0]])):
+        team1SpawnTix.append(i)
+
+def refillTeam2SpawnTix():
+    @Name "SUB: Refill Tam 2 Spawn Tickets"
+
+    # Set to an empty array first, to avoid doubling up on initialization
+    team2SpawnTix = []
+    for i in range(0, len(zoneSpawns[currTeamSpawns[1]])):
+        team2SpawnTix.append(i)

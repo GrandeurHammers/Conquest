@@ -51,6 +51,13 @@ rule "At end of Power Play, reset points":
     powerPlaySoundTrigger = true
     wait(0.016, Wait.IGNORE_CONDITION)
     powerPlaySoundTrigger = false
+    # Use different sides from the previous Power Play
+    swapSides = not swapSides
+    # Reset spawns
+    if swapSides:
+        currTeamSpawns = [2,0]
+    else:
+        currTeamSpawns = [0,2]
 
 rule "HELPER: Play Power Play Sound at Player Position":
     @Event eachPlayer
