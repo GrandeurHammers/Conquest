@@ -16,9 +16,10 @@ rule "Game Settings":
     # The maximum amount of time a player can remain dead, in seconds.
     # Default: 12
     maxRespawnTime = createWorkshopSetting(float<1:30>, "Game Settings", "Maximum Respawn Time", 12, 3)
-    # Do spawns shift as teams capture zones?
+    # Are spawns random, set at A and C, or dynamic based on control status?
     # Default: Dynamic
     spawnBehavior = createWorkshopSetting(enum["Random", "Static", "Dynamic"], "Game Settings", "Respawn Locations", RespawnLocations.DYNAMIC, 4)
+    # Do respawn timings attempt to spawn players in waves, or are respawn timings static?
     spawnTimings = createWorkshopSetting(enum["Static", "Waves"], "Game Settings", "Respawn Timings", RespawnTimings.WAVES, 5)
 
 rule "Capture Rate Customization":
