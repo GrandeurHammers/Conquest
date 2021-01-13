@@ -7,15 +7,14 @@ result += `
     zoneControl = [null, null, null]
     #Start Team 1 at Zone A and Team 2 at Zone C
     currTeamSpawns = [0,2]
-    #Set up all zones to start on non-alt colors
-    altColorControl = [false, false, false]
-    #Set up all zones to not loop alt colors
-    altColorLoop = [false, false, false]
+    # Initialize all colors to white
+    zoneAMainColor = Color.WHITE
+    zoneAAltColor = Color.WHITE
+    zoneBMainColor = Color.WHITE
+    zoneBAltColor = Color.WHITE
+    zoneCMainColor = Color.WHITE
+    zoneCAltColor = Color.WHITE
     #Initialize HUD IDs for each point`;
-for (var i = 0; i < numPoints; i++) {
-    result += `
-    zone${pointToLetter[i]}HudText = [-1, -1, -1,"Capturing"]`;
-}
 for (var i = 0;  i < numPoints; i++) {
     // Generate Zone Progress Headers
     var visTo = `p for p in getLivingPlayers(Team.ALL) if (abs(zone${pointToLetter[i]}Progress) > 0 and %CONTEST%) and not powerPlayActive and isWithinZoneBounds(p, ${i})`;
@@ -29,7 +28,7 @@ for (var i = 0;  i < numPoints; i++) {
     // Add Capturing/Contested undertext
     result += `
     #Subtitle for progress bars
-    hudSubtext([${visTo.replace('%CONTEST%', 'true')}], "{0} - {1}%".format(zone${pointToLetter[i]}HudText[3], floor(abs(zone${pointToLetter[i]}Progress))), HudPosition.TOP, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    hudSubtext([${visTo.replace('%CONTEST%', 'true')}], "{0} - {1}%".format("Contested" if numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0 else "Capturing", floor(abs(zone${pointToLetter[i]}Progress))), HudPosition.TOP, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 }
 
 // Separator Lines

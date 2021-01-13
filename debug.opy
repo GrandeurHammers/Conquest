@@ -76,6 +76,6 @@ rule "DEBUG: Show spawn points":
 			createInWorldText(getAllPlayers(), "{0} {1}".format(evalOnce(i), evalOnce(j)), zoneSpawns[evalOnce(i)][evalOnce(j)], 1, Clip.NONE, WorldTextReeval.VISIBILITY, Color.WHITE, SpecVisibility.DEFAULT)
 
 rule "DEBUG: Prevent time from running out":
-	@Condition createWorkshopSetting(bool, "Debug", "Stop Match Time", false, 9)
+	@Condition createWorkshopSetting(bool, "Debug", "Stop Match Time", true, 9)
 	@Condition isGameInProgress()
 	pauseMatchTime()
