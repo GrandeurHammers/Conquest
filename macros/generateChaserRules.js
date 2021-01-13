@@ -1,8 +1,5 @@
 var pointToLetter = ['A', 'B', 'C'];
 var zoneProgress = `zone${pointToLetter[point]}Progress`;
-let disableColorFlash = `altColorLoop[${point}] = false
-    altColorControl[${point}] = false`;
-let enableColorFlash = `altColorLoop[${point}] = true`;
 var result = `
 rule "Zone ${pointToLetter[point]}: Fast Reset":
     @Condition not powerPlayActive
@@ -11,7 +8,6 @@ rule "Zone ${pointToLetter[point]}: Fast Reset":
     wait(1, Wait.ABORT_WHEN_FALSE)
     # Reset capture progress immediately
     ${zoneProgress} = 0
-    zone${pointToLetter[point]}HudText[3] = "Capturing"
     
 rule "Zone ${pointToLetter[point]}: Gradual Reset":
     @Condition powerPlayTimer == 0
@@ -20,17 +16,13 @@ rule "Zone ${pointToLetter[point]}: Gradual Reset":
     @Condition zoneControl[${point}] == Team.2 or numTeam2${pointToLetter[point]} == 0
     wait(3, Wait.ABORT_WHEN_FALSE)
     chase(${zoneProgress}, 0, rate=25, ChaseReeval.NONE)
-    zone${pointToLetter[point]}HudText[3] = "Capturing"
 
 rule "Zone ${pointToLetter[point]}: Contesting":
     @Condition powerPlayTimer == 0
     @Condition numTeam1${pointToLetter[point]} > 0
     @Condition numTeam2${pointToLetter[point]} > 0
     stopChasingVariable(${zoneProgress})
-    zone${pointToLetter[point]}HudText[3] = "Contested"
     smallMessage([p for p in getPlayersInRadius(zoneLocations[${point}], zoneSizes[${point}], Team.ALL, LosCheck.OFF) if p.isAlive() and not (p.getCurrentHero() == Hero.SOMBRA and p.isUsingAbility1())], "Contested!")
-    # Freeze color flashing during contested period
-    ${disableColorFlash}
 
 rule "Zone ${pointToLetter[point]}: Capturing for Team 1":
     @Condition not powerPlayActive
@@ -42,9 +34,6 @@ rule "Zone ${pointToLetter[point]}: Capturing for Team 1":
         wait(1, Wait.ABORT_WHEN_FALSE)
         ${zoneProgress} = 0
     chase(${zoneProgress}, 100, rate=(captureRatePerPlayer*min(numTeam1${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.1)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam1${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
-    zone${pointToLetter[point]}HudText[3] = "Capturing"
-    # Start color flashing
-    ${enableColorFlash}
 
 rule "Zone ${pointToLetter[point]}: Capturing for Team 2":
     @Condition not powerPlayActive
@@ -56,14 +45,10 @@ rule "Zone ${pointToLetter[point]}: Capturing for Team 2":
         wait(1, Wait.ABORT_WHEN_FALSE)
         ${zoneProgress} = 0
     chase(${zoneProgress}, -100, rate=(captureRatePerPlayer*min(numTeam2${pointToLetter[point]}, maxPlayerRate)*(6/len(getPlayers(Team.2)) if adaptiveCaptureRate else 1) + baseCaptureRate if numTeam2${pointToLetter[point]} > 0 else 0), ChaseReeval.DESTINATION_AND_RATE)
-    zone${pointToLetter[point]}HudText[3] = "Capturing"
-    # Start color flashing
-    ${enableColorFlash}
 
 rule "Zone ${pointToLetter[point]}: Listen for Capture":
     @Condition abs(${zoneProgress}) == 100
     stopChasingVariable(${zoneProgress})
-    zone${pointToLetter[point]}HudText[3] = "Capturing"
     if ${zoneProgress} == 100:
         ${zoneProgress} = 0
         zoneControl[${point}] = Team.1
