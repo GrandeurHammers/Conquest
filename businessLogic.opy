@@ -113,7 +113,7 @@ rule "Reset on Game Start (Waiting for Players)":
     # Stop all zone progress
     stopAllProgress()
     # Reset Zones
-    triggerPointReset(false)
+    triggerPointReset()
     # Reset Scores
     setTeamScore(Team.1, 0)
     setTeamScore(Team.2, 0)

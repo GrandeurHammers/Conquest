@@ -74,10 +74,14 @@ globalvar overtimeEnabled
 # Is Overtime in effect?
 globalvar overtime
 
-# Stores Zone active hud texts (0 = spec, 1 = Team 1, 2 = Team 2, 3 = Capturing/Contested string)
-globalvar zoneAHudText
-globalvar zoneBHudText
-globalvar zoneCHudText
+# Color controls
+globalvar zoneAMainColor
+globalvar zoneAAltColor
+globalvar zoneBMainColor
+globalvar zoneBAltColor
+globalvar zoneCMainColor
+globalvar zoneCAltColor
+
 # Zone Progress (100 = full cap for Team 1, -100 = full cap for Team 2)
 globalvar zoneAProgress
 globalvar zoneBProgress
@@ -86,10 +90,6 @@ globalvar zoneCProgress
 globalvar skullIcons
 # Current score comparison (<0 if team 1 < team 2, 0 if team 1 == team 2, >0 if team 1 > team 2)
 globalvar currScoreComp
-# Array of booleans that control whether the main or alternate color is shown
-globalvar altColorControl
-# Array of booleans that determine whether a zone should flash alt colors
-globalvar altColorLoop
 
 globalvar i
 globalvar j
@@ -116,15 +116,12 @@ subroutine declareWinner
 #!define generatePointFlags() __script__('macros/generateSetPointFlags.js')
 #!define generateInitPointVisuals() __script__('macros/generateInitialPointVisuals.js')
 #!define generateChaserRules(point) __script__('macros/generateChaserRules.js')
-#!define generateVisualUpdates(point) __script__('macros/generateVisualUpdates.js')
 #!define initializeHelper() __script__('macros/initialize.js')
 #!define stopAllProgress() __script__('macros/stopAllProgress.js')
-#!define generateLockedText() __script__('macros/generateLockedText.js')
-#!define triggerPointReset(destroyText) __script__('macros/triggerPointReset.js')
+#!define triggerPointReset() __script__('macros/triggerPointReset.js')
 #!define toggleSkulls(create) __script__('macros/toggleSkullIcons.js')
 #!define generatePlayerHUDSpacer() __script__('macros/generatePlayerHUDSpacer.js')
 #!define generatePlayerHUD() __script__('macros/generatePlayerHUD.js')
-#!define colorFlashControl(point) __script__('macros/colorFlashControl.js')
 
 #!define getUnusedSpawn() 3 - currTeamSpawns[0] - currTeamSpawns[1]
 #!define isMapInitialized() len(zoneLocations) == 3 and len(zoneSizes) == 3

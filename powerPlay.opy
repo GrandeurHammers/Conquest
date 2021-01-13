@@ -6,7 +6,6 @@ rule "If a Team controls all 3 points, activate Power Play":
     powerPlayActive = true
     powerPlayTimer = powerPlayDuration if overtime else min(powerPlayDuration, getMatchTime())
     stopAllProgress()
-    generateLockedText()
     setSlowMotion(10)
     getAllPlayers().setAimSpeed(50)
     setObjectiveDescription(getAllPlayers(), "Power Play", HudReeval.VISIBILITY)
@@ -46,7 +45,7 @@ rule "At end of Power Play, reset points":
         setObjectiveDescription(getAllPlayers(), "Fight", HudReeval.VISIBILITY)
     bigMessage(getAllPlayers(), "Power Play Ended")
     setMatchTime(resumeMatchTime)
-    triggerPointReset(true)
+    triggerPointReset()
     powerPlayActive = false
     powerPlaySoundTrigger = true
     wait(0.016, Wait.IGNORE_CONDITION)
