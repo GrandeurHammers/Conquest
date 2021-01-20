@@ -6,6 +6,7 @@ rule "# Zone A":
 	@Delimiter
 
 generateChaserRules(0)
+generateHudUpdates(0)
 
 rule "# Zone B":
 	@Event global
@@ -13,6 +14,7 @@ rule "# Zone B":
 	@Delimiter
 
 generateChaserRules(1)
+generateHudUpdates(1)
 
 rule "# Zone C":
 	@Event global
@@ -20,3 +22,4 @@ rule "# Zone C":
 	@Delimiter
 
 generateChaserRules(2)
+generateHudUpdates(2)
