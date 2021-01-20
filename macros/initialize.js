@@ -15,20 +15,23 @@ result += `
     zoneCMainColor = Color.WHITE
     zoneCAltColor = Color.WHITE
     #Initialize HUD IDs for each point`;
-for (var i = 0;  i < numPoints; i++) {
+for (let i = 0;  i < numPoints; i++) {
+    let isContested = `numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0`;
     // Generate Zone Progress Headers
-    var visTo = `p for p in getLivingPlayers(Team.ALL) if (abs(zone${pointToLetter[i]}Progress) > 0 and %CONTEST%) and not powerPlayActive and isWithinZoneBounds(p, ${i})`;
-    var visToProgress = visTo.replace('%CONTEST%', `not (numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0)`);
-    var visToContested = visTo.replace('%CONTEST%', `(numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0)`);
+    let visTo = `[p for p in getLivingPlayers(Team.ALL) if abs(zone${pointToLetter[i]}Progress) > 0 and not powerPlayActive and isWithinZoneBounds(p, ${i})]`;
     // Generate Progress Bar
-    result += `
-    #Progress Bars for Zone ${pointToLetter[i]} - Visible to all living players within the radius during normal play when point has progress on it. First one is for non-contested, second one is for contested.
-    ${progressBarHelper(i, visToProgress, false)}
-    ${progressBarHelper(i, visToContested, true)}`;
-    // Add Capturing/Contested undertext
-    result += `
-    #Subtitle for progress bars
-    hudSubtext([${visTo.replace('%CONTEST%', 'true')}], "{0} - {1}%".format("Contested" if numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0 else "Capturing", floor(abs(zone${pointToLetter[i]}Progress))), HudPosition.TOP, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    result += `\n\t#Progress Bars for Zone ${pointToLetter[i]} - Visible to all living players within the radius during normal play when point has progress on it.`;
+    result += `\n\tprogressBarHud(
+        ${visTo},
+        abs(zone${pointToLetter[i]}Progress),
+        "Contested!" if ${isContested} else "Capturing - {0}%".format(floor(abs(zone${pointToLetter[i]}Progress))),
+        HudPosition.TOP,
+        4,
+        Color.ORANGE if ${isContested} else Color.WHITE,
+        Color.WHITE,
+        ProgressHudReeval.VISIBILITY_VALUES_AND_COLOR,
+        SpecVisibility.NEVER
+    )`;
 }
 
 // Separator Lines
@@ -63,31 +66,3 @@ result += `
     progressBarHud(getAllPlayers() if powerPlayActive else null, powerPlayTimer / powerPlayDuration * 100, "Power Play", HudPosition.TOP, 3, Color.WHITE, Color.WHITE, ProgressHudReeval.VISIBILITY_VALUES_AND_COLOR, SpecVisibility.DEFAULT)`
 console.log(result);
 result;
-
-function progressBarHelper(i, visTo, isContested) {
-    // i: numerical index of zone
-    // visTo: visibility conditions
-    // isContested: whether to generate a contested header or not
-    var len = 18;
-    var emptyChar = "　";
-    var fullChar = "▒";
-    result = `hudHeader([${visTo}], [`;
-
-    for (var bar = 0; bar <= len; bar++) {
-        result += `"`;
-        for (var place = 0; place < len; place++) {
-            if (place < bar) {
-                result += fullChar;
-            } else {
-                result += emptyChar;
-            }
-        }
-        result += `"`;
-        if (bar != len) {
-            result += `, `;
-        }
-    }
-    
-    result += `][round(abs(zone${pointToLetter[i]}Progress) * ${len} / 100)], HudPosition.TOP, 4, Color.${isContested ? 'YELLOW' : 'LIME_GREEN'}, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
-    return result;
-}
