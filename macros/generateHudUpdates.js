@@ -82,7 +82,7 @@ controlStates.forEach(function (cState) {
     result += `\n\nrule "Zone ${pointToLetter[point]} HUD: Update for ${cState.name} Control | Macro Handler":`;
     result += `\n\t@Condition zoneControl[${point}] == ${cState.zoneControl}`;
     result += `\n\tzone${pointToLetter[point]}MainColor = ${cState.mainColor}`;
-    // Set subtitles
+    /*// Set subtitles
     if ("subtitleAll" in cState) {
         prefixes.forEach((p) => result += `\n\t${p}Zone${pointToLetter[point]}Text[TextKeys.SUBTITLE] = ${cState.subtitleAll}`);
     } else {
@@ -90,7 +90,7 @@ controlStates.forEach(function (cState) {
             let capitalVer = p.charAt(0).toUpperCase() + p.slice(1);
             result += `\n\t${p}Zone${pointToLetter[point]}Text[TextKeys.SUBTITLE] = ${cState["subtitle" + capitalVer]}`;
         });
-    }
+    }*/
     /**
      * PROGRESS SENSITIVE RULES
      */
@@ -99,7 +99,7 @@ controlStates.forEach(function (cState) {
         result += `\n\t@Condition zoneControl[${point}] == ${cState.zoneControl}`;
         result += `\n\t@Condition ${zoneProgress} ${pState.progressCond}`;
         result += `\n\tzone${pointToLetter[point]}AltColor = ${pState.altColor}`;
-        result += `\n\tspecsZone${pointToLetter[point]}Text[TextKeys.SUBTEXT] = ${pState.subtextSpecs}`;
+        // result += `\n\tspecsZone${pointToLetter[point]}Text[TextKeys.SUBTEXT] = ${pState.subtextSpecs}`;
     })
 });
 
