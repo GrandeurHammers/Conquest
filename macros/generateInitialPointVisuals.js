@@ -8,9 +8,9 @@ for (var i = 0; i < pointToLetter.length; i++) {
     result += `\n\t# Zone ${pointToLetter[i]} Visuals - Locked zone indicator (power play)`;
     result += `\n\tcreateInWorldText(getAllPlayers() if powerPlayActive else null, "{0}\r".format(iconString(Icon.NO)), zoneLocations[${i}], 2, Clip.NONE, WorldTextReeval.VISIBILITY, Color.WHITE, SpecVisibility.DEFAULT)`;
     // Normal zone lettering
-    result += `\n\tcreateInWorldText(getAllPlayers() if not powerPlayActive else null, "${pointToLetter[i]}\r\r", zoneLocations[${i}], 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, zone${pointToLetter[i]}MainColor, SpecVisibility.DEFAULT)`;
+    result += `\n\tcreateInWorldText(getAllPlayers() if not powerPlayActive else null, "${pointToLetter[i]}\r\r", zoneLocations[${i}], 3, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, zone${pointToLetter[i]}MainColor, SpecVisibility.DEFAULT)`;
     // Normal percentage indicator
-    result += `\n\tcreateInWorldText(getAllPlayers() if not powerPlayActive else null, " \r{0}%\r".format(floor(abs(zone${pointToLetter[i]}Progress))) if abs(zone${pointToLetter[i]}Progress) > 0 else "", zoneLocations[${i}], 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, zone${pointToLetter[i]}AltColor, SpecVisibility.DEFAULT)`;
+    result += `\n\tcreateInWorldText(getAllPlayers() if not powerPlayActive else null, " \r{0}%\r".format(floor(abs(zone${pointToLetter[i]}Progress))) if abs(zone${pointToLetter[i]}Progress) > 0 else "", zoneLocations[${i}], 3, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, zone${pointToLetter[i]}AltColor, SpecVisibility.DEFAULT)`;
     // Warning signs
     result += `\n\t# Team 1 specific prompts`;
     result += `\n\tcreateIcon([p for p in getPlayers(Team.1) if distance(p, zoneLocations[${i}]) > zoneSizes[${i}]] if zone${pointToLetter[i]}Progress < 0 and not powerPlayActive else null, zoneLocations[${i}], Icon.WARNING, IconReeval.VISIBILITY, Color.RED, true)`;
