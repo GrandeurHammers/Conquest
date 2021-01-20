@@ -59,10 +59,8 @@ result += `
 hudSubtext(null, "{0}  {1}  {2} | Zones Controlled | {3}  {4}  {5}".format(${specFormatArgs.join(",")}), HudPosition.TOP, 0.4, Color.WHITE, HudReeval.STRING, SpecVisibility.ALWAYS)`;
 
 result += `
-    #Power Play pushdown (avoid big message)
-    hudSubtext([p for p in getAllPlayers() if powerPlayActive], " \r", HudPosition.TOP, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)
     #Power Play Timer - Visible when power play is active
-    hudHeader([p for p in getAllPlayers() if powerPlayActive], "Power Play: {0}".format(floor(powerPlayTimer)), HudPosition.TOP, 3, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT)`
+    progressBarHud(getAllPlayers() if powerPlayActive else null, powerPlayTimer / powerPlayDuration * 100, "Power Play", HudPosition.TOP, 3, Color.WHITE, Color.WHITE, ProgressHudReeval.VISIBILITY_VALUES_AND_COLOR, SpecVisibility.DEFAULT)`
 console.log(result);
 result;
 
