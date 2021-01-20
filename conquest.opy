@@ -115,6 +115,8 @@ subroutine declareWinner
 # Helper pregen macros (thanks Zez)
 #!define generatePointFlags() __script__('macros/generateSetPointFlags.js')
 #!define generateInitPointVisuals() __script__('macros/generateInitialPointVisuals.js')
+#!define generateZoneHud() __script__('macros/generateZoneHUD.js')
+#!define generateHudUpdates(point) __script__('macros/generateHudUpdates.js')
 #!define generateChaserRules(point) __script__('macros/generateChaserRules.js')
 #!define initializeHelper() __script__('macros/initialize.js')
 #!define stopAllProgress() __script__('macros/stopAllProgress.js')
@@ -179,10 +181,11 @@ rule "Player Cleanup":
 
 #!include "maps/maps.opy"
 
-rule "Generate initial in-world zone visuals":
+rule "Generate zone visuals and HUD":
 	@Event global
 	@Condition isMapInitialized()
     generateInitPointVisuals()
+    generateZoneHud()
 
 rule "=====GAMEPLAY=====":
 	@Event global
