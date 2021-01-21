@@ -150,10 +150,8 @@ rule "Declare Winner if a team has requisite number of points":
     if endRequiresPowerPlay and not all([c == zoneControl[0] for c in zoneControl]):
         if teamScore(Team.1) >= scoreToWin:
             setTeamScore(Team.1, scoreToWin - 1)
-            # TODO: Signal need for power play
         if teamScore(Team.2) >= scoreToWin:
             setTeamScore(Team.2, scoreToWin - 1)
-            # TODO: Signal need for power play
         return
     currScoreComp = teamScore(Team.1) - teamScore(Team.2)
     declareWinner()
