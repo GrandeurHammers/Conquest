@@ -21,6 +21,8 @@ rule "Game Settings":
     spawnBehavior = createWorkshopSetting(enum["Random", "Static", "Dynamic"], "Game Settings", "Respawn Locations", RespawnLocations.DYNAMIC, 4)
     # Do respawn timings attempt to spawn players in waves, or are respawn timings static?
     spawnTimings = createWorkshopSetting(enum["Static", "Waves"], "Game Settings", "Respawn Timings", RespawnTimings.WAVES, 5)
+    # Does ending regulation time early require a power play?
+    endRequiresPowerPlay = createWorkshopSetting(bool, "Game Settings", "Require Power Play For Early End", true, 6)
 
 rule "Capture Rate Customization":
     @Event global

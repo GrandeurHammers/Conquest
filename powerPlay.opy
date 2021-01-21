@@ -2,7 +2,12 @@
 
 rule "If a Team controls all 3 points, activate Power Play":
 	@Event global
-	@Condition powerPlayEnabled and (all([control == Team.1 for control in zoneControl]) or all([control == Team.2 for control in zoneControl]))
+    @Condition powerPlayEnabled
+    @Condition zoneControl[0] == Team.1 or zoneControl[0] == Team.2
+    @Condition all([c == zoneControl[0] for c in zoneControl])
+    # If a team is about to win, don't trigger a power play
+    if teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin:
+        return
     powerPlayActive = true
     powerPlayTimer = powerPlayDuration if overtime else min(powerPlayDuration, getMatchTime())
     stopAllProgress()
