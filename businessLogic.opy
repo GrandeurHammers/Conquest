@@ -107,13 +107,13 @@ rule "Reset on Game Start (Waiting for Players)":
     setTeamScore(Team.1, 0)
     setTeamScore(Team.2, 0)
 
-rule "Upon earning a kill, award additional points for zones controlled":
+rule "Upon earning a kill, award points alongside bonuses for zones controlled":
 	@Event playerDealtFinalBlow
-    @Condition len([control for control in zoneControl if control == attacker.getTeam()]) >= 2
-    # Award bonus points
-    addToTeamScore(attacker.getTeam(), len([control for control in zoneControl if control == attacker.getTeam()]) - 1)
-    # Mark as valid target for feedback
-    victim.validElimTarget = true
+    # Award points
+    addToTeamScore(attacker.getTeam(), max(len([control for control in zoneControl if control == attacker.getTeam()]),1))
+    if len([control for control in zoneControl if control == attacker.getTeam()]) >= 2:
+        # Mark as valid target for feedback
+        victim.validElimTarget = true
 
 rule "Provide feedback on valid elimination":
     @Event playerEarnedElimination
@@ -146,6 +146,15 @@ rule "Declare Winner if a team has requisite number of points":
     @Condition not overtime
     @Condition (teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin)
     @Condition teamScore(Team.1) != teamScore(Team.2)
+    # If ending early requires a power play and there isn't one, reset to below the threshold
+    if endRequiresPowerPlay and not all([c == zoneControl[0] for c in zoneControl]):
+        if teamScore(Team.1) >= scoreToWin:
+            setTeamScore(Team.1, scoreToWin - 1)
+            # TODO: Signal need for power play
+        if teamScore(Team.2) >= scoreToWin:
+            setTeamScore(Team.2, scoreToWin - 1)
+            # TODO: Signal need for power play
+        return
     currScoreComp = teamScore(Team.1) - teamScore(Team.2)
     declareWinner()
 

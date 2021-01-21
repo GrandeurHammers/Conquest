@@ -8,6 +8,8 @@ globalvar scoreToWin
 globalvar minRespawnTime
 # Maximum respawn time (secs)
 globalvar maxRespawnTime
+# Should regulation time ending early require a Power Play
+globalvar endRequiresPowerPlay
 
 # Where are the zones?
 globalvar zoneLocations
@@ -165,6 +167,8 @@ rule "Global Initialization - includes center zone HUD elements":
     printLog("Current Map: {0}".format(getCurrentMap()))
     # We use our own custom gamemode completion
     disableGamemodeCompletion()
+    # We use custom scoring
+    disableScoring()
     initializeHelper()
     # Push player-specific HUD down to crosshair level
     generatePlayerHUDSpacer()
