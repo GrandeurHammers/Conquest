@@ -38,7 +38,7 @@ for (let i = 0;  i < numPoints; i++) {
 result += `
     #HUD Separator Lines`;
 for (var i = 0; i < 2; i++) {
-    result += `\t\nhudSubtext(getAllPlayers(), w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    result += `\t\nhudSubtext(getAllPlayers() if not powerPlayActive else null, w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
     result += `\t\nhudSubtext(null, w"--------------", HudPosition.LEFT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
 }
 
