@@ -14,7 +14,8 @@ result += `
     zoneBAltColor = Color.WHITE
     zoneCMainColor = Color.WHITE
     zoneCAltColor = Color.WHITE
-    #Initialize HUD IDs for each point`;
+    #Init Spec Text ID trackers
+    specTextIds = []`;
 for (let i = 0;  i < numPoints; i++) {
     let isContested = `numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0`;
     // Generate Zone Progress Headers
@@ -38,8 +39,7 @@ for (let i = 0;  i < numPoints; i++) {
 result += `
     #HUD Separator Lines`;
 for (var i = 0; i < 2; i++) {
-    result += `\t\nhudSubtext(getAllPlayers() if not powerPlayActive else null, w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
-    result += `\t\nhudSubtext(null, w"--------------", HudPosition.LEFT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
+    result += `\n\thudSubtext(getAllPlayers() if not powerPlayActive else null, w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
 }
 
 // Info HUD which explains bonus points
