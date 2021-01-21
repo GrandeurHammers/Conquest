@@ -44,24 +44,6 @@ rule "If Team 2 has no more spawn tickets, refill them":
 
     refillTeam2SpawnTix()
 
-rule "Trigger Team 1 respawn wave":
-    @Condition spawnTimings == RespawnTimings.WAVES
-    @Condition getNumberOfDeadPlayers(Team.1) > 0
-
-    team1RespawnTimer = maxRespawnTime
-    chase(team1RespawnTimer, 0, rate=1, ChaseReeval.NONE)
-    wait(maxRespawnTime, Wait.IGNORE_CONDITION)
-    stopChasingVariable(team1RespawnTimer)
-
-rule "Trigger Team 2 respawn wave":
-    @Condition spawnTimings == RespawnTimings.WAVES
-    @Condition getNumberOfDeadPlayers(Team.2) > 0
-
-    team2RespawnTimer = maxRespawnTime
-    chase(team2RespawnTimer, 0, rate=1, ChaseReeval.NONE)
-    wait(maxRespawnTime, Wait.IGNORE_CONDITION)
-    stopChasingVariable(team2RespawnTimer)
-
 rule "Remove respawn buffered marker on respawn and trigger custom respawn logic":
     @Event eachPlayer
     @Condition eventPlayer.hasSpawned()
@@ -80,6 +62,13 @@ rule "Main Respawn handler":
     if powerPlayActive:
         victim.respawnBuffered = true
     if spawnTimings == RespawnTimings.WAVES:
+        # If needed, start a new respawn wave
+        if victim.getTeam() == Team.1 and team1RespawnTimer == 0:
+            team1RespawnTimer = maxRespawnTime
+            chase(team1RespawnTimer, 0, rate=1, ChaseReeval.NONE)
+        elif victim.getTeam() == Team.2 and team2RespawnTimer == 0:
+            team2RespawnTimer = maxRespawnTime
+            chase(team2RespawnTimer, 0, rate=1, ChaseReeval.NONE)
         # Track time until respawn. Player will match lowest respawn timer on their team while still being above minRespawnTime, but if no other players are dead, they will take maxRespawnTime to respawn.
         victim.timeToRespawn = max(team1RespawnTimer if victim.getTeam() == Team.1 else team2RespawnTimer, minRespawnTime)
     else:
