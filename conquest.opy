@@ -82,6 +82,9 @@ globalvar zoneBAltColor
 globalvar zoneCMainColor
 globalvar zoneCAltColor
 
+# Text IDs for spectators
+globalvar specTextIds
+
 # Zone Progress (100 = full cap for Team 1, -100 = full cap for Team 2)
 globalvar zoneAProgress
 globalvar zoneBProgress
@@ -124,6 +127,7 @@ subroutine declareWinner
 #!define toggleSkulls(create) __script__('macros/toggleSkullIcons.js')
 #!define generatePlayerHUDSpacer() __script__('macros/generatePlayerHUDSpacer.js')
 #!define generatePlayerHUD() __script__('macros/generatePlayerHUD.js')
+#!define generateSpecHUD() __script__('macros/generateSpecHUD.js')
 
 #!define getUnusedSpawn() 3 - currTeamSpawns[0] - currTeamSpawns[1]
 #!define isMapInitialized() len(zoneLocations) == 3 and len(zoneSizes) == 3
@@ -178,6 +182,8 @@ rule "Player Cleanup":
     @Event playerLeft
     # Cleanup the player-specific HUD
     destroyHudText(eventPlayer.msgTextID)
+
+generateSpecHUD()
 
 #!include "maps/maps.opy"
 
