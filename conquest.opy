@@ -22,6 +22,10 @@ globalvar zoneSpawns
 # Remaining ticket spots for each area
 globalvar team1SpawnTix
 globalvar team2SpawnTix
+# BUG WORKAROUND: Change HUD toggle for about-to-win
+globalvar teamAboutToWin
+
+#!define bugWorkaround() __script__('macros/tempBugWorkaround.js')
 
 # Capture rate = ax + b (x = num players)
 # Base Capture Rate = b
@@ -173,6 +177,8 @@ rule "Global Initialization - includes center zone HUD elements":
     # Push player-specific HUD down to crosshair level
     generatePlayerHUDSpacer()
     powerPlayActive = false
+
+bugWorkaround()
 
 rule "Player Initialization":
     @Event eachPlayer

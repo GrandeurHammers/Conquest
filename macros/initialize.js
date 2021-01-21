@@ -15,7 +15,9 @@ result += `
     zoneCMainColor = Color.WHITE
     zoneCAltColor = Color.WHITE
     #Init Spec Text ID trackers
-    specTextIds = []`;
+    specTextIds = []
+    #BUG WORKAROUND: Manually track when a team is about to win
+    teamAboutToWin = [false, false]`;
 for (let i = 0;  i < numPoints; i++) {
     let isContested = `numTeam1${pointToLetter[i]} > 0 and numTeam2${pointToLetter[i]} > 0`;
     // Generate Zone Progress Headers
@@ -46,11 +48,12 @@ for (var i = 0; i < 2; i++) {
 result += `
     #Explanation HUD`;
 let teams = ['Team.1', 'Team.2'];
-teams.forEach(function (team) {
+teams.forEach(function (team, i) {
     let pointsControlled = `len([control for control in zoneControl if control == ${team}])`;
     result += `
-    hudHeader(getPlayers(${team}), "{0}{1} = +{2} {3}/{4}".format(${pointsControlled}, iconString(Icon.FLAG), max(${pointsControlled}, 1), l"Point" if max(${pointsControlled}, 1) == 1 else l"Points", l"Kill"), HudPosition.TOP, 0.5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+    hudHeader(getPlayers(${team}), "{0}{1} = +{2} {3}/{4}".format(${pointsControlled}, iconString(Icon.FLAG), max(${pointsControlled}, 1), l"Point" if max(${pointsControlled}, 1) == 1 else l"Points", l"Kill") if not teamAboutToWin[${i}] else "{0}: {1} {2}".format(l"Final Objective", l"Power", l"Play"), HudPosition.TOP, 0.5, Color.WHITE if not teamAboutToWin[${i}] else Color.YELLOW, HudReeval.VISIBILITY_STRING_AND_COLOR, SpecVisibility.NEVER)`;
 });
+
 // Spectator HUD: show zones controlled by both teams
 let specFormatArgs = [];
 teams.forEach(function (team) {
