@@ -1,5 +1,11 @@
 #!mainFile "conquest.opy"
 
+subroutine playSoundForAll
+
+def playSoundForAll():
+    for i in range(0,getNumberOfPlayers(Team.ALL)):
+        playEffect(getAllPlayers()[i], DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, getAllPlayers()[i], 200)
+
 rule "If a Team controls all 3 points, activate Power Play":
 	@Event global
     @Condition powerPlayEnabled
@@ -7,6 +13,7 @@ rule "If a Team controls all 3 points, activate Power Play":
     @Condition all([c == zoneControl[0] for c in zoneControl])
     # If a team is about to win, don't trigger a power play
     if teamScore(Team.1) >= scoreToWin or teamScore(Team.2) >= scoreToWin:
+        playSoundForAll()
         return
     powerPlayActive = true
     powerPlayTimer = powerPlayDuration if overtime else min(powerPlayDuration, getMatchTime())
@@ -20,12 +27,10 @@ rule "If a Team controls all 3 points, activate Power Play":
     bigMessage(getAllPlayers(), "Zones Locked")
     if powerPlayMarkers:
         toggleSkulls(true)
-    powerPlaySoundTrigger = true
+    playSoundForAll()
     getPlayers(getOppositeTeam(zoneControl[0])).setStatusEffect(null, Status.BURNING, powerPlayDuration + 0.5)
-    wait(0.016)
     pauseMatchTime()
-    wait(0.5 - 0.016, Wait.IGNORE_CONDITION)
-    powerPlaySoundTrigger = false
+    wait(0.5, Wait.IGNORE_CONDITION)
     setSlowMotion(100)
     getAllPlayers().setAimSpeed(100)
     unpauseMatchTime()
@@ -51,10 +56,7 @@ rule "At end of Power Play, reset points":
     bigMessage(getAllPlayers(), "Power Play Ended")
     setMatchTime(resumeMatchTime)
     triggerPointReset()
-    powerPlayActive = false
-    powerPlaySoundTrigger = true
-    wait(0.016, Wait.IGNORE_CONDITION)
-    powerPlaySoundTrigger = false
+    playSoundForAll()
     # Use different sides from the previous Power Play
     swapSides = not swapSides
     # Reset spawns
@@ -62,8 +64,3 @@ rule "At end of Power Play, reset points":
         currTeamSpawns = [2,0]
     else:
         currTeamSpawns = [0,2]
-
-rule "HELPER: Play Power Play Sound at Player Position":
-    @Event eachPlayer
-    @Condition powerPlaySoundTrigger
-    playEffect(eventPlayer, DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getPosition(), 200)
