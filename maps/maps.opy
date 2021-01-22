@@ -12,6 +12,8 @@
 
 #!include "maps/kingsRow.opy"
 
+#!include "maps/kanezaka.opy"
+
 rule "Spawn point failsafe: use zone position and radius if not set":
     @Condition isMapInitialized()
 
