@@ -195,6 +195,11 @@ generateSpecHUD()
 
 #!include "maps/maps.opy"
 
+rule "If the map is not intialized, create a warning HUD":
+    @Condition not isMapInitialized()
+
+    hudHeader(getAllPlayers(), "ERROR: THIS MAP IS NOT YET SUPPORTED", HudPosition.TOP, -1, Color.RED, HudReeval.VISIBILITY, SpecVisibility.ALWAYS)
+
 rule "Generate zone visuals and HUD":
 	@Event global
 	@Condition isMapInitialized()
