@@ -33,6 +33,9 @@ rule "Track when a Mercy player uses rez":
 
 def customRespawn():
     @Name "SUB: Custom Respawn Logic"
+    # Immediately abort custom respawn if the map is not initialized
+    if not isMapInitialized():
+        return
     if eventPlayer.isDead():
         eventPlayer.respawn()
     # If we're using random spawns (aka built-in spawn system), stop here.
