@@ -82,6 +82,9 @@ rule "Remove respawn buffered marker on respawn and trigger custom respawn logic
 
 rule "Main Respawn handler":
     @Event playerDied
+    # If the event was a suicide, deduct points equivalent to granting enemy a kill
+    if (attacker == eventPlayer):
+        addToTeamScore(eventPlayer.getTeam(), -1 * max(len([c for c in zoneControl if c == getOppositeTeam(eventPlayer.getTeam())]), 1))
     # Block respawn until minimum respawn time
     victim.respawnBlocked = true
     # If currently power play, force respawn buffer
