@@ -64,3 +64,4 @@ rule "At end of Power Play, reset points":
         currTeamSpawns = [2,0]
     else:
         currTeamSpawns = [0,2]
+    powerPlayActive = false
