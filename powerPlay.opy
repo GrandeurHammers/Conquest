@@ -22,7 +22,7 @@ rule "If a Team controls all 3 points, activate Power Play":
     getAllPlayers().setAimSpeed(50)
     setObjectiveDescription(getAllPlayers(), "Power Play", HudReeval.VISIBILITY)
     resumeMatchTime = max(getMatchTime() - powerPlayTimer, 0)
-    setMatchTime(powerPlayDuration + 0.016)
+    setMatchTime(powerPlayDuration)
     bigMessage(getAllPlayers(), "Power Play")
     bigMessage(getAllPlayers(), "Zones Locked")
     if powerPlayMarkers:
