@@ -64,8 +64,6 @@ globalvar team2RespawnTimer
 globalvar powerPlayActive
 # How much time is left in Power Play?
 globalvar powerPlayTimer
-# Helper variable to trigger Power Play sound
-globalvar powerPlaySoundTrigger
 # Whether Power Play can be activated
 globalvar powerPlayEnabled
 # How long Power Play lasts for
