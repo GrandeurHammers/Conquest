@@ -3,23 +3,23 @@
 rule "# Zone A":
 	@Event global
 	@Disabled
-	currScoreComp = false
+	@Delimiter
 
 generateChaserRules(0)
-generateVisualUpdates(0)
+generateHudUpdates(0)
 
 rule "# Zone B":
 	@Event global
 	@Disabled
-	currScoreComp = false
+	@Delimiter
 
 generateChaserRules(1)
-generateVisualUpdates(1)
+generateHudUpdates(1)
 
 rule "# Zone C":
 	@Event global
 	@Disabled
-	currScoreComp = false
+	@Delimiter
 
 generateChaserRules(2)
-generateVisualUpdates(2)
+generateHudUpdates(2)
