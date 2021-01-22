@@ -57,6 +57,12 @@ for (let i = 0; i < numZones; i++) {
     });
     
 }
+// Separator Lines
+result += `
+    #HUD Separator Lines`;
+for (var i = 0; i < 2; i++) {
+    result += `\n\thudSubtext(getAllPlayers() if not powerPlayActive else null, w"--------------", HudPosition.RIGHT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)`;
+}
 console.log(result);
 result;
 

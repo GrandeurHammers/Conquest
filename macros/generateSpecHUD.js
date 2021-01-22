@@ -1,5 +1,6 @@
 var result = `\n\nrule "Manage Spectator HUD: Create when not Power Play and destroy during power play":`;
 result += `\n\t@Condition not powerPlayActive`;
+result += `\n\t@Condition isMapInitialized()`
 const pointToLetter = ["A", "B", "C"];
 const emptyChar = "　";
 const numZones = 3;
@@ -22,8 +23,7 @@ for (let i = 0; i < numZones; i++) {
     result += `\n\tspecTextIds.append(getLastCreatedText())`;
 }
 // Separator Lines
-result += `
-    #HUD Separator Lines`;
+result += `\n\t#HUD Separator Lines`;
 for (var i = 0; i < 2; i++) {
     result += `\n\thudSubtext(null, w"--------------", HudPosition.LEFT, ${-2.5 + i}, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)`;
     result += `\n\tspecTextIds.append(getLastCreatedText())`;
