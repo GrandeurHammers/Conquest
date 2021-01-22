@@ -134,7 +134,7 @@ subroutine declareWinner
 #!define generateSpecHUD() __script__('macros/generateSpecHUD.js')
 
 #!define getUnusedSpawn() 3 - currTeamSpawns[0] - currTeamSpawns[1]
-#!define isMapInitialized() len(zoneLocations) == 3 and len(zoneSizes) == 3
+#!define isMapInitialized() (len(zoneLocations) == 3 and len(zoneSizes) == 3)
 #!define isWithinZoneBounds(player, zoneIndex) distance(vect(player.getPosition().x, zoneLocations[zoneIndex].y, player.getPosition().z), zoneLocations[zoneIndex]) < zoneSizes[zoneIndex] and player.getPosition().y - zoneLocations[zoneIndex].y >= -1 and player.getPosition().y - zoneLocations[zoneIndex].y < zoneHeights[zoneIndex]
 
 settings "settings.opy.json"
