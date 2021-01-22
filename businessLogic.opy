@@ -10,6 +10,27 @@ playervar selectedSpawnLocation
 
 #!define currSpawn(player) currTeamSpawns[0 if player.getTeam() == Team.1 else 1]
 
+# Mark a Mercy player as having just resurrected
+playervar justRessed
+# Mark time of starting rez
+playervar timeStartRez
+
+rule "Track when a Mercy player uses rez":
+    @Event eachPlayer
+    @Hero mercy
+    @Condition eventPlayer.isUsingAbility2()
+
+    eventPlayer.timeStartRez = getTotalTimeElapsed()
+    waitUntil(not eventPlayer.isUsingAbility2(), 1.5)
+    # Detect if ability cancelled early
+    if (abs(1.5 - (getTotalTimeElapsed() - eventPlayer.timeStartRez)) > 0.016):
+        return
+    wait(0.25)
+    eventPlayer.justRessed = true
+    wait(0.016)
+    eventPlayer.justRessed = false
+
+
 def customRespawn():
     @Name "SUB: Custom Respawn Logic"
     if eventPlayer.isDead():
@@ -17,6 +38,11 @@ def customRespawn():
     # If we're using random spawns (aka built-in spawn system), stop here.
     if spawnBehavior == RespawnLocations.RANDOM:
         return
+    # Ignore a player who has probably just been resurrected
+    if any([p.justRessed and distance(p, eventPlayer) <= 7 for p in getPlayers(eventPlayer.getTeam())]):
+        # Secondary check: if they were at a pre-defined spawn point, they probably weren't ressed
+        if not any([distance(loc, eventPlayer) < 0.01 for loc in getSpawnPoints(Team.ALL)]):
+            return
     # Wait so we can actually affect the player
     wait()
     # Select a spot to respawn at
