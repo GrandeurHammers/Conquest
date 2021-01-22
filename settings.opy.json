@@ -27,7 +27,8 @@
                 "oasisGardens",
                 "oasisUniversity"
             ],
-            "scoreToWin": 100
+            "scoreToWin": 100,
+            "enableSelfInitiatedRespawn": false
         },
         "general": {
             "gamemodeStartTrigger": "immediately",
