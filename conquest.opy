@@ -8,6 +8,8 @@ globalvar scoreToWin
 globalvar minRespawnTime
 # Maximum respawn time (secs)
 globalvar maxRespawnTime
+# Should regulation time ending early require a Power Play
+globalvar endRequiresPowerPlay
 
 # Where are the zones?
 globalvar zoneLocations
@@ -20,6 +22,10 @@ globalvar zoneSpawns
 # Remaining ticket spots for each area
 globalvar team1SpawnTix
 globalvar team2SpawnTix
+# BUG WORKAROUND: Change HUD toggle for about-to-win
+globalvar teamAboutToWin
+
+#!define bugWorkaround() __script__('macros/tempBugWorkaround.js')
 
 # Capture rate = ax + b (x = num players)
 # Base Capture Rate = b
@@ -165,10 +171,14 @@ rule "Global Initialization - includes center zone HUD elements":
     printLog("Current Map: {0}".format(getCurrentMap()))
     # We use our own custom gamemode completion
     disableGamemodeCompletion()
+    # We use custom scoring
+    disableScoring()
     initializeHelper()
     # Push player-specific HUD down to crosshair level
     generatePlayerHUDSpacer()
     powerPlayActive = false
+
+bugWorkaround()
 
 rule "Player Initialization":
     @Event eachPlayer
