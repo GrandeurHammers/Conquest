@@ -57,6 +57,8 @@ rule "At end of Power Play, reset points":
     setMatchTime(resumeMatchTime)
     triggerPointReset()
     playSoundForAll()
+    if createWorkshopSetting(bool, "Power Play Settings", "Reset Ults When Power Play Ends", true, 3):
+        getAllPlayers().setUltCharge(0)
     # Use different sides from the previous Power Play
     swapSides = not swapSides
     # Reset spawns
