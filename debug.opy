@@ -43,7 +43,7 @@ rule "DEBUG: Summon Dummy Bot from each team in a zone 3 seconds after start":
 	getLastCreatedEntity().startForcingPosition(zoneLocations[1], true)
 	createDummy(random.choice(getAllHeroes()), Team.1, -1, zoneLocations[2], vect(0,0,0))
 	getLastCreatedEntity().startForcingPosition(zoneLocations[2], true)
-	
+
 rule "DEBUG: Trigger Power Play after holding Interact for 3 seconds (crouch for enemy, default friendly)":
 	@Event eachPlayer
 	@Condition createWorkshopSetting(bool, "Debug", "Manual Power Play", false, 7)
