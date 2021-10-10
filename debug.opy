@@ -79,3 +79,15 @@ rule "DEBUG: Prevent time from running out":
 	@Condition createWorkshopSetting(bool, "Debug", "Stop Match Time", false, 9)
 	@Condition isGameInProgress()
 	pauseMatchTime()
+
+rule "DEBUG: Use Mercy bot to rez dead player":
+	@Event playerDied
+	@Condition not eventWasEnvironment
+	@Condition createWorkshopSetting(bool, "Debug", "Try to Rez on Death", false, 10)
+	@Condition isGameInProgress()
+	createDummy(Hero.MERCY, eventPlayer.getTeam(), -1, eventPlayer.getPosition() + Vector.RIGHT, Vector.LEFT)
+	waitUntil(getLastCreatedEntity().hasSpawned(), 9999)
+	wait(0.250)
+	getLastCreatedEntity().startForcingButton(Button.ABILITY_2)
+	wait(3)
+	destroyDummy(getLastCreatedEntity().getTeam(), getLastCreatedEntity().getSlot())

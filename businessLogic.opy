@@ -19,6 +19,7 @@ rule "Track when a Mercy player uses rez":
     @Event eachPlayer
     @Hero mercy
     @Condition eventPlayer.isUsingAbility2()
+    @Disabled
 
     eventPlayer.timeStartRez = getTotalTimeElapsed()
     waitUntil(not eventPlayer.isUsingAbility2(), 1.5)
@@ -41,11 +42,9 @@ def customRespawn():
     # If we're using random spawns (aka built-in spawn system), stop here.
     if spawnBehavior == RespawnLocations.RANDOM:
         return
-    # Ignore a player who has probably just been resurrected
-    if any([p.justRessed and distance(p, eventPlayer) <= 7 for p in getPlayers(eventPlayer.getTeam())]):
-        # Secondary check: if they were at a pre-defined spawn point, they probably weren't ressed
-        if not any([distance(loc, eventPlayer) < 0.01 for loc in getSpawnPoints(Team.ALL)]):
-            return
+    # Ignore a player who has probably just been resurrected (not at a normal spawn point)
+    if not any([distance(loc, eventPlayer) < 0.01 for loc in getSpawnPoints(Team.ALL)]):
+        return
     # Wait so we can actually affect the player
     wait()
     # Select a spot to respawn at
