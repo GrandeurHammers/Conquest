@@ -43,7 +43,7 @@ def customRespawn():
     if spawnBehavior == RespawnLocations.RANDOM:
         return
     # Ignore a player who has probably just been resurrected (not at a normal spawn point)
-    if not any([distance(loc, eventPlayer) < 0.01 for loc in getSpawnPoints(Team.ALL)]):
+    if not any([distance(loc, eventPlayer) < 0.05 for loc in getSpawnPoints(Team.ALL)]):
         return
     # Wait so we can actually affect the player
     wait()
@@ -57,6 +57,7 @@ def customRespawn():
         team2SpawnTix.remove(eventPlayer.selectedSpawnTix)
     # Place the player facing the zone for their spawn
     eventPlayer.teleport(eventPlayer.selectedSpawnLocation)
+    wait(0.016)
     eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), zoneLocations[currSpawn(eventPlayer)]) * vect(1,0,1), Relativity.TO_WORLD)
     wait(0.25)
 
